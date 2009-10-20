@@ -14,16 +14,30 @@ import com.twitterapime.platform.PlatformProviderSelector;
 
 /**
  * <p>
+ * This class is factory for creating new HttpConnection objects. 
  * </p>
- * 
+ * <p>
+ * The creation of HttpConnection is performed dynamically by looking up the
+ * current platform provider from PlatformProviderSelector class. For each
+ * supported platform, there is a specific implementation class.
+ * </p>
+ * <p>
+ * The parameter string that describes the target should conform to the Http URL
+ * format as described in RFC 1738.
+ * </p>
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see HttpConnection
  */
 public final class HttpConnector {
 	/**
-	 * 
-	 * @param url
+	 * <p>
+	 * Create and open a HttpConnection.
+	 * </p>
+	 * @param url The URL for the connection.
+	 * @return A new HttpConnection object. 
+	 * @throws IOException If an I/O error occurs.
 	 */
 	public static HttpConnection open(String url) throws IOException {
 		if (url == null || url.trim().length() == 0) {
@@ -60,8 +74,11 @@ public final class HttpConnector {
 	}
 	
 	/**
-	 * @param url
-	 * @return
+	 * <p>
+	 * Encode the given URL.
+	 * </p>
+	 * @param url The URL to be encoded.
+	 * @return An encoded URL.
 	 */
 	public static String encodeURL(String url) {
 		if (url == null) {
@@ -146,7 +163,9 @@ public final class HttpConnector {
 	}
 
 	/**
-	 * 
+	 * <p>
+	 * Package-protected constructor to avoid object instantiation.
+	 * </p>
 	 */
 	HttpConnector() {
 	}

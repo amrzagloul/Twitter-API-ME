@@ -17,17 +17,27 @@ import com.twitterapime.search.InvalidQueryException;
 
 /**
  * <p>
+ * This class is responsible for handling the Http response-codes, in order to
+ * check the status of a request: success or failure.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see LimitExceededException
+ * @see InvalidQueryException
  */
 public final class HttpResponseCodeHandler {
 	/**
-	 * @param conn
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Handle a given HttpConnection object's response-code in order to analyze
+	 * whether the requests went well. Otherwise, an exception is thrown
+	 * describing the problem.
+	 * </p>
+	 * @param conn HttpConnection object to be analyzed.
+	 * @throws IOException If an I/O or service error occurs.
+	 * @throws LimitExceededException If a request limit exceeded error occurs.
+	 * @throws InvalidQueryException If an invalid query error occurs.
 	 */
 	public static void handleSearchAPICodes(HttpConnection conn)
 			throws IOException, LimitExceededException {
@@ -57,7 +67,11 @@ public final class HttpResponseCodeHandler {
 	}
 	
 	/**
-	 * @param code
+	 * <p>
+	 * Check if the response-code reports a request limit exceeded error.
+	 * </p>
+	 * @param code The response-code.
+	 * @return true if the response-code represents a limit exceeded error.
 	 */
 	public static boolean isLimitExceededError(int code) {
 		return code == HttpConnection.HTTP_BAD_REQUEST
@@ -66,7 +80,11 @@ public final class HttpResponseCodeHandler {
 	}
 	
 	/**
-	 * @param code
+	 * <p>
+	 * Check if the response-code reports an invalid query error.
+	 * </p>
+	 * @param code The response-code.
+	 * @return true if the response-code represents an invalid query error.
 	 */
 	public static boolean isInvalidQueryError(int code) {
 		return code == HttpConnection.HTTP_NOT_FOUND
@@ -74,7 +92,11 @@ public final class HttpResponseCodeHandler {
 	}
 	
 	/**
-	 * @param code
+	 * <p>
+	 * Check if the response-code reports a service error.
+	 * </p>
+	 * @param code The response-code.
+	 * @return true if the response-code represents a service error.
 	 */
 	public static boolean isServiceError(int code) {
 		return code == HttpConnection.HTTP_BAD_GATEWAY
@@ -82,7 +104,9 @@ public final class HttpResponseCodeHandler {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Package-protected constructor to avoid object instantiation.
+	 * </p>
 	 */
 	HttpResponseCodeHandler() {
 	}
