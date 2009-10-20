@@ -1,0 +1,194 @@
+<project name="TwitterAPIME" default="+buildAll" basedir=".">
+
+	<property file="build.properties"/>
+	<property file="build.number"/>
+	
+    <target name="-load_antenna">
+		<taskdef resource="antenna.properties">
+			<classpath location="${tapime.path.lib.antenna}"/>
+		</taskdef>
+	</target>
+	
+	<target name="-clean">
+        <delete includeEmptyDirs="true" quiet="true">
+            <fileset dir="${tapime.path.build}" includes="*,*/**"/>
+        	<fileset dir="${tapime.version.path.dist}" includes="*,*/**"/>
+        	<fileset dir="${tapime.path.javadoc}" includes="*,*/**"/>
+        </delete>
+    </target>
+
+	<target name="-init" depends="-clean, -load_antenna">
+		<mkdir dir="${tapime.path.build}"/>
+		<mkdir dir="${tapime.path.src.preprocessed}"/>
+		<mkdir dir="${tapime.path.build.bin}"/>
+		<mkdir dir="${tapime.path.dist}"/>
+		<mkdir dir="${tapime.version.path.dist}"/>
+		<mkdir dir="${tapime.path.javadoc}"/>
+	</target>
+	
+	<target name="-preprocessor" depends="-init">
+		<wtkpreprocess srcdir="${tapime.path.src}"
+			           destdir="${tapime.path.src.preprocessed}"
+			           encoding="${tapime.version.encoding}"
+			           symbols="${tapime.version.preprocessor.symbols}"/>
+	</target>
+	
+	<target name="+javadoc">
+		  <javadoc sourcepath="${tapime.path.src}"
+		           destdir="${tapime.path.javadoc}"
+		           author="true"
+		           version="true"
+		           use="true"
+		           windowtitle="Twitter API ME"
+		  		   locale="en_US"
+		  		   excludepackagenames="impl.*">
+		  	
+		  	<doctitle><![CDATA[<h1>Twitter API ME</h1>]]></doctitle>
+		  	<bottom><![CDATA[<i>Copyright &#169; 2009 Twitter API ME Team. All Rights Reserved.</i>]]></bottom>
+
+		  </javadoc>
+	</target>
+
+	<target name="-compile" depends="-preprocessor">
+		<javac srcdir="${tapime.path.src.preprocessed}"
+			   destdir="${tapime.path.build.bin}"
+			   encoding="${tapime.version.encoding}"
+			   source="${tapime.version.source}">
+			<include name="com/twitterapime/**"/>
+			<include name="impl/javame/**" if="tapime.building.javame"/>
+			<include name="impl/android/**" if="tapime.building.android"/>
+
+			<classpath refid="tapime.classpath"/>
+		</javac>
+	</target>
+	
+	<target name="-lib_javame" if="tapime.building.javame">
+		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}">
+			<zipfileset src="${tapime.path.lib.kxml2}"/>
+		</jar>
+	</target>
+	
+	<target name="-lib_android" if="tapime.building.android">
+		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}">
+			<zipfileset src="${tapime.path.lib.kxml2}"/>
+		</jar>
+	</target>
+
+	<target name="-classpath_javame" if="tapime.building.javame">
+		<path id="tapime.classpath">
+			<path path="${tapime.path.lib.midp20}"/>
+			<path path="${tapime.path.lib.cldc10}"/>
+			<path path="${tapime.path.lib.kxml2}"/>
+		</path>
+	</target>
+
+	<target name="-classpath_android" if="tapime.building.android">
+		<path id="tapime.classpath">
+			<pathelement path="${tapime.path.lib.midp20}"/>
+			<pathelement path="${tapime.path.lib.cldc10}"/>
+			<pathelement path="${tapime.path.lib.kxml2}"/>
+		</path>
+	</target>
+
+	<target name="-preverify_javame" if="tapime.building.javame">
+		<wtkpreverify jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
+	</target>
+
+	<target name="-run" depends="-classpath_javame, -classpath_android, -compile, -lib_javame, -lib_android, -preverify_javame"/>
+	
+	<target name="+build_javame">
+		<antcall target="-run">
+			<param name="wtk.midp.version" value="2.0"/>
+			<param name="wtk.cldc.version" value="1.0"/>
+			<param name="wtk.midpapi" value="${tapime.path.lib.midp20};${tapime.path.lib.cldc10}"/>
+			<param name="tapime.building.javame" value="true"/>
+			<param name="tapime.version.jar" value="${tapime.lib.name}-${tapime.number.version}.${build.number}.jar"/>
+			<param name="tapime.version.impl.package" value="${tapime.javame.impl.package}"/>
+			<param name="tapime.version.encoding" value="${tapime.javame.encoding}"/>
+			<param name="tapime.version.source" value="${tapime.javame.source}"/>
+			<param name="tapime.version.path.dist" value="${tapime.javame.path.dist}"/>
+			<param name="tapime.version.preprocessor.symbols" value="${tapime.javame.preprocessor.symbols}"/>
+		</antcall>
+	</target>
+
+	<target name="+build_android">
+		<antcall target="-run">
+			<param name="wtk.midp.version" value="2.0"/>
+			<param name="wtk.cldc.version" value="1.0"/>
+			<param name="wtk.midpapi" value="${tapime.path.lib.midp20};${tapime.path.lib.cldc10}"/>
+			<param name="tapime.building.android" value="true"/>
+			<param name="tapime.version.jar" value="${tapime.lib.name}-${tapime.number.version}.${build.number}.jar"/>
+			<param name="tapime.version.impl.package" value="${tapime.android.impl.package}"/>
+			<param name="tapime.version.encoding" value="${tapime.android.encoding}"/>
+			<param name="tapime.version.source" value="${tapime.android.source}"/>
+			<param name="tapime.version.path.dist" value="${tapime.android.path.dist}"/>
+			<param name="tapime.version.preprocessor.symbols" value="${tapime.android.preprocessor.symbols}"/>
+		</antcall>
+	</target>
+	
+	<target name="+increment_version">
+		<buildnumber/>
+	</target>
+
+	<target name="+package">
+		<property name="tapime.package" value="${tapime.lib.name}-${tapime.number.version}.${build.number}"/>
+		
+		<delete dir="${basedir}" includes="${tapime.lib.name}*.zip" />
+		
+		<zip destfile="${basedir}/${tapime.package}-full.zip">
+		    <zipfileset dir="${tapime.path.javadoc}" prefix="${tapime.package}/doc/javadoc" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.design}" prefix="${tapime.package}/doc/design" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.src}" prefix="${tapime.package}/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.xml"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+
+		<zip destfile="${basedir}/${tapime.package}-bin.zip">
+			<zipfileset dir="${tapime.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+
+		<zip destfile="${basedir}/${tapime.package}-bin-javame.zip">
+			<zipfileset dir="${tapime.javame.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
+			<zipfileset dir="${tapime.javame.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+
+		<zip destfile="${basedir}/${tapime.package}-bin-android.zip">
+			<zipfileset dir="${tapime.android.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
+			<!--
+			<zipfileset dir="${tapime.android.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			-->
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+
+		<zip destfile="${basedir}/${tapime.package}-src.zip">
+			<zipfileset dir="${tapime.path.src}" prefix="${tapime.package}/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.xml"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+		
+		<zip destfile="${basedir}/${tapime.package}-doc.zip">
+		    <zipfileset dir="${tapime.path.javadoc}" prefix="${tapime.package}/doc/javadoc" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.design}" prefix="${tapime.package}/doc/design" includes="**/*.*"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
+		</zip>
+
+	</target>
+
+	<target name="+buildAll" depends="+build_javame, +build_android"/>
+	
+	<target name="+release" depends="+buildAll, +javadoc, +package"/>
+</project>
