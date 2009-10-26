@@ -17,8 +17,8 @@ import com.twitterapime.search.InvalidQueryException;
 
 /**
  * <p>
- * This class is responsible for handling the Http response-codes, in order to
- * check the status of a request: success or failure.
+ * This class is responsible for handling the Http response-codes from Twitter
+ * API, in order to check the status of a request: success or failure.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -31,8 +31,8 @@ public final class HttpResponseCodeHandler {
 	/**
 	 * <p>
 	 * Handle a given HttpConnection object's response-code in order to analyze
-	 * whether the requests went well. Otherwise, an exception is thrown
-	 * describing the problem.
+	 * whether the requests to Twitter Search API went well. Otherwise, an
+	 * exception is thrown describing the problem.
 	 * </p>
 	 * @param conn HttpConnection object to be analyzed.
 	 * @throws IOException If an I/O or service error occurs.
@@ -56,10 +56,10 @@ public final class HttpResponseCodeHandler {
 				errorMsg = "HTTP ERROR CODE: " + respCode;
 			}
 			//
-			if (isLimitExceededError(respCode)) {
-				throw new LimitExceededException(errorMsg);
-			} else if (isInvalidQueryError(respCode)) {
+			if (isInvalidQueryError(respCode)) {
 				throw new InvalidQueryException(errorMsg);
+			} else if (isLimitExceededError(respCode)) {
+				throw new LimitExceededException(errorMsg);
 			} else {
 				throw new IOException(errorMsg);
 			}
@@ -73,7 +73,7 @@ public final class HttpResponseCodeHandler {
 	 * @param code The response-code.
 	 * @return true if the response-code represents a limit exceeded error.
 	 */
-	public static boolean isLimitExceededError(int code) {
+	static boolean isLimitExceededError(int code) {
 		return code == HttpConnection.HTTP_BAD_REQUEST
 				|| code == HttpConnection.HTTP_UNAVAILABLE
 				|| code == HttpConnection.HTTP_FORBIDDEN;
@@ -86,9 +86,10 @@ public final class HttpResponseCodeHandler {
 	 * @param code The response-code.
 	 * @return true if the response-code represents an invalid query error.
 	 */
-	public static boolean isInvalidQueryError(int code) {
+	static boolean isInvalidQueryError(int code) {
 		return code == HttpConnection.HTTP_NOT_FOUND
-				|| code == HttpConnection.HTTP_NOT_ACCEPTABLE;
+				|| code == HttpConnection.HTTP_NOT_ACCEPTABLE
+				|| code == HttpConnection.HTTP_FORBIDDEN;
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public final class HttpResponseCodeHandler {
 	 * @param code The response-code.
 	 * @return true if the response-code represents a service error.
 	 */
-	public static boolean isServiceError(int code) {
+	static boolean isServiceError(int code) {
 		return code == HttpConnection.HTTP_BAD_GATEWAY
 				|| code == HttpConnection.HTTP_INTERNAL_ERROR;
 	}
