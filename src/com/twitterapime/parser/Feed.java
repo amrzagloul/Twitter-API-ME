@@ -11,21 +11,29 @@ import com.twitterapime.model.Entity;
 
 /**
  * <p>
+ * This interface defines the necessary methods for an entity that represents a
+ * web feed. 
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see FeedEntry
  */
 public interface Feed extends Entity {
 	/**
-	 * @param entry
-	 * @return
+	 * <p>
+	 * Add a feed entry object into the feed.
+	 * </p>
+	 * @param entry The entry object.
 	 */
 	public void addEntry(FeedEntry entry);
 	
 	/**
-	 * @return
+	 * <p>
+	 * Get all the feed entry objects contained in the feed.
+	 * </p>
+	 * @return All feed entries.
 	 */
 	public FeedEntry[] getEntries();
 }

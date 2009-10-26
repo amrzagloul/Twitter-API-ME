@@ -9,28 +9,38 @@ package com.twitterapime.parser;
 
 /**
  * <p>
+ * This class represents an exception to notify about situations where there is
+ * any error in the document format.
  * </p>
  * 
  * @since 1.0
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
- * @created 14-Aug-2009 9:36:00 PM
+ * @see FeedParser
+ * @see ErrorMessageParser
  */
 public class ParserException extends Exception {
 	/**
-	 * 
+	 * <p>
+	 * Serial version UID.
+	 * </p>
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * <p>
+	 * Create an instance of ParserException class.
+	 * </p> 
 	 */
 	public ParserException() {
-
 	}
 
 	/**
-	 * @param msg
+	 * <p>
+	 * Create an instance of ParserException class that receives a custom
+	 * message.
+	 * </p> 
+	 * @param msg The exception message.
 	 */
 	public ParserException(String msg) {
 		super(msg);
