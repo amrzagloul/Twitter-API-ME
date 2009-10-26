@@ -12,338 +12,474 @@ import java.util.Date;
 
 /**
  * <p>
+ * This class is responsible for composing queries that are used to be sent to
+ * Twitter Search API. This class provides methods for most parameters/operators
+ * that are supported by Twitter Search API.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see Query
+ * @see SearchDevice
  */
 public final class QueryComposer {
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "filter links" parameter.
+	 * </p>
 	 */
-	static final String OP_FILTER = "filter:";
+	static final String PM_FILTER_LINKS = "&filter=links";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "from" parameter.
+	 * </p>
 	 */
-	static final String OP_FROM = "from:";
+	static final String PM_FROM = "&from=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents a "positive attitude" parameter.
+	 * </p>
 	 */
-	static final String OP_NEAR = "near:";
+	static final String PM_POSITIVE_ATTITUDE = "&tude[]=:)";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents a "negative attitude" parameter.
+	 * </p>
 	 */
-	static final String OP_WITHIN = "within:";
+	static final String PM_NEGATIVE_ATTITUDE = "&tude[]=:(";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents a "asking a question" parameter.
+	 * </p>
 	 */
-	static final String OP_POSITIVE_ATTITUDE = ":)";
+	static final String PM_ASKING_QUESTION = "&tude[]=?";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "contain all" parameter.
+	 * </p>
 	 */
-	static final String OP_NEGATIVE_ATTITUDE = ":(";
+	static final String PM_CONTAIN_ALL = "&ands=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "contain exact" parameter.
+	 * </p>
 	 */
-	static final String OP_NOT = "-";
+	static final String PM_CONTAIN_EXACT = "&phrase=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "contain any" parameter.
+	 * </p>
 	 */
-	static final String OP_OR = "OR";
+	static final String PM_CONTAIN_ANY = "&ors=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "contain none" parameter.
+	 * </p>
 	 */
-	static final String OP_REFERENCE = "@";
+	static final String PM_CONTAIN_NONE = "&nots=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "hashtag" parameter.
+	 * </p>
 	 */
-	static final String OP_SINCE = "since:";
+	static final String PM_CONTAIN_HASHTAG = "&tag=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "reference" parameter.
+	 * </p>
 	 */
-	static final String OP_SOURCE = "source:";
+	static final String PM_REFERENCE = "&ref=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "since" parameter.
+	 * </p>
 	 */
-	static final String OP_TO = "to:";
+	static final String PM_SINCE = "&since=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "source" parameter.
+	 * </p>
 	 */
-	static final String OP_UNTIL = "until:";
+	static final String PM_SOURCE = "&source=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "to" parameter.
+	 * </p>
 	 */
-	static final String OP_LANG = "lang=";
+	static final String PM_TO = "&to=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "until" parameter.
+	 * </p>
 	 */
-	static final String OP_LOCALE = "locale=";
+	static final String PM_UNTIL = "&until=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "lang" parameter.
+	 * </p>
 	 */
-	static final String OP_RPP = "rpp=";
+	static final String PM_LANG = "&lang=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "rpp" parameter.
+	 * </p>
 	 */
-	static final String OP_PAGE = "page=";
+	static final String PM_RPP = "&rpp=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "page" parameter.
+	 * </p>
 	 */
-	static final String OP_SINCE_ID = "since_id=";
+	static final String PM_PAGE = "&page=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "since_id" parameter.
+	 * </p>
 	 */
-	static final String OP_GEOCODE = "geocode=";
+	static final String PM_SINCE_ID = "&since_id=";
 
 	/**
-	 * 
+	 * <p>
+	 * Constant that represents the "geocode" parameter.
+	 * </p>
 	 */
-	static final String OP_SHOW_USER = "show_user=";
+	static final String PM_GEOCODE = "&geocode=";
 
 	/**
-	 * 
+	 * <p>
+	 * Append a query to another one.
+	 * </p>
+	 * @param q1 Query 1.
+	 * @param q2 Query 2.
+	 * @return A new query object with the content from both queries
+	 *         concatenated.
+	 */
+	public static Query append(Query q1, Query q2) {
+		return new Query(q1.toString() + q2.toString());
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain all the given words. To
+	 * specify more than one word, the words must be separated by a white space,
+	 * e.g., "java sun microsystems".
+	 * </p>
+	 * @param words The words.
+	 * @return A new query.
+	 */
+	public static Query containAll(String words) {
+		return new Query(PM_CONTAIN_ALL + words);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to search for tweets that exactly match the given phrase,
+	 * e.g., "The sky is blue.".
+	 * </p>
+	 * @param phrase The phrase.
+	 * @return A new query.
+	 */
+	public static Query containExact(String phrase) {
+		return new Query(PM_CONTAIN_EXACT + phrase);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain at least one of the
+	 * given words. To specify more than one word, the words must be separated
+	 * by a white space, e.g., "java .net linux".
+	 * </p>
+	 * @param words The words.
+	 * @return A new query.
+	 */
+	public static Query containAny(String words) {
+		return new Query(PM_CONTAIN_ANY + words);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to search for tweets that do not contain none of the
+	 * given words. To specify more than one word, the words must be separated
+	 * by a white space, e.g., ".net microsoft".
+	 * </p>
+	 * @param words The words.
+	 * @return A new query.
+	 */
+	public static Query containNone(String words) {
+		return new Query(PM_CONTAIN_NONE + words);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain the given hashtag, e.g.,
+	 * "twitter".
+	 * </p>
+	 * @param tag The tag.
+	 * @return A new query.
+	 */
+	public static Query containHashtag(String tag) {
+		return new Query(PM_CONTAIN_HASHTAG + tag);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent by a given person,
+	 * e.g., "twitteruser".
+	 * </p>
+	 * @param person The person.
+	 * @return A new query.
+	 */
+	public static Query from(String person) {
+		return new Query(PM_FROM + person);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that reference a given person, e.g.,
+	 * "twitteruser".
+	 * </p>
+	 * @param person The person.
+	 * @return A new query.
+	 */
+	public static Query reference(String person) {
+		return new Query(PM_REFERENCE + person);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent to a given person,
+	 * e.g., "twitteruser".
+	 * </p>
+	 * @param person The person.
+	 * @return A new query.
+	 */
+	public static Query to(String person) {
+		return new Query(PM_TO + person);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent since a given date,
+	 * e.g., "01/01/2009".
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param date The date.
+	 * @return A new query.
+	 */
+	public static Query since(Date date) {
+		return new Query(PM_SINCE + convertDate(date));
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent until a given date,
+	 * e.g., "01/10/2009".
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param date The date.
+	 * @return A new query.
+	 */
+	public static Query until(Date date) {
+		return new Query(PM_UNTIL + convertDate(date));
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that are greater than a given ID,
+	 * e.g., "123549789".
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param id The ID.
+	 * @return A new query.
+	 */
+	public static Query sinceID(String id) {
+		return new Query(PM_SINCE_ID + id);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that are from given language, e.g.,
+	 * "en".
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param lang The language code.
+	 * @return A new query.
+	 */
+	public static Query lang(String lang) {
+		return new Query(PM_LANG + lang);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent from a given source
+	 * application, e.g., "web".
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param appName The application name.
+	 * @return A new query.
+	 */
+	public static Query source(String appName) {
+		return new Query(PM_SOURCE + appName);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define the tweet count to be returned.
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param count The count.
+	 * @return A new query.
+	 */
+	public static Query resultCount(int count) {
+		return new Query(PM_RPP + count);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define the number of tweets page to be returned.
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param number The page number.
+	 * @return A new query.
+	 */
+	public static Query page(int number) {
+		return new Query(PM_PAGE + number);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to paginate the results to be returned.
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @param resultCount The result count.
+	 * @param pageNumber The page number.
+	 * @return A new query.
+	 */
+	public static Query paginate(int resultCount, int pageNumber) {
+		return append(resultCount(resultCount), page(pageNumber));
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that were sent from a user that was
+	 * located within a given radius of the given latitude/longitude.
+	 * e.g., "40.757929,-73.985506,25km".
+	 * </p>
+	 * @param lat The latitude.
+	 * @param lon The longitude.
+	 * @param rad The radius.
+	 * @param unit The radius unit ("mi" or "km").
+	 * @return A new query.
+	 */
+	public static Query geocode(String lat, String lon, int rad, String unit) {
+		return new Query(PM_GEOCODE + lat + ',' + lon + ',' + rad + unit);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain a positive attitude
+	 * ":)".
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query positiveAttitude() {
+		return new Query(PM_POSITIVE_ATTITUDE);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain a negative attitude
+	 * ":(".
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query negativeAttitude() {
+		return new Query(PM_NEGATIVE_ATTITUDE);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain link(s).
+	 * </p>
+	 * <p>
+	 * This query must be appended to another one, otherwise Twitter Search API
+	 * may return an error. 
+	 * <p/>
+	 * @return A new query.
+	 */
+	public static Query containLink() {
+		return new Query(PM_FILTER_LINKS);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to search for tweets that contain a question "?".
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query containQuestion() {
+		return new Query(PM_ASKING_QUESTION);
+	}
+
+	/**
+	 * <p>
+	 * Package-protected constructor to avoid object instantiation.
+	 * </p>
 	 */
 	QueryComposer() {
 	}
 
 	/**
-	 * 
-	 * @param q1
-	 * @param q2
-	 * @return
+	 * <p>
+	 * Convert a given date object to a string date, e.g, "2009-10-20".
+	 * </p>
+	 * @param date The date.
+	 * @return The date in string format.
 	 */
-	public static Query append(Query q1, Query q2) {
-		return new Query(q1 + "&" + q2);
-	}
-
-	/**
-	 * 
-	 * @param q1
-	 * @param q2
-	 * @return
-	 */
-	public static Query and(Query q1, Query q2) {
-		return new Query(q1 + " " + q2);
-	}
-
-	/**
-	 * 
-	 * @param value
-	 * @param exactMatch
-	 * @return
-	 */
-	public static Query contains(String value, boolean exactMatch) {
-		final String QUOTE = exactMatch ? "\"" : "";
-		//
-		return new Query(QUOTE + value + QUOTE);
-	}
-
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public static Query filter(String value) {
-		return new Query(OP_FILTER + value);
-	}
-
-	/**
-	 * 
-	 * @param person
-	 * @return
-	 */
-	public static Query from(String person) {
-		return new Query(OP_FROM + person);
-	}
-
-	/**
-	 * 
-	 * @param place
-	 * @param within
-	 * @return
-	 */
-	public static Query near(String place, String within) {
-		String q = OP_NEAR + place;
-		if (within != null && within.length() > 0) {
-			q += ' ' + OP_WITHIN + within;
-		}
-		//
-		return new Query(q);
-	}
-
-	/**
-	 * @return
-	 */
-	public static Query negativeAttitude() {
-		return new Query(OP_NEGATIVE_ATTITUDE);
-	}
-
-	/**
-	 * 
-	 * @param q
-	 * @return
-	 */
-	public static Query not(Query q) {
-		return new Query(OP_NOT + q);
-	}
-
-	/**
-	 * 
-	 * @param q1
-	 * @param q2
-	 */
-	public static Query or(Query q1, Query q2) {
-		return new Query(q1 + " " + OP_OR + ' ' + q2);
-	}
-
-	/**
-	 * @return
-	 */
-	public static Query positiveAttitude() {
-		return new Query(OP_POSITIVE_ATTITUDE);
-	}
-
-	/**
-	 * 
-	 * @param person
-	 * @return
-	 */
-	public static Query references(String person) {
-		return new Query(OP_REFERENCE + person);
-	}
-
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 */
-	public static Query since(Date date) {
-		return new Query(OP_SINCE + formatDate(date));
-	}
-
-	/**
-	 * 
-	 * @param appName
-	 * @return
-	 */
-	public static Query source(String appName) {
-		return new Query(OP_SOURCE + appName);
-	}
-
-	/**
-	 * 
-	 * @param person
-	 * @return
-	 */
-	public static Query to(String person) {
-		return new Query(OP_TO + person);
-	}
-
-	/**
-	 * 
-	 * @param date
-	 * @return
-	 */
-	public static Query until(Date date) {
-		return new Query(OP_UNTIL + formatDate(date));
-	}
-	
-	/**
-	 * @param lang
-	 * @return
-	 */
-	public static Query lang(String lang) {
-		return new Query(OP_LANG + lang);
-	}
-
-	/**
-	 * 
-	 * @param locale
-	 * @return
-	 */
-	public static Query locale(String locale) {
-		return new Query(OP_LOCALE + locale);
-	}
-
-	/**
-	 * 
-	 * @param count
-	 * @return
-	 */
-	public static Query resultCount(int count) {
-		return new Query(OP_RPP + count);
-	}
-
-	/**
-	 * 
-	 * @param number
-	 * @return
-	 */
-	public static Query page(int number) {
-		return new Query(OP_PAGE + number);
-	}
-
-	/**
-	 * @param resultCount
-	 * @param pageNumber
-	 * @return
-	 */
-	public static Query paginate(int resultCount, int pageNumber) {
-		return QueryComposer.append(QueryComposer.resultCount(resultCount),
-				QueryComposer.page(pageNumber));
-	}
-
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public static Query sinceID(String id) {
-		return new Query(OP_SINCE_ID + id);
-	}
-
-	/**
-	 * @param lat
-	 * @param lon
-	 * @param radius
-	 * @return
-	 */
-	public static Query geocode(String lat, String lon, String radius) {
-		return new Query(OP_GEOCODE + lat + ',' + lon + ',' + radius);
-	}
-
-	/**
-	 * @param show
-	 * @return
-	 */
-	public static Query showUser(boolean show) {
-		return new Query(OP_SHOW_USER + show);
-	}
-
-	/**
-	 * @param date
-	 * @return
-	 */
-	private static String formatDate(Date date) {
+	private static String convertDate(Date date) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		//
