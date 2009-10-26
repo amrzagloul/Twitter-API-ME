@@ -7,48 +7,48 @@
  */
 package com.twitterapime.parser;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * <p>
+ * This class defines the parser responsible for parsing the error messages from
+ * Twitter API. 
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
  */
-public abstract class ErrorMessageParser {
+public abstract class ErrorMessageParser implements Parser {
 	/**
-	 * 
+	 * <p>
+	 * Parsed error message.
+	 * </p>
 	 */
 	protected String error;
 
 	/**
-	 * 
+	 * <p>
+	 * Parsed request message.
+	 * </p>
 	 */
 	protected String request;
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the parsed error message.
+	 * </p>
+	 * @return The error message.
 	 */
 	public String getError() {
 		return error;
 	}
 	
 	/**
-	 * @return
+	 * <p>
+	 * Get the parsed request message.
+	 * </p>
+	 * @return The request message.
 	 */
 	public String getRequest() {
 		return request;
 	}
-
-	/**
-	 * 
-	 * @param stream
-	 * @exception ParserException
-	 * @exception IOException
-	 */
-	public abstract void parse(InputStream stream) throws IOException,
-		ParserException;
 }
