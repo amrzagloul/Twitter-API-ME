@@ -11,11 +11,20 @@ import java.util.Vector;
 
 /**
  * <p>
+ * This class is responsible for managing the platform providers available in
+ * this API, besides defining which one is current one. The definition of which
+ * platform provide is the selected will indicate which underlying
+ * implementation will provide all the services provided by this API.
+ * </p>
+ * <p>
+ * Platform Provider selector always defines a given platform provider by
+ * default, however, the developer can select another one.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see PlatformProvider
  */
 public final class PlatformProviderSelector {
 	//#ifdef PP_JAVA_ME
@@ -38,7 +47,9 @@ public final class PlatformProviderSelector {
 
 	//#if PP_JAVA_ME == 1 || PP_ALL == 1
 	/**
-	 * 
+	 * <p>
+	 * Platform provider that represents Java Micro Edition platform.
+	 * </p>
 	 */
 	private static final PlatformProvider javameProvider =
 		new PlatformProvider(
@@ -47,7 +58,12 @@ public final class PlatformProviderSelector {
 
 	//#if PP_ANDROID == 1 || PP_ALL == 1
 	/**
-	 * 
+	 * <p>
+	 * Platform provider that represents Android platform.
+	 * </p>
+	 * <p>
+	 * Coming soon!
+	 * </p>
 	 */
 	private static final PlatformProvider androidProvider =
 		new PlatformProvider(
@@ -55,7 +71,10 @@ public final class PlatformProviderSelector {
 	//#endif
 	
 	/**
-	 * 
+	 * <p>
+	 * Hold the default platform provider object defined by Platform Provider
+	 * selector.
+	 * </p>
 	 */
 	//#if PP_JAVA_ME == 1 || PP_ALL == 1
 	private static final PlatformProvider defaultPlatform = javameProvider;
@@ -64,7 +83,10 @@ public final class PlatformProviderSelector {
 	//#endif
 
 	/**
-	 * 
+	 * <p>
+	 * Hold the current platform provider object defined by Platform Provider
+	 * selector/developer.
+	 * </p>
 	 */
 	private static PlatformProvider currentPlatform;
 	
@@ -73,13 +95,10 @@ public final class PlatformProviderSelector {
 	}
 
 	/**
-	 * 
-	 */
-	PlatformProviderSelector() {
-	}
-
-	/**
-	 * @return
+	 * <p>
+	 * Get all the platform providers supported by this API.
+	 * </p>
+	 * @return Array with platform providers.
 	 */
 	public static PlatformProvider[] getAvailableProviders() {
 		Vector v = new Vector(2);
@@ -97,24 +116,43 @@ public final class PlatformProviderSelector {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the current platform provider which is providing all the services
+	 * of this API.
+	 * </p>
+	 * @return The current platform provider object.
 	 */
 	public static PlatformProvider getCurrentProvider() {
 		return currentPlatform;
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the default platform provider suggested by Platform Provider
+	 * selector.
+	 * </p>
+	 * @return The default platform provider object.
 	 */
 	public static PlatformProvider getDefaultProvider() {
 		return defaultPlatform;
 	}
 
 	/**
-	 * 
-	 * @param pp
+	 * <p>
+	 * Set the given platform provider object as the current platform that will
+	 * provide the services available in this API.
+	 * </p>
+	 * @param pp The platform provider object.
 	 */
 	public static void select(PlatformProvider pp) {
 		currentPlatform = pp;
+	}
+
+	/**
+	 * <p>
+	 * Package-protected constructor to avoid object instantiation.
+	 * </p>
+	 */
+	PlatformProviderSelector() {
 	}
 }

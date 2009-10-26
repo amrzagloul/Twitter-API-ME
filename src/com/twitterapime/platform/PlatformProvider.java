@@ -9,47 +9,74 @@ package com.twitterapime.platform;
 
 /**
  * <p>
+ * This class defines a platform provider which represents a given platform
+ * supported by Twitter API ME.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see PlatformProviderSelector
  */
 public final class PlatformProvider {
 	/**
-	 * 
+	 * <p>
+	 * Constant that identifies the platform provider ID that represents the
+	 * Java Micro Edition platform. 
+	 * </p>
 	 */
-	public static final long PPID_JAVA_ME = 1;
+	public static final int PPID_JAVA_ME = 1;
 	
 	/**
-	 * 
+	 * <p>
+	 * Constant that identifies the platform provider name that represents the
+	 * Java Micro Edition platform. 
+	 * </p>
 	 */
 	static final String PPNM_JAVA_ME = "Java Micro Edition platform";
 	
 	/**
-	 * 
+	 * <p>
+	 * Constant that identifies the platform provider ID that represents the
+	 * Android platform.
+	 * </p>
+	 * <p>
+	 * Coming soon!
+	 * </p>
 	 */
-	public static final long PPID_ANDROID = 2;
+	static final int PPID_ANDROID = 2;
 	
 	/**
-	 * 
+	 * <p>
+	 * Constant that identifies the platform provider name that represents the
+	 * Android platform.
+	 * </p>
+	 * <p>
+	 * Coming soon!
+	 * </p>
 	 */
 	static final String PPNM_ANDROID = "Android platform";
 
 	/**
-	 * 
+	 * <p>
+	 * Platform provider ID.
+	 * </p>
 	 */
 	private long id;
 
 	/**
-	 * 
+	 * <p>
+	 * Platform provider name.
+	 * </p>
 	 */
 	private String name;
 
 	/**
-	 * 
-	 * @param id
-	 * @param name
+	 * <p>
+	 * Create an instance of PlatformProvider class.
+	 * </p>
+	 * @param id Platform ID.
+	 * @param name Platform name.
 	 */
 	PlatformProvider(long id, String name) {
 		this.id = id;
@@ -57,7 +84,10 @@ public final class PlatformProvider {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the platform provider ID.
+	 * </p>
+	 * @return The platform ID.
 	 */
 	public long getID() {
 		return id;
