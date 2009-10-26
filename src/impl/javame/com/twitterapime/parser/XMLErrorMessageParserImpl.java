@@ -20,6 +20,8 @@ import com.twitterapime.parser.ParserException;
 
 /**
  * <p>
+ * This class defines the implementation of a XML parser responsible for
+ * parsing the error messages from Twitter Search API, for Java ME platform. 
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -70,18 +72,4 @@ public final class XMLErrorMessageParserImpl extends ErrorMessageParser {
 			throw new ParserException(e.getMessage());
 		}
 	}
-	
-//	public static void main(String[] args) {
-//		XMLErrorMessageParserImpl p = new XMLErrorMessageParserImpl();
-//		try {
-//			p.parse(p.getClass().getResourceAsStream("/atom-teste-error.xml"));
-//			//
-//			System.out.println(p.getRequest());
-//			System.out.println(p.getError());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (FeedParserException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

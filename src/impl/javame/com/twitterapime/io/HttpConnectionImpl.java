@@ -17,6 +17,7 @@ import com.twitterapime.io.HttpConnection;
 
 /**
  * <p>
+ * This class defines the implementation of HttpConnection for Java ME platform.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -25,7 +26,9 @@ import com.twitterapime.io.HttpConnection;
  */
 public final class HttpConnectionImpl implements HttpConnection {
 	/**
-	 * 
+	 * <p>
+	 * Http connection object.
+	 * </p>
 	 */
 	private javax.microedition.io.HttpConnection httpConn;
 	
