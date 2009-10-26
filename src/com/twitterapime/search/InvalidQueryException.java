@@ -9,6 +9,8 @@ package com.twitterapime.search;
 
 /**
  * <p>
+ * This class represents an exception to notify about an error in a query sent
+ * to Twitter Search API.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -17,20 +19,26 @@ package com.twitterapime.search;
  */
 public class InvalidQueryException extends RuntimeException {
 	/**
-	 * 
+	 * <p>
+	 * Serial version UID.
+	 * </p>
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 * <p>
+	 * Create an instance of InvalidQueryException class.
+	 * </p> 
 	 */
 	public InvalidQueryException() {
-
 	}
 
 	/**
-	 * 
-	 * @param msg
+	 * <p>
+	 * Create an instance of InvalidQueryException class that receives a custom
+	 * message.
+	 * </p> 
+	 * @param msg The exception message.
 	 */
 	public InvalidQueryException(String msg) {
 		super(msg);

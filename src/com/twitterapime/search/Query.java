@@ -11,26 +11,36 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * <p>
+ * This class defines a structure of a query. A Query object represents a query
+ * statement that is sent to Twitter Search API, so that it can return all the
+ * tweets that match a criteria.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see QueryComposer
+ * @see SearchDevice
  */
 public final class Query {
 	/**
-	 * 
+	 * <p>
+	 * Hold the string that represents a query.
+	 * </p>
 	 */
 	String query;
 
 	/**
-	 * 
+	 * <p>
+	 * Create an instance of Query class.
+	 * </p>
+	 * @param query The string of query.
 	 */
 	Query(String query) {
 		try {
 			this.query = new String(query.getBytes(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new InvalidQueryException("Invalid UTF-8 string.");
+			throw new InvalidQueryException("Invalid UTF-8 string: " + query);
 		}
 	}
 

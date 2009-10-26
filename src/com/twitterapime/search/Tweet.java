@@ -14,22 +14,29 @@ import com.twitterapime.parser.FeedEntry;
 
 /**
  * <p>
+ * This class defines an entity that represents a Tweet. A tweet is a message
+ * sent by an user to Twitter.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see SearchDevice
  */
 public final class Tweet extends DefaultEntity implements FeedEntry {
 	/**
-	 * 
+	 * <p>
+	 * Create an instance of Tweet class.
+	 * </p>
 	 */
 	public Tweet() {
 	}
 	
 	/**
-	 * 
-	 * @param data
+	 * <p>
+	 * Create an instance of Tweet class.
+	 * </p>
+	 * @param data The initial attributes/values.
 	 */
 	public Tweet(Hashtable data) {
 		super(data);
