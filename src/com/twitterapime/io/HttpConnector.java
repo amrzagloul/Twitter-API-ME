@@ -14,7 +14,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
 
 /**
  * <p>
- * This class is factory for creating new HttpConnection objects. 
+ * This is factory class for creating new HttpConnection objects. 
  * </p>
  * <p>
  * The creation of HttpConnection is performed dynamically by looking up the
@@ -25,6 +25,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * The parameter string that describes the target should conform to the Http URL
  * format as described in RFC 1738.
  * </p>
+ * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
@@ -66,7 +67,9 @@ public final class HttpConnector {
 		} catch (ClassNotFoundException e) {
 		}
 		//
+		//#ifdef DEBUG
 		System.out.println(url);
+		//#endif
 		conn.open(url);
 		conn.setRequestProperty("User-Agent", userAgent);
 		//
