@@ -15,46 +15,75 @@ import com.twitterapime.io.HttpResponseCodeHandler;
 import com.twitterapime.parser.Feed;
 import com.twitterapime.parser.FeedEntry;
 import com.twitterapime.parser.FeedParser;
+import com.twitterapime.parser.FeedParserListener;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
-import com.twitterapime.parser.FeedParserListener;
 
 /**
  * <p>
+ * This class is the entry point of Search API, which defines the methods
+ * responsible for submitting a query to Twitter Search API.
+ * </p>
+ * <p>
+ * <pre>
+ * SearchDevice sd = SearchDevice.getInstance();
+ * Query q1 = QueryComposer.from("twitteruser");
+ * Query q2 = QueryComposer.containAny("search api");
+ * Query q = QueryComposer.append(q1, q2);
+ * Tweet[] ts = sd.searchTweets(q);
+ * for (int i = 0; i < ts.length; i++) {
+ *   list.append(ts[i].getString(MetadataSet.TWEET_CONTENT), null);
+ * }
+ * </pre>
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see SearchDeviceListener
+ * @see QueryComposer
  */
 public final class SearchDevice {
 	/**
-	 * 
+	 * <p>
+	 * Twitter Search API URI.
+	 * </p>
 	 */
 	static final String TWITTER_URL_ATOM = "http://search.twitter.com/search.atom";
 
 	/**
-	 * 
+	 * <p>
+	 * Query prefix.
+	 * </p>
 	 */
 	static final String TWITTER_QUERY_STRING_PREFIX = "q=";
 
 	/**
-	 * 
+	 * <p>
+	 * Single instance of this class.
+	 * </p>
 	 */
 	static SearchDevice device;
 	
 	/**
-	 * 
+	 * <p>
+	 * Time at which Twitter Search API was access by this class.
+	 * </p>
 	 */
 	static long lastCallTime;
 	
 	/**
-	 * 
+	 * <p>
+	 * Number of calls to Twitter Search API since this class was loaded.
+	 * </p>
 	 */
 	static int apiCallsCount;
 
 	/**
-	 * @return
+	 * <p>
+	 * Get an instance of SearchDevice class.
+	 * </p>
+	 * @return A SearchDevice object.
 	 */
 	public static SearchDevice getInstance() {
 		if (device == null) {
@@ -65,16 +94,22 @@ public final class SearchDevice {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Package-protected constructor to avoid object instantiation.
+	 * </p>
 	 */
 	SearchDevice() {
 	}
 
 	/**
-	 * @param query
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Search for tweets that match the given query. This method gets blocked
+	 * until the search is completed or an exception is thrown.
+	 * </p>
+	 * @param query The query.
+	 * @return The result.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	public Tweet[] searchTweets(Query query) throws IOException,
 			LimitExceededException {
@@ -82,10 +117,14 @@ public final class SearchDevice {
 	}
 
 	/**
-	 * @param queryString
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Search for tweets that match the given query string. This method gets
+	 * blocked until the search is completed or an exception is thrown.
+	 * </p>
+	 * @param queryString The query string.
+	 * @return The result.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	public Tweet[] searchTweets(String queryString) throws IOException,
 			LimitExceededException {
@@ -93,16 +132,26 @@ public final class SearchDevice {
 	}
 	
 	/**
-	 * @param query
-	 * @param listener
+	 * <p>
+	 * Search for tweets that match the given query. This method does not wait
+	 * for the search process is completed to return. To have access to this
+	 * search's result, a SearchDeviceListener object must be registered. 
+	 * </p>
+	 * @param query The query.
+	 * @param listener Listener object to be notified about the search's result.
 	 */
 	public void startSearchTweets(Query query, SearchDeviceListener listener) {
 		startSearchTweets(query.toString(), listener);
 	}
 
 	/**
-	 * @param queryString
-	 * @param listener
+	 * <p>
+	 * Search for tweets that match the given query string. This method does not
+	 * wait for the search process is completed to return. To have access to
+	 * this search's result, a SearchDeviceListener object must be registered. 
+	 * </p>
+	 * @param queryString The query string.
+	 * @param listener Listener object to be notified about the search's result.
 	 */
 	public void startSearchTweets(final String queryString,
 			final SearchDeviceListener listener) {
@@ -123,25 +172,37 @@ public final class SearchDevice {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the call count submitted to Twitter Search API.
+	 * </p>
+	 * @return Call count.
 	 */
 	public int getAPICallsCount() {
 		return apiCallsCount;
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the time at which the last call was submitted to Twitter Search API.
+	 * </p>
+	 * @return Time of last call.
 	 */
 	public long getLastAPICallTime() {
 		return lastCallTime;
 	}
 	
 	/**
-	 * @param queryString
-	 * @param lstnr
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Search for tweets that match the given query. If the listener parameter
+	 * is not passed, this method gets blocked until the search is completed or
+	 * an exception is thrown. Otherwise, the result is returned through the
+	 * listener.
+	 * </p>
+	 * @param queryString The query string.
+	 * @param lstnr The listener object.
+	 * @return The result.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	Tweet[] searchTweets(String queryString, final SearchDeviceListener lstnr)
 			throws IOException, LimitExceededException {
@@ -175,10 +236,13 @@ public final class SearchDevice {
 	}
 	
 	/**
-	 * @param queryStr
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Get a Http connection to the given query string.
+	 * </p>
+	 * @param queryStr The query string.
+	 * @return The Http connection object.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	HttpConnection getHttpConn(String queryStr) throws IOException,
 			LimitExceededException {
@@ -205,7 +269,9 @@ public final class SearchDevice {
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Update some internal information regarding the API.
+	 * </p>
 	 */
 	void updateAPIInfo() {
 		lastCallTime = System.currentTimeMillis();
