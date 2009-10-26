@@ -16,6 +16,7 @@ import java.io.OutputStream;
  * This interface defines the necessary methods and constants for an HTTP
  * connection. 
  * </p>
+ * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
@@ -172,7 +173,7 @@ public interface HttpConnection {
 	 * <p>
 	 * Set the method for the URL request, one of: GET, POST or HEAD.
 	 * </p> 
-	 * @param method the HTTP method.
+	 * @param method The HTTP method.
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void setRequestMethod(String method) throws IOException;
@@ -182,7 +183,7 @@ public interface HttpConnection {
 	 * Sets the general request property. If a property with the key already
 	 * exists, overwrite its value with the new value. 
 	 * </p> 
-	 * @param key the keyword by which the request is known (e.g., "accept").
+	 * @param key The keyword by which the request is known (e.g., "accept").
 	 * @param value the value associated with it.
 	 * @throws IOException If an I/O error occurs.
 	 */
@@ -192,7 +193,7 @@ public interface HttpConnection {
 	 * <p>
 	 * Returns the value of the named header field. 
 	 * </p> 
-	 * @param name of a header field.
+	 * @param name Name of a header field.
 	 * @return the value of the named header field, or null  if there is no such
 	 *         field in the header.
 	 * @throws IOException If an I/O error occurs.
