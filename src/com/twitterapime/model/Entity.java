@@ -9,53 +9,76 @@ package com.twitterapime.model;
 
 import java.util.Date;
 
+import com.twitterapime.parser.Feed;
+import com.twitterapime.parser.FeedEntry;
+import com.twitterapime.search.Tweet;
+
 /**
  * <p>
+ * This interface defines some basic accessor methods to access different typed
+ * attributes from a data entity. 
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.0
+ * @see DefaultEntity
+ * @see Tweet
+ * @see Feed
+ * @see FeedEntry
  */
 public interface Entity {
 	/**
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the values of an array attribute. 
+	 * </p>
+	 * @param attr Array attribute to query the data for. 
+	 * @return The array values of the given attribute.
 	 */
-	public Object[] getArray(String key);
+	public Object[] getArray(String attr);
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the value of a date attribute. 
+	 * </p>
+	 * @param attr Date attribute to query the data for. 
+	 * @return The date value of the given attribute.
 	 */
-	public Date getDate(String key);
+	public Date getDate(String attr);
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the value of an int attribute. 
+	 * </p>
+	 * @param attr Int attribute to query the data for. 
+	 * @return The int value of the given attribute.
 	 */
-	public int getInt(String key);
+	public int getInt(String attr);
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the value of a long attribute. 
+	 * </p>
+	 * @param attr Long attribute to query the data for. 
+	 * @return The long value of the given attribute.
 	 */
-	public long getLong(String key);
+	public long getLong(String attr);
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the value of an object attribute. 
+	 * </p>
+	 * @param attr Object attribute to query the data for. 
+	 * @return The object value of the given attribute.
 	 */
-	public Object getObject(String key);
+	public Object getObject(String attr);
 
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * <p>
+	 * Get the value of a string attribute. 
+	 * </p>
+	 * @param attr String attribute to query the data for. 
+	 * @return The string value of the given attribute.
 	 */
-	public String getString(String key);
+	public String getString(String attr);
 }
