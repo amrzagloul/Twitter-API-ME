@@ -1,4 +1,4 @@
-<project name="TwitterAPIME" default="+buildAll" basedir=".">
+<project name="TwitterAPIME" default="+build_all" basedir=".">
 
 	<property file="build.properties"/>
 	<property file="build.number"/>
@@ -188,7 +188,7 @@
 
 	</target>
 
-	<target name="+buildAll" depends="+build_javame, +build_android"/>
+	<target name="+build_all" depends="+build_javame, +build_android"/>
 	
-	<target name="+release" depends="+buildAll, +javadoc, +package"/>
+	<target name="+release" depends="+build_all, +javadoc, +package"/>
 </project>
