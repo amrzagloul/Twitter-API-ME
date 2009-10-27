@@ -2,6 +2,7 @@
 
 	<property file="build.properties"/>
 	<property file="build.number"/>
+	<property name="findbugs-report-prefixname" value="findbugs-report"/>
 	
     <target name="-load_antenna">
 		<taskdef resource="antenna.properties">
@@ -94,7 +95,7 @@
 		<wtkpreverify jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
 	</target>
 
-	<target name="-run" depends="-classpath_javame, -classpath_android, -compile, -lib_javame, -lib_android, -preverify_javame"/>
+	<target name="-run" depends="-classpath_javame, -classpath_android, -compile, -lib_javame, -lib_android, -preverify_javame, -findbugs"/>
 	
 	<target name="+build_javame">
 		<antcall target="-run">
@@ -103,6 +104,7 @@
 			<param name="wtk.midpapi" value="${tapime.path.lib.midp20};${tapime.path.lib.cldc10}"/>
 			<param name="tapime.building.javame" value="true"/>
 			<param name="tapime.version.jar" value="${tapime.lib.name}-${tapime.number.version}.${build.number}.jar"/>
+			<param name="tapime.version.findbug.report" value="${basedir}/${findbugs-report-prefixname}-${tapime.javame.name}-${tapime.number.version}.${build.number}"/>
 			<param name="tapime.version.impl.package" value="${tapime.javame.impl.package}"/>
 			<param name="tapime.version.encoding" value="${tapime.javame.encoding}"/>
 			<param name="tapime.version.source" value="${tapime.javame.source}"/>
@@ -118,6 +120,7 @@
 			<param name="wtk.midpapi" value="${tapime.path.lib.midp20};${tapime.path.lib.cldc10}"/>
 			<param name="tapime.building.android" value="true"/>
 			<param name="tapime.version.jar" value="${tapime.lib.name}-${tapime.number.version}.${build.number}.jar"/>
+			<param name="tapime.version.findbug.report" value="${basedir}/${findbugs-report-prefixname}-${tapime.android.name}-${tapime.number.version}.${build.number}"/>
 			<param name="tapime.version.impl.package" value="${tapime.android.impl.package}"/>
 			<param name="tapime.version.encoding" value="${tapime.android.encoding}"/>
 			<param name="tapime.version.source" value="${tapime.android.source}"/>
@@ -128,6 +131,20 @@
 	
 	<target name="+increment_version">
 		<buildnumber/>
+	</target>
+	
+	<target name="-findbugs" if="tapime.findbugs">
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+			<classpath location="${tapime.path.lib.findbugs}"/>
+		</taskdef>
+		
+	    <findbugs home="${tapime.path.findbugs}"
+	    	      classpath="tapime.classpath"
+	              output="html"
+	              outputFile="${tapime.version.findbug.report}.html"
+		          sourcepath="${tapime.path.src}">
+	        <class location="${tapime.version.path.dist}/${tapime.version.jar}"/>
+        </findbugs>
 	</target>
 
 	<target name="+package">
