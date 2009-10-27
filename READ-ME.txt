@@ -28,6 +28,7 @@ there are many things to be implemented yet, what is done is fully functional.
 + Build Environment
   - Apache Ant 1.7.1
   - Antenna 1.2 (for Java ME build only)
+  - Findbugs 1.3.9 (optional)
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
@@ -53,3 +54,5 @@ wtk.home=<Java ME SDK PATH>
 tapime.path.lib.midp20=${wtk.home}/<MIDP 2.0 JAR PATH>
 tapime.path.lib.cldc10=${wtk.home}/<CLDC 1.0 JAR PATH>
 tapime.path.lib.antenna=<ANTENNA JAR PATH>
+tapime.path.findbugs=<FINDBUGS HOME DIR PATH>
+tapime.path.lib.findbugs=<FINDBUGS ANT JAR PATH>
