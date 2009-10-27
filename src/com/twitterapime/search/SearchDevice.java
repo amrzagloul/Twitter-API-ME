@@ -113,7 +113,7 @@ public final class SearchDevice {
 	 */
 	public Tweet[] searchTweets(Query query) throws IOException,
 			LimitExceededException {
-		return searchTweets(query.toString(), null);
+		return searchTweets(query, null);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public final class SearchDevice {
 	 */
 	public Tweet[] searchTweets(String queryString) throws IOException,
 			LimitExceededException {
-		return searchTweets(queryString, null);
+		return searchTweets(new Query(queryString), null);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public final class SearchDevice {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-					searchTweets(queryString, listener);
+					searchTweets(new Query(queryString), listener);
 				} catch (Exception e) {
 					if (listener != null) {
 						listener.searchFailed(e);
@@ -204,11 +204,11 @@ public final class SearchDevice {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
-	Tweet[] searchTweets(String queryString, final SearchDeviceListener lstnr)
+	Tweet[] searchTweets(Query query, final SearchDeviceListener lstnr)
 			throws IOException, LimitExceededException {
 		updateAPIInfo();
 		//
-		HttpConnection conn = getHttpConn(queryString);
+		HttpConnection conn = getHttpConn(query.toString());
 		FeedParser parser = ParserFactory.getDefaultFeedParser();
 		//
 		if (lstnr != null) {
@@ -232,6 +232,8 @@ public final class SearchDevice {
 			return ts;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
+		} finally {
+			conn.close();
 		}
 	}
 	
@@ -261,9 +263,18 @@ public final class SearchDevice {
 		//
 		final String url = TWITTER_URL_ATOM + HttpConnector.encodeURL(queryStr);
 		HttpConnection c = HttpConnector.open(url);
-		c.setRequestMethod(HttpConnection.GET);
+		boolean hasException = true;
 		//
-		HttpResponseCodeHandler.handleSearchAPICodes(c); //verify whether there is an error in the request.
+		try {
+			c.setRequestMethod(HttpConnection.GET);
+			//verify whether there is an error in the request.
+			HttpResponseCodeHandler.handleSearchAPICodes(c);
+			hasException = false;
+		} finally {
+			if (hasException) {
+				c.close();
+			}
+		}
 		//
 		return c;
 	}
