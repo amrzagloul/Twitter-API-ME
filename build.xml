@@ -166,23 +166,18 @@
 
 		<zip destfile="${basedir}/${tapime.package}-bin.zip">
 			<zipfileset dir="${tapime.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
-			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
 
 		<zip destfile="${basedir}/${tapime.package}-bin-javame.zip">
 			<zipfileset dir="${tapime.javame.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
-			<zipfileset dir="${tapime.javame.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
 
 		<zip destfile="${basedir}/${tapime.package}-bin-android.zip">
 			<zipfileset dir="${tapime.android.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
-			<!--
-			<zipfileset dir="${tapime.android.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
-			-->
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
