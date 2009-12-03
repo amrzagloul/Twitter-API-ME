@@ -9,10 +9,6 @@ package com.twitterapime.model;
 
 import java.util.Date;
 
-import com.twitterapime.parser.Feed;
-import com.twitterapime.parser.FeedEntry;
-import com.twitterapime.search.Tweet;
-
 /**
  * <p>
  * This interface defines some basic accessor methods to access different typed
@@ -20,12 +16,9 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see DefaultEntity
- * @see Tweet
- * @see Feed
- * @see FeedEntry
  */
 public interface Entity {
 	/**

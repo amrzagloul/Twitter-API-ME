@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.twitterapime.rest.Credential;
+import com.twitterapime.rest.RateLimitStatus;
+import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Tweet;
 
 /**
@@ -22,6 +25,9 @@ import com.twitterapime.search.Tweet;
  * @version 1.0
  * @since 1.0
  * @see Tweet
+ * @see Credential
+ * @see RateLimitStatus
+ * @see UserAccount
  */
 public class DefaultEntity implements Entity {
 	/**
