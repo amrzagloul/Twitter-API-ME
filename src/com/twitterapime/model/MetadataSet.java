@@ -16,20 +16,20 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public final class MetadataSet {
 	/**
 	 * <p>
-	 * Reports the Tweet ID, e.g., "tag:search.twitter.com,2005:9637830025".
+	 * Report the tweet's ID, e.g., "9637830025".
 	 * </p>
 	 */
 	public static final String TWEET_ID = "TWEET_ID";
 
 	/**
 	 * <p>
-	 * Reports the Tweet URI, e.g.,
+	 * Report the tweet's URI, e.g.,
 	 * "http://twitter.com/twitteruser/statuses/7895462131".
 	 * </p>
 	 */
@@ -37,66 +37,320 @@ public final class MetadataSet {
 
 	/**
 	 * <p>
-	 * Reports the Tweet content, e.g., "Hello Twitter!!! How are you?".
+	 * Report the tweet's content, e.g., "Hello Twitter!!! How are you?".
 	 * </p>
 	 */
 	public static final String TWEET_CONTENT = "TWEET_CONTENT";
 
 	/**
 	 * <p>
-	 * Reports the Tweet publish date, e.g., "2009-10-20 23:42:50".
+	 * Report the tweet's publish date (long format), e.g., "165498132546".
 	 * </p>
 	 */
 	public static final String TWEET_PUBLISH_DATE = "TWEET_PUBLISH_DATE";
 
 	/**
 	 * <p>
-	 * Reports the Tweet source (application), e.g., "TweetApp".
+	 * Report the tweet's source (application), e.g., "TweetApp".
 	 * </p>
 	 */
 	public static final String TWEET_SOURCE = "TWEET_SOURCE";
 
 	/**
 	 * <p>
-	 * Reports the Tweet language code, e.g., "en".
+	 * Report the tweet's language code, e.g., "en".
 	 * </p>
 	 */
 	public static final String TWEET_LANG = "TWEET_LANG";
 
 	/**
 	 * <p>
-	 * Reports the Tweet author name, e.g., "John Smith".
+	 * Report the tweet's author's name, e.g., "John Smith".
 	 * </p>
 	 */
 	public static final String TWEET_AUTHOR_NAME = "TWEET_AUTHOR_NAME";
 
 	/**
 	 * <p>
-	 * Reports the Tweet author username, e.g., "johnsmith".
+	 * Report the tweet's author's username, e.g., "johnsmith".
 	 * </p>
 	 */
 	public static final String TWEET_AUTHOR_USERNAME = "TWEET_AUTHOR_USERNAME";
 
 	/**
 	 * <p>
-	 * Reports the Tweet author URI, e.g., "http://twitter.com/twitteruser".
+	 * Report the tweet's author's URI, e.g., "http://twitter.com/twitteruser".
 	 * </p>
 	 */
 	public static final String TWEET_AUTHOR_URI = "TWEET_AUTHOR_URI";
 
 	/**
 	 * <p>
-	 * Reports the Tweet author picture URI, e.g.,
+	 * Report the tweet's author's picture URI, e.g.,
 	 * "http://a3.twimg.com/profile_images/8978974/pic_normal.JPG".
 	 * </p>
 	 */
-	public static final String TWEET_AUTHOR_PICTURE_URI = "TWEET_AUTHOR_PICTURE_URI";
+	public static final String TWEET_AUTHOR_PICTURE_URI =
+		"TWEET_AUTHOR_PICTURE_URI";
 
 	/**
 	 * <p>
-	 * Package-protected constructor to avoid object instantiation.
+	 * Report whether the tweet is marked as favourite, e.g., "true" or
+	 * "false".
 	 * </p>
 	 */
-	MetadataSet() {
+	public static final String TWEET_FAVOURITE = "TWEET_FAVOURITE";
+
+	/**
+	 * <p>
+	 * Report the replied tweet's ID, e.g., "56432165487".
+	 * </p>
+	 */
+	public static final String TWEET_IN_REPLY_TO_TWEET_ID =
+		"TWEET_IN_REPLY_TO_TWEET_ID";
+
+	/**
+	 * <p>
+	 * Report the user's ID of a replied tweet, e.g., "88275918".
+	 * </p>
+	 */
+	public static final String TWEET_IN_REPLY_TO_USER_ID =
+		"TWEET_IN_REPLY_TO_USER_ID";
+
+	/**
+	 * <p>
+	 * Report the user's username of a replied tweet, e.g., "johnsmith".
+	 * </p>
+	 */
+	public static final String TWEET_IN_REPLY_TO_USERNAME =
+		"TWEET_IN_REPLY_TO_USERNAME";
+
+	/**
+	 * <p>
+	 * Report the user account object of tweet's sender, e.g., UserAccount
+	 * class.
+	 * </p>
+	 */
+	public static final String TWEET_USER_ACCOUNT = "TWEET_USER_ACCOUNT";
+
+	/**
+	 * <p>
+	 * Report the credential's username, e.g., "johnsmith".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_USERNAME = "CREDENTIAL_USERNAME";
+
+	/**
+	 * <p>
+	 * Report the credential's password, e.g., "j0hnsm1th".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_PASSWORD = "CREDENTIAL_PASSWORD";
+
+	/**
+	 * <p>
+	 * Report the remaining number of hits to Twitter REST API, e.g., "140".
+	 * </p>
+	 */
+	public static final String RATELIMITSTATUS_REMAINING_HITS =
+		"RATELIMITSTATUS_REMAINING_HITS";
+
+	/**
+	 * <p>
+	 * Report the hourly limit number of hits to Twitter REST API, e.g., "150".
+	 * </p>
+	 */
+	public static final String RATELIMITSTATUS_HOURLY_LIMIT =
+		"RATELIMITSTATUS_HOURLY_LIMIT";
+
+	/**
+	 * <p>
+	 * Report the time at which the number of hits to Twitter REST API will be
+	 * reseted, e.g., "1654897954646".
+	 * </p>
+	 */
+	public static final String RATELIMITSTATUS_RESET_TIME =
+		"RATELIMITSTATUS_RESET_TIME";
+	
+	/**
+	 * <p>
+	 * Report the user account's ID, e.g., "489613465".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_ID = "USERACCOUNT_ID";
+	
+	/**
+	 * <p>
+	 * Report the user account's name, e.g., "John Smith".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_NAME = "USERACCOUNT_NAME";
+	
+	/**
+	 * <p>
+	 * Report the user account's username, e.g., "johnsmith".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_USER_NAME =
+		"USERACCOUNT_USER_NAME";
+	
+	/**
+	 * <p>
+	 * Report the user account's location, e.g., "San Francisco".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_LOCATION = "USERACCOUNT_LOCATION";
+	
+	/**
+	 * <p>
+	 * Report the user account's description, e.g., "It's my personal account.".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_DESCRIPTION =
+		"USERACCOUNT_DESCRIPTION";
+	
+	/**
+	 * <p>
+	 * Report the user account's picture URI, e.g.,
+	 * "http://a3.twimg.com/profile_images/8978974/pic_normal.JPG".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PICTURE_URI =
+		"USERACCOUNT_PICTURE_URI";
+	
+	/**
+	 * <p>
+	 * Report the user account's URL, e.g., "http://www.johnsmith.com".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_URL = "USERACCOUNT_URL";
+	
+	/**
+	 * <p>
+	 * Report whether the user account is protected, e.g., "true" or "false".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PROTECTED =
+		"USERACCOUNT_PROTECTED";
+	
+	/**
+	 * <p>
+	 * Report the user account's followers count, e.g., "10".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_FOLLOWERS_COUNT =
+		"USERACCOUNT_FOLLOWERS_COUNT";
+	
+	/**
+	 * <p>
+	 * Report the user account's profile background color, e.g., "1A1B1F".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PROFILE_BACKGROUND_COLOR =
+		"USERACCOUNT_PROFILE_BACKGROUND_COLOR";
+	
+	/**
+	 * <p>
+	 * Report the user account's profile text color, e.g., "666666".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PROFILE_TEXT_COLOR =
+		"USERACCOUNT_PROFILE_TEXT_COLOR";
+	
+	/**
+	 * <p>
+	 * Report the user account's profile link color, e.g., "2FC2EF".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PROFILE_LINK_COLOR =
+		"USERACCOUNT_PROFILE_LINK_COLOR";
+	
+	/**
+	 * <p>
+	 * Report the user account's friends count, e.g., "26".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_FRIENDS_COUNT =
+		"USERACCOUNT_FRIENDS_COUNT";
+	
+	/**
+	 * <p>
+	 * Report the user account's create date (long format), e.g., "16549813254".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_CREATE_DATE =
+		"USERACCOUNT_CREATE_DATE";
+	
+	/**
+	 * <p>
+	 * Report the user account's favourites count, e.g., "16".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_FAVOURITES_COUNT =
+		"USERACCOUNT_FAVOURITES_COUNT";
+	
+	/**
+	 * <p>
+	 * Report the user account's UCT offset, e.g., "-10800".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_UTC_OFFSET =
+		"USERACCOUNT_UTC_OFFSET";
+	
+	/**
+	 * <p>
+	 * Report the user account's time zone, e.g., "California".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_TIME_ZONE =
+		"USERACCOUNT_TIME_ZONE";
+	
+	/**
+	 * <p>
+	 * Report the user account's profile background image URI, e.g.,
+	 * "http://s.twimg.com/a/1259882278/images/themes/theme9/bg.gif".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI =
+		"USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI";
+	
+	/**
+	 * <p>
+	 * Report the user account's tweets count, e.g., "159".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_TWEETS_COUNT =
+		"USERACCOUNT_TWEETS_COUNT";
+	
+	/**
+	 * <p>
+	 * Report whether the user account receives notifications, e.g., "true" or
+	 * "false".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_NOTIFICATIONS =
+		"USERACCOUNT_NOTIFICATIONS";
+	
+	/**
+	 * <p>
+	 * Report whether the user account is verified, e.g., "true" or "false".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_VERIFIED = "USERACCOUNT_VERIFIED";
+	
+	/**
+	 * <p>
+	 * Report the user account's last tweet object, e.g., Tweet class.
+	 * </p>
+	 */
+	public static final String USERACCOUNT_LAST_TWEET =
+		"USERACCOUNT_LAST_TWEET";
+	
+	/**
+	 * <p>
+	 * Private constructor to avoid object instantiation.
+	 * </p>
+	 */
+	private MetadataSet() {
 	}
 }
