@@ -14,7 +14,7 @@ package com.twitterapime.platform;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see PlatformProviderSelector
  */
@@ -29,14 +29,6 @@ public final class PlatformProvider {
 	
 	/**
 	 * <p>
-	 * Constant that identifies the platform provider name that represents the
-	 * Java Micro Edition platform. 
-	 * </p>
-	 */
-	static final String PPNM_JAVA_ME = "Java Micro Edition platform";
-	
-	/**
-	 * <p>
 	 * Constant that identifies the platform provider ID that represents the
 	 * Android platform.
 	 * </p>
@@ -44,7 +36,15 @@ public final class PlatformProvider {
 	 * Coming soon!
 	 * </p>
 	 */
-	static final int PPID_ANDROID = 2;
+	public static final int PPID_ANDROID = 2;
+
+	/**
+	 * <p>
+	 * Constant that identifies the platform provider name that represents the
+	 * Java Micro Edition platform. 
+	 * </p>
+	 */
+	static final String PPNM_JAVA_ME = "Java Micro Edition platform";
 	
 	/**
 	 * <p>
@@ -62,7 +62,7 @@ public final class PlatformProvider {
 	 * Platform provider ID.
 	 * </p>
 	 */
-	private long id;
+	private int id;
 
 	/**
 	 * <p>
@@ -78,7 +78,7 @@ public final class PlatformProvider {
 	 * @param id Platform ID.
 	 * @param name Platform name.
 	 */
-	PlatformProvider(long id, String name) {
+	PlatformProvider(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -102,6 +102,13 @@ public final class PlatformProvider {
 		} else {
 			return id == ((PlatformProvider)o).id;
 		}
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return id;
 	}
 
 	/**
