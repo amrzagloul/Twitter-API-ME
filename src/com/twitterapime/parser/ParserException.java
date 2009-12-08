@@ -13,11 +13,9 @@ package com.twitterapime.parser;
  * any error in the document format.
  * </p>
  * 
- * @since 1.0
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
- * @see FeedParser
- * @see ErrorMessageParser
+ * @version 1.1
+ * @since 1.0
  */
 public class ParserException extends Exception {
 	/**

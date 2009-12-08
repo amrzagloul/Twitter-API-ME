@@ -12,7 +12,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
 
 /**
  * <p>
- * This is factory class for creating new parser objects. 
+ * This factory class is responsible for creating new parser objects. 
  * </p>
  * <p>
  * The creation of a parser object is performed dynamically by looking up the
@@ -21,93 +21,57 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public final class ParserFactory {
 	/**
 	 * <p>
-	 * Get an instance of a parser responsible for parsing a web feed.
+	 * Create the default parser instance according to the underlying platform.
 	 * </p>
-	 * @return The web feed parser object.
+	 * @return Parser instance.
 	 */
-	public static FeedParser getDefaultFeedParser() {
-		try {
-			return (FeedParser)getParser(
-				Class.forName("com.twitterapime.parser.FeedParser"));
-		} catch (ClassNotFoundException e) {
-			return null;
+	public static Parser getDefaultParser() {
+		final String JAVA_ME_PARSER_IMPL_CLASS =
+			"impl.javame.com.twitterapime.parser.KXML2Parser";
+		final String ANDROID_PARSER_IMPL_CLASS =
+			"impl.android.com.twitterapime.parser.SAXParser";
+		//
+		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
+		//
+		//if JAVA ME PLATFORM
+		if (PPID == PlatformProvider.PPID_JAVA_ME) {
+			return newInstance(JAVA_ME_PARSER_IMPL_CLASS);
+		} else if (PPID == PlatformProvider.PPID_ANDROID) {
+			return newInstance(ANDROID_PARSER_IMPL_CLASS);
+		} else {
+			throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 		}
 	}
 	
 	/**
 	 * <p>
-	 * Get an instance of a parser responsible for parsing the error messages
-	 * from Twitter API.
+	 * Create an instance of the given class.
 	 * </p>
-	 * @return The error message parser object.
+	 * @param className Class name.
+	 * @return Parser instance.
 	 */
-	public static ErrorMessageParser getDefaultErrorMessageParser() {
+	private static Parser newInstance(String className) {
 		try {
-			return (ErrorMessageParser)getParser(
-				Class.forName("com.twitterapime.parser.ErrorMessageParser"));
-		} catch (ClassNotFoundException e) {
-			return null;
-		}
-	}
-	
-	/**
-	 * <p>
-	 * Get the proper parser object for the parser class passed as argument
-	 * according to the current plataform provider.
-	 * </p>
-	 * @param parserClass Parser class object.
-	 * @return Proper parser object.
-	 */
-	private static Parser getParser(Class parserClass) {
-		final String JAVA_ME_FEED_PARSER_IMPL_CLASS =
-			"impl.javame.com.twitterapime.parser.AtomTweetParserImpl";
-		final String JAVA_ME_ERROR_MSG_PARSER_IMPL_CLASS =
-			"impl.javame.com.twitterapime.parser.XMLErrorMessageParserImpl";
-		//
-		PlatformProvider p = PlatformProviderSelector.getCurrentProvider();
-		Parser parser = null;
-		//
-		try {
-			final Class FEED_PARSER_CLASS =
-				Class.forName("com.twitterapime.parser.FeedParser");
-			final Class ERROR_MSG_PARSER_CLASS =
-				Class.forName("com.twitterapime.parser.ErrorMessageParser");
-			//
-			//if JAVA ME PLATFORM
-			if (p.getID() == PlatformProvider.PPID_JAVA_ME) {
-				if (parserClass.equals(FEED_PARSER_CLASS)) {
-					parser = (Parser)Class.forName(
-						JAVA_ME_FEED_PARSER_IMPL_CLASS).newInstance();
-				} else if (parserClass.equals(ERROR_MSG_PARSER_CLASS)) {
-					parser = (Parser)Class.forName(
-						JAVA_ME_ERROR_MSG_PARSER_IMPL_CLASS).newInstance();
-				} else {
-					throw new IllegalArgumentException(
-						"Unknown parser class: " + parserClass.getName());
-				}
-			} else {
-				throw new IllegalArgumentException(
-					"Unknown platform ID: " + p.getID());
-			}
+			return (Parser)Class.forName(className).newInstance();
 		} catch (IllegalAccessException e) {
 		} catch (InstantiationException e) {
 		} catch (ClassNotFoundException e) {
 		}
 		//
-		return parser;
+		return null;
 	}
 	
 	/**
 	 * <p>
-	 * Package-protected constructor to avoid object instantiation.
+	 * Private constructor to avoid object instantiation.
 	 * </p>
 	 */
-	ParserFactory() {
+	private ParserFactory() {
 	}
 }

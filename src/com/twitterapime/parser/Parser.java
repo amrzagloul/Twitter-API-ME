@@ -17,22 +17,22 @@ import java.io.InputStream;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see ParserFactory
- * @see FeedParser
- * @see ErrorMessageParser
+ * @see Handler
  */
-public interface Parser {
+public abstract class Parser {
 	/**
 	 * <p>
-	 * Parse the content from the stream in order to retrieve the information
-	 * of a given document.
+	 * Parse the content of the input stream specified as XML using the
+	 * specified {@link Handler}.
 	 * </p>
-	 * @param stream The document stream object.
+	 * @param stream The InputSource containing the content to be parsed.
+	 * @param handler The handler to use.
 	 * @exception ParserException If there is an error in the document format.
 	 * @exception IOException If an I/O error occurs.
 	 */
-	public abstract void parse(InputStream stream) throws IOException,
-		ParserException;
+	public abstract void parse(InputStream stream, Handler handler)
+		throws IOException,	ParserException;
 }
