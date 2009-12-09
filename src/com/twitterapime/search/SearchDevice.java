@@ -11,13 +11,11 @@ import java.io.IOException;
 
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpConnector;
-import com.twitterapime.io.HttpResponseCodeHandler;
-import com.twitterapime.parser.Feed;
-import com.twitterapime.parser.FeedEntry;
-import com.twitterapime.parser.FeedParser;
-import com.twitterapime.parser.FeedParserListener;
+import com.twitterapime.io.HttpResponseCodeInterpreter;
+import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.search.handler.SearchResultHandler;
 
 /**
  * <p>
@@ -38,7 +36,7 @@ import com.twitterapime.parser.ParserFactory;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see SearchDeviceListener
  * @see QueryComposer
@@ -49,7 +47,8 @@ public final class SearchDevice {
 	 * Twitter Search API URI.
 	 * </p>
 	 */
-	static final String TWITTER_URL_ATOM = "http://search.twitter.com/search.atom";
+	static final String TWITTER_URL_ATOM =
+		"http://search.twitter.com/search.atom";
 
 	/**
 	 * <p>
@@ -85,7 +84,7 @@ public final class SearchDevice {
 	 * </p>
 	 * @return A SearchDevice object.
 	 */
-	public static SearchDevice getInstance() {
+	public synchronized static SearchDevice getInstance() {
 		if (device == null) {
 			device = new SearchDevice();
 		}
@@ -95,10 +94,10 @@ public final class SearchDevice {
 	
 	/**
 	 * <p>
-	 * Package-protected constructor to avoid object instantiation.
+	 * Private constructor to avoid object instantiation.
 	 * </p>
 	 */
-	SearchDevice() {
+	private SearchDevice() {
 	}
 
 	/**
@@ -112,7 +111,7 @@ public final class SearchDevice {
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	public Tweet[] searchTweets(Query query) throws IOException,
-			LimitExceededException {
+		LimitExceededException {
 		return searchTweets(query, null);
 	}
 
@@ -127,7 +126,7 @@ public final class SearchDevice {
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	public Tweet[] searchTweets(String queryString) throws IOException,
-			LimitExceededException {
+		LimitExceededException {
 		return searchTweets(new Query(queryString), null);
 	}
 	
@@ -154,11 +153,14 @@ public final class SearchDevice {
 	 * @param listener Listener object to be notified about the search's result.
 	 */
 	public void startSearchTweets(final String queryString,
-			final SearchDeviceListener listener) {
+		final SearchDeviceListener listener) {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
 					searchTweets(new Query(queryString), listener);
+					if (listener != null) {
+						listener.searchCompleted();
+					}
 				} catch (Exception e) {
 					if (listener != null) {
 						listener.searchFailed(e);
@@ -199,37 +201,24 @@ public final class SearchDevice {
 	 * listener.
 	 * </p>
 	 * @param queryString The query string.
-	 * @param lstnr The listener object.
+	 * @param listener The listener object.
 	 * @return The result.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
-	Tweet[] searchTweets(Query query, final SearchDeviceListener lstnr)
-			throws IOException, LimitExceededException {
+	Tweet[] searchTweets(Query query, final SearchDeviceListener listener)
+		throws IOException, LimitExceededException {
 		updateAPIInfo();
 		//
 		HttpConnection conn = getHttpConn(query.toString());
-		FeedParser parser = ParserFactory.getDefaultFeedParser();
-		//
-		if (lstnr != null) {
-			parser.setFeedParserListener(new FeedParserListener() {
-				public void feedParsed(Feed feed) {
-					lstnr.searchCompleted();
-				}
-
-				public void feedEntryParsed(FeedEntry entry) {
-					lstnr.tweetFound((Tweet) entry);
-				}
-			});
-		}
+		Parser parser = ParserFactory.getDefaultParser();
+		SearchResultHandler handler = new SearchResultHandler();
+		handler.setSearchDeviceListener(listener);
 		//
 		try {
-			parser.parse(conn.openInputStream());
+			parser.parse(conn.openInputStream(), handler);
 			//
-			Feed f = parser.getFeed();
-			Tweet[] ts = (Tweet[]) f.getEntries();
-			//
-			return ts;
+			return handler.getParsedTweets();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
@@ -247,10 +236,10 @@ public final class SearchDevice {
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
 	HttpConnection getHttpConn(String queryStr) throws IOException,
-			LimitExceededException {
+		LimitExceededException {
 		if (queryStr == null || (queryStr = queryStr.trim()).length() == 0) {
 			throw new IllegalArgumentException(
-					"Query String cannot be empty/null.");
+				"Query String cannot be empty/null.");
 		}
 		//
 		if (!queryStr.startsWith("?")) {
@@ -268,7 +257,7 @@ public final class SearchDevice {
 		try {
 			c.setRequestMethod(HttpConnection.GET);
 			//verify whether there is an error in the request.
-			HttpResponseCodeHandler.handleSearchAPICodes(c);
+			HttpResponseCodeInterpreter.perform(c);
 			hasException = false;
 		} finally {
 			if (hasException) {
