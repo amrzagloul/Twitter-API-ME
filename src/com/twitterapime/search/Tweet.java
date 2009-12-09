@@ -28,6 +28,11 @@ import com.twitterapime.rest.UserAccount;
  */
 public final class Tweet extends DefaultEntity {
 	/**
+	 * 
+	 */
+	public static final int MAX_CHARACTERS = 140;
+
+	/**
 	 * <p>
 	 * Create an instance of Tweet class.
 	 * </p>
@@ -50,11 +55,35 @@ public final class Tweet extends DefaultEntity {
 	 * Create an instance of Tweet class.
 	 * </p>
 	 * @param content Content (status).
+	 * @throws IllegalArgumentException If content is invalid.
 	 */
 	public Tweet(String content) {
+		if (content == null) {
+			throw new IllegalArgumentException("Content cannot be null");
+		}
+		//
 		Hashtable data = new Hashtable();
 		data.put(MetadataSet.TWEET_CONTENT, content);
 		setData(data);
+		//
+		validateContent();
+	}
+	
+	/**
+	 * <p>
+	 * Validate tweet's content.
+	 * </p>
+	 * @throws IllegalArgumentException If the content is null/empty or exceeds
+	 *         140 characters.
+	 */
+	public void validateContent() {
+		String text = getString(MetadataSet.TWEET_CONTENT);
+		if (text == null || (text = text.trim()).length() == 0) {
+			throw new IllegalArgumentException("Content cannot be empty/null.");
+		} else if (text.length() > 140) {
+			throw new IllegalArgumentException(
+				"Content cannot be longer than"+MAX_CHARACTERS+" characters.");
+		}
 	}
 
 	/**

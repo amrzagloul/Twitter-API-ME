@@ -83,8 +83,14 @@ public final class TweetER {
 	 * </p>
 	 * @param uam User account manager.
 	 * @return TweetER instance.
+	 * @throws IllegalArgumentException If UserAccountManager is null.
 	 */
 	public synchronized static TweetER getInstance(UserAccountManager uam) {
+		if (uam == null) {
+			throw new IllegalArgumentException(
+				"UserAccountManager cannot be null.");
+		}
+		//
 		if (tweetERPoll == null) {
 			tweetERPoll = new Hashtable();
 		}
@@ -214,14 +220,8 @@ public final class TweetER {
 		if (tweet == null) {
 			throw new IllegalArgumentException("Tweet cannot be null.");
 		}
-		String text = tweet.getString(MetadataSet.TWEET_CONTENT);
-		if (text == null || (text = text.trim()).length() == 0) {
-			throw new IllegalArgumentException(
-				"TWEET_CONTENT cannot be empty/null.");
-		} else if (text.length() > 140) {
-			throw new IllegalArgumentException(
-				"TWEET_CONTENT cannot be longer than 140 characters.");
-		}
+		//
+		tweet.validateContent();
 		//
 		if (userAccountMngr == null) {
 			throw new SecurityException(
@@ -237,10 +237,12 @@ public final class TweetER {
 		TweetHandler handler = new TweetHandler();
 		//
 		try {
+			final String content = tweet.getString(MetadataSet.TWEET_CONTENT);
+			//
 			conn.setRequestMethod(HttpConnection.POST);
 			DataOutputStream dout =
 				new DataOutputStream(conn.openOutputStream());
-			dout.write(("status=" + text).getBytes());
+			dout.write(("status=" + content).getBytes());
 			dout.flush();
 			//
 			HttpResponseCodeInterpreter.perform(conn);

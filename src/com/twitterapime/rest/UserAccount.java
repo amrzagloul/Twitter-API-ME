@@ -21,6 +21,7 @@ import com.twitterapime.search.Tweet;
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
  * @version 1.0
  * @since 1.1
+ * @see UserAccountManager
  */
 public final class UserAccount extends DefaultEntity {
 	/**
