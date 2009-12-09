@@ -1,0 +1,220 @@
+/*
+ * StringUtil.java
+ * 28/11/2009
+ * Twitter API Micro Edition
+ * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
+ * All rights reserved
+ */
+package com.twitterapime.util;
+
+import java.util.Calendar;
+import java.util.Vector;
+
+/**
+ * <p>
+ * This class provides some useful methods to work with strings.
+ * </p>
+ * 
+ * @author Ernandes Mourao Junior (ernandes@gmail.com)
+ * @version 1.0
+ * @since 1.1
+ */
+public final class StringUtil {
+	/**
+	 * <p>
+	 * Months abbreviations.
+	 * </p>
+	 */
+	private static final String[] MONTHS_ABBREVIATION =
+		new String[] {
+			"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep",
+			"oct", "nov", "dec" };
+	
+	/**
+	 * <p>
+	 * Convert a given date according to a format used by Twitter to long. 
+	 * </p>
+	 * <p>
+	 * Formats:
+	 * <lu>
+	 * <li>2009-11-28 21:43:12</li>
+	 * <li>2009-12-01T01:25:00+00:00</li>
+	 * <li>Sat Nov 07 21:30:03 +0000 2009</li>
+	 * </lu>
+	 * </p>
+	 * @param date Tweet date value.
+	 * @return Long date.
+	 */
+	public static long convertTweetDateToLong(String date) {
+		char fc = date.charAt(0);
+		//)
+		if (Character.isDigit(fc)) { //is date format 1?
+			date = formatTweetDate1(date);
+		} else { //date format 2.
+			date = formatTweetDate2(date);
+		}
+		//
+		String[] parts = split(date, ' ');
+		String[] dparts = split(parts[0], '-');
+		String[] tparts = split(parts[1], ':');
+		//
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, Integer.parseInt(dparts[0]));
+		c.set(Calendar.MONTH, Integer.parseInt(dparts[1]) -1);
+		c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dparts[2]));
+		c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tparts[0]));
+		c.set(Calendar.MINUTE, Integer.parseInt(tparts[1]));
+		c.set(Calendar.SECOND, Integer.parseInt(tparts[2]));
+		//
+		return c.getTime().getTime();
+	}
+	
+	/**
+     * <p>
+     * Split a string based on a given delimiter.
+     * </p>
+     * @param str String.
+     * @param delimiter Delimiter.
+     * @return String tokens.
+     */
+    public static final String[] split(String str, char delimiter) {
+        Vector v = new Vector();
+        int start = 0;
+        int iof;
+        while ((iof = str.indexOf(delimiter, start)) != -1) {
+            v.addElement(str.substring(start, iof).trim());
+            start = iof +1;
+        }
+        v.addElement(str.substring(start, str.length()).trim());
+        String[] codes = new String[v.size()];
+        v.copyInto(codes);
+        return codes;
+    }
+	
+	/**
+	 * <p>
+	 * Format the Tweet ID returned by Twitter Search API.
+	 * </p>
+	 * @param id Tweet ID.
+	 * @return ID (e.g. 18738430989).
+	 */
+	public static String formatTweetID(String id) {
+		return id.substring(id.lastIndexOf(':') +1, id.length());
+	}
+	
+	/**
+	 * <p>
+	 * Remove any tag occurrence from the given string.
+	 * </p>
+	 * @param str String to be parsed.
+	 * @return String with no tags.
+	 */
+	public static String removeTags(String str) {
+		if (str == null) {
+			return null;
+		}
+		//
+		StringBuffer out = new StringBuffer();
+		char cs[] = str.toCharArray();
+		boolean tagFound = false;
+		int i1 = 0;
+		int l = 0;
+		//
+		for (int i = 0; i < cs.length; i++) {
+			if (cs[i] == '<' && !tagFound) {
+				out.append(cs, i1, l);
+				//
+				i1 = i;
+				l = 0;
+				tagFound = true;
+				l++;
+			} else if (cs[i] == '>' && tagFound) {
+				i1 = i +1;
+				l = 0;
+				tagFound = false;
+			} else {
+				l++;
+			}
+		}
+		if (l > 0) {
+			out.append(cs, i1, l);
+		}
+		//
+		return out.toString().trim();
+	}
+	
+	/**
+	 * <p>
+	 * Split the author's username and name from the given string.
+	 * </p>
+	 * @param name The name.
+	 * @return The username [0] and full name [1].
+	 */
+	public static String[] splitTweetAuthorNames(String name) {
+		String[] names = new String[2];
+		//
+		if (name == null) {
+			return names;
+		}
+		//
+		name = name.trim();
+		final int i = name.indexOf(' ');
+		if (i == -1) {
+			names[0] = name;
+			names[1] = name;
+		} else {
+			names[0] = name.substring(0, i);
+			names[1] = name.substring(i +2, name.length() -1);
+		}
+		//
+		return names;
+	}
+
+	/**
+	 * <p>
+	 * Private constructor to avoid object instantiation.
+	 * </p>
+	 */
+	private StringUtil() {
+	}
+
+	/**
+	 * <p>
+	 * Convert a given date according to a format used by Twitter to String. For
+	 * instance, "2009-11-28 21:43:12" or "2009-11-28T21:43:12+00:00" to
+	 * "2009-11-28 21:43:12".
+	 * </p>
+	 * @param date Tweet date value.
+	 * @return Date.
+	 */
+	private static String formatTweetDate1(String date) {
+		//2009-11-28 21:43:12
+		//2009-12-01T01:25:00+00:00
+		return date != null
+			? date.replace('T', ' ').replace('Z', ' ').trim().substring(0, 19)
+			: null;
+	}
+
+	/**
+	 * <p>
+	 * Convert a given date according to a format used by Twitter to String. For
+	 * instance, "Sat Nov 07 21:30:03 +0000 2009" to "2009-11-07 21:30:03".
+	 * </p>
+	 * @param date Tweet date value.
+	 * @return Date.
+	 */
+	private static String formatTweetDate2(String date) {
+		//Sat Nov 07 21:30:03 +0000 2009
+		//
+		String[] dtps = split(date, ' ');
+		String mon = dtps[1].toLowerCase();
+		//
+		for (int i = 0; i < MONTHS_ABBREVIATION.length; i++) {
+			if (mon.equals(MONTHS_ABBREVIATION[i])) {
+				return dtps[5] + '-' + (i +1) + '-' + dtps[2] + ' ' + dtps[3];
+			}
+		}
+		//
+		throw new IllegalArgumentException("Invalid date format: " + date);
+	}
+}
