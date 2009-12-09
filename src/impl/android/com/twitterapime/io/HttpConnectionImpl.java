@@ -10,11 +10,14 @@ package impl.android.com.twitterapime.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import com.twitterapime.io.HttpConnection;
 
 /**
  * <p>
+ * This class defines the implementation of HttpConnection for Android platform.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -22,44 +25,67 @@ import com.twitterapime.io.HttpConnection;
  * @since 1.0
  */
 public final class HttpConnectionImpl implements HttpConnection {
+	/**
+	 * <p>
+	 * Http connection object.
+	 * </p>
+	 */
+	private HttpURLConnection conn;
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#close()
+	 */
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
-		
+		conn.disconnect();
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#getHeaderField(java.lang.String)
+	 */
 	public String getHeaderField(String name) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return conn.getHeaderField(name);
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#getResponseCode()
+	 */
 	public int getResponseCode() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return conn.getResponseCode();
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#open(java.lang.String)
+	 */
 	public void open(String url) throws IOException {
-		// TODO Auto-generated method stub
-		
+		conn = (HttpURLConnection)new URL(url).openConnection();
+		conn.connect();
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#openInputStream()
+	 */
 	public InputStream openInputStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return conn.getInputStream();
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#openOutputStream()
+	 */
 	public OutputStream openOutputStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return conn.getOutputStream();
 	}
 
+	/**
+	 * @see com.twitterapime.io.HttpConnection#setRequestMethod(java.lang.String)
+	 */
 	public void setRequestMethod(String method) throws IOException {
-		// TODO Auto-generated method stub
-		
+		conn.setRequestMethod(method);
 	}
 
-	public void setRequestProperty(String key, String value) throws IOException {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * @see com.twitterapime.io.HttpConnection#setRequestProperty(java.lang.String, java.lang.String)
+	 */
+	public void setRequestProperty(String key, String value) throws IOException{
+		conn.setRequestProperty(key, value);
 	}
 }
