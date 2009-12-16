@@ -22,7 +22,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see PlatformProvider
  */
@@ -143,16 +143,21 @@ public final class PlatformProviderSelector {
 	 * provide the services available in this API.
 	 * </p>
 	 * @param pp The platform provider object.
+	 * @throws IllegalArgumentException If pp is null.
 	 */
 	public static void select(PlatformProvider pp) {
+		if (pp == null) {
+			throw new IllegalArgumentException("Platform must not be null.");
+		}
+		//
 		currentPlatform = pp;
 	}
 
 	/**
 	 * <p>
-	 * Package-protected constructor to avoid object instantiation.
+	 * Private constructor to avoid object instantiation.
 	 * </p>
 	 */
-	PlatformProviderSelector() {
+	private PlatformProviderSelector() {
 	}
 }
