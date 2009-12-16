@@ -74,7 +74,7 @@ public final class TweetER {
 	 * Single instance of this class.
 	 * </p>
 	 */
-	private static TweetER notifier;
+	private static TweetER singleInstance;
 	
 	/**
 	 * <p>
@@ -84,11 +84,16 @@ public final class TweetER {
 	 * @param uam User account manager.
 	 * @return TweetER instance.
 	 * @throws IllegalArgumentException If UserAccountManager is null.
+	 * @throws SecurityException If UserAccountManager is not verified.
 	 */
 	public synchronized static TweetER getInstance(UserAccountManager uam) {
 		if (uam == null) {
 			throw new IllegalArgumentException(
-				"UserAccountManager cannot be null.");
+				"UserAccountManager must not be null.");
+		}
+		//
+		if (!uam.isVerified()) {
+			throw new SecurityException("User's credential must be verified.");
 		}
 		//
 		if (tweetERPoll == null) {
@@ -112,11 +117,11 @@ public final class TweetER {
 	 * @return TweetER single instance.
 	 */
 	public synchronized static TweetER getInstance() {
-		if (notifier == null) {
-			notifier = new TweetER();
+		if (singleInstance == null) {
+			singleInstance = new TweetER();
 		}
 		//
-		return notifier;
+		return singleInstance;
 	}
 	
 	/**
@@ -167,7 +172,7 @@ public final class TweetER {
 	public Tweet findByID(String id) throws LimitExceededException,
 		IOException {
 		if (id == null || (id = id.trim()).length() == 0) {
-			throw new IllegalArgumentException("ID cannot be empty/null.");
+			throw new IllegalArgumentException("ID must not be empty/null.");
 		}
 		//
 		final String url = TWITTER_URL_SHOW_STATUS + id + ".xml";
@@ -218,16 +223,14 @@ public final class TweetER {
 	 */
 	public Tweet post(Tweet tweet) throws IOException {
 		if (tweet == null) {
-			throw new IllegalArgumentException("Tweet cannot be null.");
+			throw new IllegalArgumentException("Tweet must not be null.");
 		}
 		//
 		tweet.validateContent();
 		//
 		if (userAccountMngr == null) {
 			throw new SecurityException(
-			   "User's credentials must be entered to perform this operation.");
-		} else {
-			userAccountMngr.checkVerified();
+			    "User's credential must be entered to perform this operation.");
 		}
 		//
 		HttpConnection conn =
@@ -244,6 +247,7 @@ public final class TweetER {
 				new DataOutputStream(conn.openOutputStream());
 			dout.write(("status=" + content).getBytes());
 			dout.flush();
+			dout.close();
 			//
 			HttpResponseCodeInterpreter.perform(conn);
 			//
