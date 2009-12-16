@@ -40,6 +40,7 @@ public final class HttpConnector {
 	 * @param url The URL for the connection.
 	 * @return A new HttpConnection object.
 	 * @throws IOException If an I/O error occurs.
+	 * @throws IllegalArgumentException If url is null or empty.
 	 */
 	public static HttpConnection open(String url) throws IOException {
 		if (url == null || url.trim().length() == 0) {
@@ -53,7 +54,7 @@ public final class HttpConnector {
 		final String ANDROID_HTTP_IMPL_CLASS =
 			"impl.android.com.twitterapime.io.HttpConnectionImpl";
 		final String ANDROID_HTTP_USER_AGENT =
-			"Twitter API ME/1.1 (compatible; Android 1.5)";
+			"Twitter API ME/1.1 (compatible; Android 1.1)";
 		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//
@@ -86,10 +87,11 @@ public final class HttpConnector {
 	 * 
 	 * @param url The URL to be encoded.
 	 * @return An encoded URL.
+	 * @throws IllegalArgumentException If url is null or empty.
 	 */
 	public static String encodeURL(String url) {
 		if (url == null) {
-			return null;
+			throw new IllegalArgumentException("URL must not be null.");
 		}
 		//
 		StringBuffer eURL = new StringBuffer(url.length());
@@ -177,66 +179,63 @@ public final class HttpConnector {
 	 * <i>This implementation is adopted from Kenneth Ballard's HttpClient
 	 * package. Released under LGPL.</i>
 	 * </p>
-	 * @param d String to encode.
+	 * @param str String to encode.
 	 * @return Base64 encoded string.
+	 * @throws IllegalArgumentException If url is null or empty.
 	 */
-	public static String encodeBase64(String d) {
-		String c =
+	public static String encodeBase64(String str) {
+		if (str == null) {
+			throw new IllegalArgumentException("Str must not be null.");
+		}
+		//
+		final String c =
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
+		//
 		byte[] code = c.getBytes();
-		byte[] s = d.getBytes();
-
+		byte[] s = str.getBytes();
 		int x;
-		int y = d.length() - (d.length() % 3);
-
+		int y = str.length() - (str.length() % 3);
 		byte[] coded = new byte[4];
-		String dest = "";
-
+		StringBuffer dest = new StringBuffer();
+		//
 		for (x = 0; x < y; x += 3) {
 			coded[3] = code[s[x + 2] % 64];
 			coded[0] = code[s[x] >> 2];
-
 			coded[1] = new Integer((s[x] % 4) << 4).byteValue();
 			coded[1] += s[x + 1] >> 4;
 			coded[1] = code[coded[1]];
-
 			coded[2] = new Integer((s[x + 1] % 16) << 2).byteValue();
 			coded[2] += s[x + 2] / 64;
 			coded[2] = code[coded[2]];
-
-			dest += new String(coded);
+			//
+			dest.append(new String(coded));
 		}
-
+		//
 		x = y;
-
-		if (s.length % 3 == 0)
-			return dest;
-
+		//
+		if (s.length % 3 == 0) {
+			return dest.toString();
+		}
 		if (s.length % 3 == 1) {
 			coded[2] = '=';
 			coded[3] = '=';
-
 			coded[0] = code[s[x] >> 2];
 			coded[1] = code[new Integer((s[x] % 4) << 4).byteValue()];
-
-			dest += new String(coded);
+			//
+			dest.append(new String(coded));
 		}
-
 		if (s.length % 3 == 2) {
 			coded[3] = '=';
-
 			coded[0] = code[s[x] >> 2];
 			coded[1] = new Integer((s[x] % 4) << 4).byteValue();
 			coded[1] += s[x + 1] >> 4;
 			coded[1] = code[coded[1]];
-
 			coded[2] = code[new Integer((s[x + 1] % 16) << 2).byteValue()];
-
-			dest += new String(coded);
+			//
+			dest.append(new String(coded));
 		}
-
-		return dest;
+		//
+		return dest.toString();
 	}
 	
 	/**
