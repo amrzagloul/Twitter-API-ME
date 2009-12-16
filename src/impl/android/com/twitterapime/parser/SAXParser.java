@@ -37,6 +37,16 @@ public final class SAXParser extends Parser {
 	 */
 	public void parse(InputStream stream, Handler handler) throws IOException,
 		ParserException {
+		if (stream == null) {
+			throw new NullPointerException("stream must not be null.");
+		}
+		if (handler == null) {
+			throw new NullPointerException("handler must not be null.");
+		} else if (!(handler instanceof XMLHandler)) {
+			throw new ClassCastException(
+				"handler must be an instace of XMLHandler.");
+		}
+		//
 		javax.xml.parsers.SAXParserFactory factory =
 			javax.xml.parsers.SAXParserFactory.newInstance();
 		//
@@ -66,7 +76,7 @@ public final class SAXParser extends Parser {
 	 * @version 1.0
 	 * @since 1.1
 	 */
-	private final class WrapperHandler extends DefaultHandler {
+	private static final class WrapperHandler extends DefaultHandler {
 		/**
 		 * <p>
 		 * XML handler object;
@@ -82,6 +92,11 @@ public final class SAXParser extends Parser {
 		private SAXAttributes attrs;
 		
 		/**
+		 * 
+		 */
+		private StringBuilder text;
+		
+		/**
 		 * <p>
 		 * Create an instance of WrapperHandler class.
 		 * </p>
@@ -90,6 +105,7 @@ public final class SAXParser extends Parser {
 		public WrapperHandler(XMLHandler handler) {
 			this.handler = handler;
 			attrs = new SAXAttributes();
+			text = new StringBuilder();
 		}
 		
 		/**
@@ -133,6 +149,11 @@ public final class SAXParser extends Parser {
 		public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 			try {
+				if (text.length() > 0) {
+					handler.text(text.toString().trim());
+					text.setLength(0);
+				}
+				//
 				handler.endElement(uri, localName, qName);
 			} catch (ParserException e) {
 				throw new SAXException(e.getMessage(), e);
@@ -144,11 +165,7 @@ public final class SAXParser extends Parser {
 		 */
 		public void characters(char[] ch, int start, int length)
 			throws SAXException {
-			try {
-				handler.text(new String(ch, start, length));
-			} catch (ParserException e) {
-				throw new SAXException(e.getMessage(), e);
-			}
+			text.append(new String(ch, start, length));
 		}
 	}
 }
