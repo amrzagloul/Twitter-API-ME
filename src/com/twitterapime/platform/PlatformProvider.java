@@ -97,7 +97,9 @@ public final class PlatformProvider {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof PlatformProvider)) {
+		if (o == this) {
+			return true;
+		} else if (o == null || !(o instanceof PlatformProvider)) {
 			return false;
 		} else {
 			return id == ((PlatformProvider)o).id;
