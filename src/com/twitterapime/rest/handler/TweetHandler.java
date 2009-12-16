@@ -57,10 +57,6 @@ public final class TweetHandler extends DefaultXMLHandler {
 		} else if (xmlPath.equals("/status/source")) {
 			tweetValues.put(
 				MetadataSet.TWEET_SOURCE, StringUtil.removeTags(text));
-		} else if (xmlPath.equals("/status/in_reply_to_status_id")) {
-			tweetValues.put(MetadataSet.TWEET_IN_REPLY_TO_TWEET_ID, text);
-		} else if (xmlPath.equals("/status/in_reply_to_user_id")) {
-			tweetValues.put(MetadataSet.TWEET_IN_REPLY_TO_USER_ID, text);
 		} else if (xmlPath.equals("/status/favorited")) {
 			tweetValues.put(MetadataSet.TWEET_FAVOURITE, text);
 		} else if (xmlPath.equals("/status/user/id")) {

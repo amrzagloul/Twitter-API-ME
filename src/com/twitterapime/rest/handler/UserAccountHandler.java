@@ -109,12 +109,6 @@ public final class UserAccountHandler extends DefaultXMLHandler {
 				MetadataSet.TWEET_SOURCE, StringUtil.removeTags(text));
 		} else if (xmlPath.equals("/user/status/favorited")) {
 			lastTweetValues.put(MetadataSet.TWEET_FAVOURITE, text);
-		} else if (xmlPath.equals("/user/status/in_reply_to_status_id")) {
-			lastTweetValues.put(MetadataSet.TWEET_IN_REPLY_TO_TWEET_ID, text);
-		} else if (xmlPath.equals("/user/status/in_reply_to_user_id")) {
-			lastTweetValues.put(MetadataSet.TWEET_IN_REPLY_TO_USER_ID, text);
-		} else if (xmlPath.equals("/user/status/in_reply_to_screen_name")) {
-			lastTweetValues.put(MetadataSet.TWEET_IN_REPLY_TO_USERNAME,text);
 		}
 	}
 	
