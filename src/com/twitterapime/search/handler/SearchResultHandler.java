@@ -62,13 +62,14 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 	public void startElement(String namespaceURI, String localName,
 		String qName, Attributes attrs) throws ParserException {
 		super.startElement(namespaceURI, localName, qName, attrs);
-		qName = qName.toLowerCase();
+		localName = localName.toLowerCase();
 		//
-		if (qName.equals("entry")) {
+		if (localName.equals("entry")) {
 			tweet = new Tweet();
 			tweetValues = new Hashtable(15);
 			tweet.setData(tweetValues);
-		} else if (qName.equals("link") && xmlPath.equals("/feed/entry/link")) {
+		} else if (localName.equals("link")
+				&& xmlPath.equals("/feed/entry/link")) {
 			final String attrValue = attrs.getValue("type");
 			//
 			if (attrValue.equals("text/html")) {
@@ -88,7 +89,7 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 		throws ParserException {
 		super.endElement(namespaceURI, localName, qName);
 		//
-		if (qName.toLowerCase().equals("entry")) {
+		if (localName.toLowerCase().equals("entry")) {
 			tweetList.addElement(tweet);
 			fireTweetParsed(tweet);
 		}
