@@ -28,7 +28,9 @@ import com.twitterapime.rest.UserAccount;
  */
 public final class Tweet extends DefaultEntity {
 	/**
-	 * 
+	 * <p>
+	 * Content max number of characters.
+	 * </p>
 	 */
 	public static final int MAX_CHARACTERS = 140;
 
@@ -59,7 +61,7 @@ public final class Tweet extends DefaultEntity {
 	 */
 	public Tweet(String content) {
 		if (content == null) {
-			throw new IllegalArgumentException("Content cannot be null");
+			throw new IllegalArgumentException("Content must not be null");
 		}
 		//
 		Hashtable data = new Hashtable();
@@ -79,10 +81,11 @@ public final class Tweet extends DefaultEntity {
 	public void validateContent() {
 		String text = getString(MetadataSet.TWEET_CONTENT);
 		if (text == null || (text = text.trim()).length() == 0) {
-			throw new IllegalArgumentException("Content cannot be empty/null.");
+			throw new IllegalArgumentException(
+				"Content must not be empty/null.");
 		} else if (text.length() > 140) {
 			throw new IllegalArgumentException(
-				"Content cannot be longer than"+MAX_CHARACTERS+" characters.");
+			   "Content must not be longer than"+MAX_CHARACTERS+" characters.");
 		}
 	}
 
