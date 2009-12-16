@@ -1,0 +1,8 @@
+<FindBugsFilter>
+    <Match>
+ 	    <Package name="~org\.kxml2\..*" />
+ 	</Match>
+    <Match>
+ 	    <Package name="~org\.xmlpull\..*" />
+ 	</Match>
+</FindBugsFilter>
