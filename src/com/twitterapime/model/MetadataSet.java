@@ -103,30 +103,6 @@ public final class MetadataSet {
 
 	/**
 	 * <p>
-	 * Report the replied tweet's ID, e.g., "56432165487".
-	 * </p>
-	 */
-	public static final String TWEET_IN_REPLY_TO_TWEET_ID =
-		"TWEET_IN_REPLY_TO_TWEET_ID";
-
-	/**
-	 * <p>
-	 * Report the user's ID of a replied tweet, e.g., "88275918".
-	 * </p>
-	 */
-	public static final String TWEET_IN_REPLY_TO_USER_ID =
-		"TWEET_IN_REPLY_TO_USER_ID";
-
-	/**
-	 * <p>
-	 * Report the user's username of a replied tweet, e.g., "johnsmith".
-	 * </p>
-	 */
-	public static final String TWEET_IN_REPLY_TO_USERNAME =
-		"TWEET_IN_REPLY_TO_USERNAME";
-
-	/**
-	 * <p>
 	 * Report the user account object of tweet's sender, e.g., UserAccount
 	 * class.
 	 * </p>
