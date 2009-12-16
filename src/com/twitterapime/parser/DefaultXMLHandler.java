@@ -35,7 +35,7 @@ public class DefaultXMLHandler implements XMLHandler {
 	 */
 	public void startElement(String namespaceURI, String localName,
 		String qName, Attributes attrs) throws ParserException {
-		xmlPath += '/' + qName.toLowerCase();
+		xmlPath += '/' + localName.toLowerCase();
 	}
 
 	/**
