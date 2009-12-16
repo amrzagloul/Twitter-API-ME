@@ -47,7 +47,7 @@ public final class SearchDevice {
 	 * Twitter Search API URI.
 	 * </p>
 	 */
-	static final String TWITTER_URL_ATOM =
+	private static final String TWITTER_URL_ATOM =
 		"http://search.twitter.com/search.atom";
 
 	/**
@@ -55,28 +55,28 @@ public final class SearchDevice {
 	 * Query prefix.
 	 * </p>
 	 */
-	static final String TWITTER_QUERY_STRING_PREFIX = "q=";
+	private static final String TWITTER_QUERY_STRING_PREFIX = "q=";
 
 	/**
 	 * <p>
 	 * Single instance of this class.
 	 * </p>
 	 */
-	static SearchDevice device;
+	private static SearchDevice device;
 	
 	/**
 	 * <p>
 	 * Time at which Twitter Search API was access by this class.
 	 * </p>
 	 */
-	static long lastCallTime;
+	private static long lastCallTime;
 	
 	/**
 	 * <p>
 	 * Number of calls to Twitter Search API since this class was loaded.
 	 * </p>
 	 */
-	static int apiCallsCount;
+	private static int apiCallsCount;
 
 	/**
 	 * <p>
@@ -109,9 +109,14 @@ public final class SearchDevice {
 	 * @return The result.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws IllegalArgumentException If query is null.
 	 */
 	public Tweet[] searchTweets(Query query) throws IOException,
 		LimitExceededException {
+		if (query == null) {
+			throw new IllegalArgumentException("Query must not be null.");
+		}
+		//
 		return searchTweets(query, null);
 	}
 
@@ -124,9 +129,16 @@ public final class SearchDevice {
 	 * @return The result.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws IllegalArgumentException If queryString is null/empty.
 	 */
 	public Tweet[] searchTweets(String queryString) throws IOException,
 		LimitExceededException {
+		if (queryString == null
+				|| (queryString = queryString.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"QueryString must not be null/empty.");
+		}
+		//
 		return searchTweets(new Query(queryString), null);
 	}
 	
@@ -138,8 +150,13 @@ public final class SearchDevice {
 	 * </p>
 	 * @param query The query.
 	 * @param listener Listener object to be notified about the search's result.
+	 * @throws IllegalArgumentException If query is null.
 	 */
 	public void startSearchTweets(Query query, SearchDeviceListener listener) {
+		if (query == null) {
+			throw new IllegalArgumentException("Query must not be null.");
+		}
+		//
 		startSearchTweets(query.toString(), listener);
 	}
 
@@ -151,9 +168,15 @@ public final class SearchDevice {
 	 * </p>
 	 * @param queryString The query string.
 	 * @param listener Listener object to be notified about the search's result.
+	 * @throws IllegalArgumentException If queryString is null/empty.
 	 */
 	public void startSearchTweets(final String queryString,
 		final SearchDeviceListener listener) {
+		if (queryString == null || queryString.length() == 0) {
+			throw new IllegalArgumentException(
+				"QueryString must not be null/empty.");
+		}
+		//
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
@@ -201,19 +224,19 @@ public final class SearchDevice {
 	 * listener.
 	 * </p>
 	 * @param queryString The query string.
-	 * @param listener The listener object.
+	 * @param l The listener object.
 	 * @return The result.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
-	Tweet[] searchTweets(Query query, final SearchDeviceListener listener)
+	private Tweet[] searchTweets(Query query, final SearchDeviceListener l)
 		throws IOException, LimitExceededException {
 		updateAPIInfo();
 		//
 		HttpConnection conn = getHttpConn(query.toString());
 		Parser parser = ParserFactory.getDefaultParser();
 		SearchResultHandler handler = new SearchResultHandler();
-		handler.setSearchDeviceListener(listener);
+		handler.setSearchDeviceListener(l);
 		//
 		try {
 			parser.parse(conn.openInputStream(), handler);
@@ -235,11 +258,11 @@ public final class SearchDevice {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 */
-	HttpConnection getHttpConn(String queryStr) throws IOException,
+	private HttpConnection getHttpConn(String queryStr) throws IOException,
 		LimitExceededException {
 		if (queryStr == null || (queryStr = queryStr.trim()).length() == 0) {
 			throw new IllegalArgumentException(
-				"Query String cannot be empty/null.");
+				"Query String must not be empty/null.");
 		}
 		//
 		if (!queryStr.startsWith("?")) {
@@ -273,7 +296,7 @@ public final class SearchDevice {
 	 * Update some internal information regarding the API.
 	 * </p>
 	 */
-	void updateAPIInfo() {
+	private void updateAPIInfo() {
 		lastCallTime = System.currentTimeMillis();
 		apiCallsCount++;
 	}
