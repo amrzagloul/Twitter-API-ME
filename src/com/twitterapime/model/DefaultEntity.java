@@ -22,7 +22,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see Tweet
  * @see Credential
@@ -114,11 +114,31 @@ public class DefaultEntity implements Entity {
 	}
 	
 	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		} else if (o == null || !(o instanceof DefaultEntity)) {
+			return false;
+		} else {
+			return toString().equals(o.toString());
+		}
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		if (data == null) {
-			return null;
+			return super.toString();
 		}
 		//
 		StringBuffer s = new StringBuffer();
