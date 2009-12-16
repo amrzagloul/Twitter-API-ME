@@ -21,7 +21,7 @@ import com.twitterapime.io.HttpConnection;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public final class HttpConnectionImpl implements HttpConnection {
@@ -58,20 +58,31 @@ public final class HttpConnectionImpl implements HttpConnection {
 	 */
 	public void open(String url) throws IOException {
 		conn = (HttpURLConnection)new URL(url).openConnection();
-		conn.connect();
 	}
 
 	/**
 	 * @see com.twitterapime.io.HttpConnection#openInputStream()
 	 */
 	public InputStream openInputStream() throws IOException {
-		return conn.getInputStream();
+		if (!conn.getDoInput()) {
+			conn.setDoInput(true);
+		}
+		//
+		if (conn.getResponseCode() == HTTP_OK) {
+			return conn.getInputStream();
+		} else {
+			return conn.getErrorStream();
+		}
 	}
 
 	/**
 	 * @see com.twitterapime.io.HttpConnection#openOutputStream()
 	 */
 	public OutputStream openOutputStream() throws IOException {
+		if (!conn.getDoOutput()) {
+			conn.setDoOutput(true);
+		}
+		//
 		return conn.getOutputStream();
 	}
 
