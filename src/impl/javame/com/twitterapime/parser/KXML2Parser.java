@@ -36,13 +36,13 @@ public final class KXML2Parser extends Parser {
 	public void parse(InputStream stream, Handler handler) throws IOException,
 		ParserException {
 		if (stream == null) {
-			throw new NullPointerException("stream cannot be null.");
+			throw new NullPointerException("stream must not be null.");
 		}
 		if (handler == null) {
-			throw new NullPointerException("handler cannot be null.");
+			throw new NullPointerException("handler must not be null.");
 		} else if (!(handler instanceof XMLHandler)) {
 			throw new ClassCastException(
-				"handler must an instace of XMLHandler.");
+				"handler must be an instace of XMLHandler.");
 		}
 		//
 		KXmlParser parser = new KXmlParser();
@@ -52,6 +52,7 @@ public final class KXML2Parser extends Parser {
 		try {
 			parser.setInput(new InputStreamReader(stream));
 			int etype;
+			String qName;
 			//
 			while (true) {
 				etype = parser.next();
@@ -60,11 +61,15 @@ public final class KXML2Parser extends Parser {
 					xmlHandler.startDocument();
 				} else if (etype == XmlPullParser.START_TAG) {
 					attrs.loadAttributes(parser);
+					qName = parser.getPrefix();
+					if (qName != null && !qName.equals("")) {
+						qName += ":" + parser.getName();
+					}
 					//
 					xmlHandler.startElement(
 						parser.getNamespace(),
-						null,
 						parser.getName(),
+						qName,
 						attrs);
 				} else if (etype == XmlPullParser.END_TAG) {
 					xmlHandler.endElement(
@@ -72,7 +77,7 @@ public final class KXML2Parser extends Parser {
 						null,
 						parser.getName());
 				} else if (etype == XmlPullParser.TEXT) {
-					xmlHandler.text(parser.getText());
+					xmlHandler.text(parser.getText().trim());
 				} else if (etype == XmlPullParser.END_DOCUMENT) {
 					xmlHandler.endDocument();
 					break;
