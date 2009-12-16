@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see QueryComposer
  * @see SearchDevice
@@ -28,15 +28,21 @@ public final class Query {
 	 * Hold the string that represents a query.
 	 * </p>
 	 */
-	String query;
+	private String query;
 
 	/**
 	 * <p>
 	 * Create an instance of Query class.
 	 * </p>
 	 * @param query The string of query.
+	 * @throws InvalidQueryException If query is not a valid UTF-8 string.
+	 * @throws IllegalArgumentException If query is null.
 	 */
 	Query(String query) {
+		if (query == null) {
+			throw new IllegalArgumentException("Query must not be null.");
+		}
+		//
 		try {
 			this.query = new String(query.getBytes(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -48,11 +54,20 @@ public final class Query {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Query)) {
+		if (o == this) {
+			return true;
+		} else if (o == null || !(o instanceof Query)) {
 			return false;
 		} else {
-			return query.equals(((Query) o).query);
+			return query.equals(((Query)o).query);
 		}
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return query.hashCode();
 	}
 
 	/**
