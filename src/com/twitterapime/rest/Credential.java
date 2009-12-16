@@ -33,36 +33,18 @@ public final class Credential extends DefaultEntity {
 	 */
 	public Credential(String username, String password) {
 		if (username == null || (username = username.trim()).length() == 0) {
-			throw new IllegalArgumentException("Username cannot be empty/null");
+			throw new IllegalArgumentException(
+				"Username must not be empty/null");
 		}
 		if (password == null || (password = password.trim()).length() == 0) {
-			throw new IllegalArgumentException("Password cannot be empty/null");
+			throw new IllegalArgumentException(
+				"Password must not be empty/null");
 		}
 		//
 		Hashtable credtls = new Hashtable(2);
 		credtls.put(MetadataSet.CREDENTIAL_USERNAME, username);
 		credtls.put(MetadataSet.CREDENTIAL_PASSWORD, password);
 		setData(credtls);
-	}
-	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof Credential) || data == null) {
-			return false;
-		} else {
-			Credential c = (Credential)o;
-			//
-			return c.data != null && c.data.equals(data);
-		}
-	}
-	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		return data != null ? data.hashCode() : super.hashCode();
 	}
 	
 	/**
