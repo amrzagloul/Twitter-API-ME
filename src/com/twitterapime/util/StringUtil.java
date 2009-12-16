@@ -44,8 +44,13 @@ public final class StringUtil {
 	 * </p>
 	 * @param date Tweet date value.
 	 * @return Long date.
+	 * @throws IllegalArgumentException If date is null/empty.
 	 */
 	public static long convertTweetDateToLong(String date) {
+		if (date == null || (date = date.trim()).length() == 0) {
+			throw new IllegalArgumentException("Date must not be null/empty.");
+		}
+		//
 		char fc = date.charAt(0);
 		//)
 		if (Character.isDigit(fc)) { //is date format 1?
@@ -76,18 +81,26 @@ public final class StringUtil {
      * @param str String.
      * @param delimiter Delimiter.
      * @return String tokens.
+     * @throws IllegalArgumentException If str is null.
      */
     public static final String[] split(String str, char delimiter) {
+    	if (str == null) {
+    		throw new IllegalArgumentException("Str must not be null.");
+    	}
+    	//
         Vector v = new Vector();
         int start = 0;
         int iof;
+        //
         while ((iof = str.indexOf(delimiter, start)) != -1) {
             v.addElement(str.substring(start, iof).trim());
             start = iof +1;
         }
+        //
         v.addElement(str.substring(start, str.length()).trim());
         String[] codes = new String[v.size()];
         v.copyInto(codes);
+        //
         return codes;
     }
 	
@@ -97,8 +110,13 @@ public final class StringUtil {
 	 * </p>
 	 * @param id Tweet ID.
 	 * @return ID (e.g. 18738430989).
+	 * @throws IllegalArgumentException If ID is null.
 	 */
 	public static String formatTweetID(String id) {
+    	if (id == null) {
+    		throw new IllegalArgumentException("ID must not be null.");
+    	}
+    	//
 		return id.substring(id.lastIndexOf(':') +1, id.length());
 	}
 	
@@ -108,10 +126,11 @@ public final class StringUtil {
 	 * </p>
 	 * @param str String to be parsed.
 	 * @return String with no tags.
+	 * @throws IllegalArgumentException If str is null.
 	 */
 	public static String removeTags(String str) {
 		if (str == null) {
-			return null;
+			throw new IllegalArgumentException("Str must not be null.");
 		}
 		//
 		StringBuffer out = new StringBuffer();
@@ -149,8 +168,13 @@ public final class StringUtil {
 	 * </p>
 	 * @param name The name.
 	 * @return The username [0] and full name [1].
+	 * @throws IllegalArgumentException If str is null.
 	 */
 	public static String[] splitTweetAuthorNames(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Name must not be null.");
+		}
+		//
 		String[] names = new String[2];
 		//
 		if (name == null) {
