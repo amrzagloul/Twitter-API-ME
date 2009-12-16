@@ -92,22 +92,22 @@ public final class UserAccountManager {
 	 * </p>
 	 * @param c Credentials.
 	 * @return AccountManager object.
+	 * @throws IllegalArgumentException If credential is null.
 	 */
 	public synchronized static UserAccountManager getInstance(Credential c) {
 		if (c == null) {
-			throw new IllegalArgumentException("Credential cannot be null.");
+			throw new IllegalArgumentException("Credential must not be null.");
 		}
+		//
+		UserAccountManager uam = null;
+		//
 		if (userAccountMngrPoll == null) {
 			userAccountMngrPoll = new Hashtable();
+		} else {
+			uam = (UserAccountManager)userAccountMngrPoll.get(c);
 		}
 		//
-		UserAccountManager uam = (UserAccountManager)userAccountMngrPoll.get(c);
-		if (uam == null) {
-			uam = new UserAccountManager(c);
-			userAccountMngrPoll.put(c, uam);
-		}
-		//
-		return uam;
+		return uam != null ? uam : new UserAccountManager(c);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public final class UserAccountManager {
 	static synchronized HttpConnection getHttpConn(String url, Credential c)
 		throws IOException {
 		if (url == null || (url = url.trim()).length() == 0) {
-			throw new IllegalArgumentException("URL cannot be empty/null.");
+			throw new IllegalArgumentException("URL must not be empty/null.");
 		}
 		//
 		HttpConnection conn = HttpConnector.open(url);
@@ -144,7 +144,7 @@ public final class UserAccountManager {
 		//
 		return conn;
 	}
-
+	
 	/**
 	 * <p>
 	 * Create an instance of UserAccountManager class.
@@ -217,6 +217,10 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public boolean verifyCredential() throws IOException {
+		if (verified) {
+			return true; //already verified.
+		}
+		//
 		HttpConnection conn =
 			getHttpConn(TWITTER_URL_VERIFY_CREDENTIALS, credential);
 		//
@@ -235,6 +239,8 @@ public final class UserAccountManager {
 				} catch (ParserException e) {
 					throw new IOException(e.getMessage());
 				}
+				//
+				saveSelfOnPool();
 			} else if (respCode == HttpConnection.HTTP_UNAUTHORIZED) {
 				verified = false;
 			} else {
@@ -271,7 +277,13 @@ public final class UserAccountManager {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
-		return credential.equals(o);
+		if (o == this) {
+			return true;
+		} else if (o == null || !(o instanceof UserAccountManager)) {
+			return false;
+		} else {
+			return credential.equals(((UserAccountManager)o).credential);
+		}
 	}
 	
 	/**
@@ -297,10 +309,21 @@ public final class UserAccountManager {
 	 * </p>
 	 * @throws SecurityException If it is not properly verified.
 	 */
-	synchronized void checkVerified() {
+	private void checkVerified() {
 		if (!verified) {
 			throw new SecurityException(
 				"User's credentials have not been verified yet.");
+		}
+	}
+
+	/**
+	 * <p>
+	 * Save the instance on pool.
+	 * </p>
+	 */
+	private void saveSelfOnPool() {
+		if (userAccountMngrPoll.get(credential) == null) {
+			userAccountMngrPoll.put(credential, this);
 		}
 	}
 }
