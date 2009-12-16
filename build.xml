@@ -70,9 +70,7 @@
 	</target>
 	
 	<target name="-lib_android" if="tapime.building.android">
-		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}">
-			<zipfileset src="${tapime.path.lib.kxml2}"/>
-		</jar>
+		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
 	</target>
 
 	<target name="-classpath_javame" if="tapime.building.javame">
@@ -85,9 +83,7 @@
 
 	<target name="-classpath_android" if="tapime.building.android">
 		<path id="tapime.classpath">
-			<pathelement path="${tapime.path.lib.midp20}"/>
-			<pathelement path="${tapime.path.lib.cldc10}"/>
-			<pathelement path="${tapime.path.lib.kxml2}"/>
+			<pathelement path="${tapime.path.lib.android11}"/>
 		</path>
 	</target>
 
@@ -115,9 +111,6 @@
 
 	<target name="+build_android">
 		<antcall target="-run">
-			<param name="wtk.midp.version" value="2.0"/>
-			<param name="wtk.cldc.version" value="1.0"/>
-			<param name="wtk.midpapi" value="${tapime.path.lib.midp20};${tapime.path.lib.cldc10}"/>
 			<param name="tapime.building.android" value="true"/>
 			<param name="tapime.version.jar" value="${tapime.lib.name}-${tapime.number.version}.${build.number}.jar"/>
 			<param name="tapime.version.findbug.report" value="${basedir}/${findbugs-report-prefixname}-${tapime.android.name}-${tapime.number.version}.${build.number}"/>
@@ -142,7 +135,8 @@
 	    	      classpath="tapime.classpath"
 	              output="html"
 	              outputFile="${tapime.version.findbug.report}.html"
-		          sourcepath="${tapime.path.src}">
+		          sourcepath="${tapime.path.src}"
+	    		  excludefilter="findbugs-filters.xml">
 	        <class location="${tapime.version.path.dist}/${tapime.version.jar}"/>
         </findbugs>
 	</target>
@@ -160,6 +154,7 @@
 			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.xml"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="findbugs-filters.xml"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
@@ -187,6 +182,7 @@
 			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.xml"/>
+			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="findbugs-filters.xml"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
