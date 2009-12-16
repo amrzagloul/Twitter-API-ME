@@ -18,7 +18,7 @@ import java.util.Date;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -29,140 +29,140 @@ public final class QueryComposer {
 	 * Constant that represents the "filter links" parameter.
 	 * </p>
 	 */
-	static final String PM_FILTER_LINKS = "&filter=links";
+	private static final String PM_FILTER_LINKS = "&filter=links";
 
 	/**
 	 * <p>
 	 * Constant that represents the "from" parameter.
 	 * </p>
 	 */
-	static final String PM_FROM = "&from=";
+	private static final String PM_FROM = "&from=";
 
 	/**
 	 * <p>
 	 * Constant that represents a "positive attitude" parameter.
 	 * </p>
 	 */
-	static final String PM_POSITIVE_ATTITUDE = "&tude[]=:)";
+	private static final String PM_POSITIVE_ATTITUDE = "&tude[]=:)";
 
 	/**
 	 * <p>
 	 * Constant that represents a "negative attitude" parameter.
 	 * </p>
 	 */
-	static final String PM_NEGATIVE_ATTITUDE = "&tude[]=:(";
+	private static final String PM_NEGATIVE_ATTITUDE = "&tude[]=:(";
 
 	/**
 	 * <p>
 	 * Constant that represents a "asking a question" parameter.
 	 * </p>
 	 */
-	static final String PM_ASKING_QUESTION = "&tude[]=?";
+	private static final String PM_ASKING_QUESTION = "&tude[]=?";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain all" parameter.
 	 * </p>
 	 */
-	static final String PM_CONTAIN_ALL = "&ands=";
+	private static final String PM_CONTAIN_ALL = "&ands=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain exact" parameter.
 	 * </p>
 	 */
-	static final String PM_CONTAIN_EXACT = "&phrase=";
+	private static final String PM_CONTAIN_EXACT = "&phrase=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain any" parameter.
 	 * </p>
 	 */
-	static final String PM_CONTAIN_ANY = "&ors=";
+	private static final String PM_CONTAIN_ANY = "&ors=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain none" parameter.
 	 * </p>
 	 */
-	static final String PM_CONTAIN_NONE = "&nots=";
+	private static final String PM_CONTAIN_NONE = "&nots=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "hashtag" parameter.
 	 * </p>
 	 */
-	static final String PM_CONTAIN_HASHTAG = "&tag=";
+	private static final String PM_CONTAIN_HASHTAG = "&tag=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "reference" parameter.
 	 * </p>
 	 */
-	static final String PM_REFERENCE = "&ref=";
+	private static final String PM_REFERENCE = "&ref=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "since" parameter.
 	 * </p>
 	 */
-	static final String PM_SINCE = "&since=";
+	private static final String PM_SINCE = "&since=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "source" parameter.
 	 * </p>
 	 */
-	static final String PM_SOURCE = "&source=";
+	private static final String PM_SOURCE = "&source=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "to" parameter.
 	 * </p>
 	 */
-	static final String PM_TO = "&to=";
+	private static final String PM_TO = "&to=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "until" parameter.
 	 * </p>
 	 */
-	static final String PM_UNTIL = "&until=";
+	private static final String PM_UNTIL = "&until=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "lang" parameter.
 	 * </p>
 	 */
-	static final String PM_LANG = "&lang=";
+	private static final String PM_LANG = "&lang=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "rpp" parameter.
 	 * </p>
 	 */
-	static final String PM_RPP = "&rpp=";
+	private static final String PM_RPP = "&rpp=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "page" parameter.
 	 * </p>
 	 */
-	static final String PM_PAGE = "&page=";
+	private static final String PM_PAGE = "&page=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "since_id" parameter.
 	 * </p>
 	 */
-	static final String PM_SINCE_ID = "&since_id=";
+	private static final String PM_SINCE_ID = "&since_id=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "geocode" parameter.
 	 * </p>
 	 */
-	static final String PM_GEOCODE = "&geocode=";
+	private static final String PM_GEOCODE = "&geocode=";
 
 	/**
 	 * <p>
@@ -172,8 +172,13 @@ public final class QueryComposer {
 	 * @param q2 Query 2.
 	 * @return A new query object with the content from both queries
 	 *         concatenated.
+	 * @throws IllegalArgumentException If q1/q2 is null.
 	 */
 	public static Query append(Query q1, Query q2) {
+		if (q1 == null || q2 == null) {
+			throw new IllegalArgumentException("Q1/Q2 must not be null.");
+		}
+		//
 		return new Query(q1.toString() + q2.toString());
 	}
 	
@@ -287,8 +292,13 @@ public final class QueryComposer {
 	 * <p/>
 	 * @param date The date.
 	 * @return A new query.
+	 * @throws IllegalArgumentException If date is null.
 	 */
 	public static Query since(Date date) {
+		if (date == null) {
+			throw new IllegalArgumentException("Date must not be null.");
+		}
+		//
 		return new Query(PM_SINCE + convertDate(date));
 	}
 
@@ -303,8 +313,13 @@ public final class QueryComposer {
 	 * <p/>
 	 * @param date The date.
 	 * @return A new query.
+	 * @throws IllegalArgumentException If date is null.
 	 */
 	public static Query until(Date date) {
+		if (date == null) {
+			throw new IllegalArgumentException("Date must not be null.");
+		}
+		//
 		return new Query(PM_UNTIL + convertDate(date));
 	}
 
@@ -466,14 +481,6 @@ public final class QueryComposer {
 
 	/**
 	 * <p>
-	 * Package-protected constructor to avoid object instantiation.
-	 * </p>
-	 */
-	QueryComposer() {
-	}
-
-	/**
-	 * <p>
 	 * Convert a given date object to a string date, e.g, "2009-10-20".
 	 * </p>
 	 * @param date The date.
@@ -485,5 +492,13 @@ public final class QueryComposer {
 		//
 		return c.get(Calendar.YEAR) + "-" +	(c.get(Calendar.MONTH) + 1) + "-" +
 			c.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * <p>
+	 * Private constructor to avoid object instantiation.
+	 * </p>
+	 */
+	private QueryComposer() {
 	}
 }
