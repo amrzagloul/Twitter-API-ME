@@ -40,9 +40,14 @@ public final class HttpResponseCodeInterpreter {
 	 * @throws LimitExceededException If a request limit exceeded error occurs.
 	 * @throws InvalidQueryException If an invalid query error occurs.
 	 * @throws SecurityException If a security error occurs.
+	 * @throws IllegalArgumentException If conn is null.
 	 */
 	public static void perform(HttpConnection conn) throws IOException,
 		LimitExceededException {
+		if (conn == null) {
+			throw new IllegalArgumentException("Connection must not be null.");
+		}
+		//
 		final int respCode = conn.getResponseCode();
 		//
 		if (respCode != HttpConnection.HTTP_OK
