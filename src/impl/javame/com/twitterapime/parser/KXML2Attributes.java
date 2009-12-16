@@ -127,7 +127,7 @@ public final class KXML2Attributes implements Attributes {
 	 * @version 1.0
 	 * @since 1.1
 	 */
-	private class Attribute {
+	private static class Attribute {
 		/**
 		 * <p>
 		 * Qualified name.
