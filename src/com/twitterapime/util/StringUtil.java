@@ -70,8 +70,12 @@ public final class StringUtil {
 		c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tparts[0]));
 		c.set(Calendar.MINUTE, Integer.parseInt(tparts[1]));
 		c.set(Calendar.SECOND, Integer.parseInt(tparts[2]));
+		c.set(Calendar.MILLISECOND, 0);
 		//
-		return c.getTime().getTime();
+		String dim = Long.toString(c.getTime().getTime());
+		dim = dim.substring(0, dim.length() -3);
+		//
+		return Long.parseLong(dim); 
 	}
 	
 	/**
@@ -117,7 +121,13 @@ public final class StringUtil {
     		throw new IllegalArgumentException("ID must not be null.");
     	}
     	//
-		return id.substring(id.lastIndexOf(':') +1, id.length());
+    	int idx = id.lastIndexOf(':');
+    	//
+    	if (idx != -1) {
+    		return id.substring(idx +1, id.length());
+    	} else {
+    		return id;
+    	}
 	}
 	
 	/**
@@ -164,7 +174,8 @@ public final class StringUtil {
 	
 	/**
 	 * <p>
-	 * Split the author's username and name from the given string.
+	 * Split the author's username and name from the given string, according to
+	 * the format: "<username> (<name>)".
 	 * </p>
 	 * @param name The name.
 	 * @return The username [0] and full name [1].
@@ -176,13 +187,9 @@ public final class StringUtil {
 		}
 		//
 		String[] names = new String[2];
-		//
-		if (name == null) {
-			return names;
-		}
-		//
 		name = name.trim();
 		final int i = name.indexOf(' ');
+		//
 		if (i == -1) {
 			names[0] = name;
 			names[1] = name;
@@ -193,7 +200,25 @@ public final class StringUtil {
 		//
 		return names;
 	}
-
+	
+    /**
+     * <p>
+     * Return a padded string with leading zeros. 
+     * </p>
+     * @param n Number.
+     * @param len String length.
+     * @return Padded string.
+     */
+    public static String zeroPad(int n, int len) {
+    	String s = n + "";
+    	//
+    	for (int i = len - s.length(); i > 0; i--) {
+            s = '0' + s;
+    	}
+    	//
+        return s;
+    }
+	
 	/**
 	 * <p>
 	 * Private constructor to avoid object instantiation.
@@ -214,9 +239,7 @@ public final class StringUtil {
 	private static String formatTweetDate1(String date) {
 		//2009-11-28 21:43:12
 		//2009-12-01T01:25:00+00:00
-		return date != null
-			? date.replace('T', ' ').replace('Z', ' ').trim().substring(0, 19)
-			: null;
+		return date.substring(0, 10) + ' ' + date.substring(11, 19);
 	}
 
 	/**
@@ -235,7 +258,8 @@ public final class StringUtil {
 		//
 		for (int i = 0; i < MONTHS_ABBREVIATION.length; i++) {
 			if (mon.equals(MONTHS_ABBREVIATION[i])) {
-				return dtps[5] + '-' + (i +1) + '-' + dtps[2] + ' ' + dtps[3];
+				return dtps[5] + '-' + zeroPad((i +1), 2) + '-' + dtps[2] +
+					' ' + dtps[3];
 			}
 		}
 		//
