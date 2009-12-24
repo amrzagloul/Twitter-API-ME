@@ -43,6 +43,7 @@ public class DefaultEntity implements Entity {
 	 * </p>
 	 */
 	public DefaultEntity() {
+		setData(null);
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class DefaultEntity implements Entity {
 	 * </p>
 	 * @param data Pack of attributes/values.
 	 */
-	public void setData(Hashtable data) {
+	public final void setData(Hashtable data) {
 		if (data == null) {
 			data = new Hashtable();
 		}
@@ -71,21 +72,21 @@ public class DefaultEntity implements Entity {
 	/**
 	 * @see com.twitterapime.model.Entity#getArray(java.lang.String)
 	 */
-	public Object[] getArray(String attr) {
+	public final Object[] getArray(String attr) {
 		return (Object[])getValue(attr, new Object[]{""}.getClass());
 	}
 	
 	/**
 	 * @see com.twitterapime.model.Entity#getDate(java.lang.String)
 	 */
-	public Date getDate(String attr) {
+	public final Date getDate(String attr) {
 		return (Date)getValue(attr, new Date().getClass());
 	}
 
 	/**
 	 * @see com.twitterapime.model.Entity#getInt(java.lang.String)
 	 */
-	public int getInt(String attr) {
+	public final int getInt(String attr) {
 		Object v = (Integer)getValue(attr, new Integer(0).getClass());
 		return v != null ? ((Integer)v).intValue() : Integer.MIN_VALUE;
 	}
@@ -93,22 +94,27 @@ public class DefaultEntity implements Entity {
 	/**
 	 * @see com.twitterapime.model.Entity#getLong(java.lang.String)
 	 */
-	public long getLong(String attr) {
-		Object v = (Long)getValue(attr, new Long(0).getClass());
-		return v != null ? ((Long)v).longValue() : Long.MIN_VALUE;
+	public final long getLong(String attr) {
+		Object v = getObject(attr);
+		if (v instanceof Date) {
+			return ((Date)v).getTime();
+		} else {
+			v = (Long)getValue(attr, new Long(0).getClass());
+			return v != null ? ((Long)v).longValue() : Long.MIN_VALUE;
+		}
 	}
 
 	/**
 	 * @see com.twitterapime.model.Entity#getObject(java.lang.String)
 	 */
-	public Object getObject(String attr) {
+	public final Object getObject(String attr) {
 		return data.get(attr);
 	}
 
 	/**
 	 * @see com.twitterapime.model.Entity#getString(java.lang.String)
 	 */
-	public String getString(String attr) {
+	public final String getString(String attr) {
 		Object v = data.get(attr);
 		return v != null ? v.toString() : null;
 	}
@@ -116,7 +122,7 @@ public class DefaultEntity implements Entity {
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object o) {
+	public final boolean equals(Object o) {
 		if (o == this) {
 			return true;
 		} else if (o == null || !(o instanceof DefaultEntity)) {
@@ -129,18 +135,14 @@ public class DefaultEntity implements Entity {
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
-	public int hashCode() {
+	public final int hashCode() {
 		return toString().hashCode();
 	}
 	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
-	public String toString() {
-		if (data == null) {
-			return super.toString();
-		}
-		//
+	public final String toString() {
 		StringBuffer s = new StringBuffer();
 		Enumeration keys = data.keys();
 		String key;
@@ -151,6 +153,14 @@ public class DefaultEntity implements Entity {
 		}
 		//
 		return s.toString();
+	}
+	
+	/**
+	 * Return the number of entries in the entity.
+	 * @return Number.
+	 */
+	public final int size() {
+		return data.size();
 	}
 
 	/**
