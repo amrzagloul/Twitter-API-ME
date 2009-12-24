@@ -23,6 +23,7 @@ public class StringUtilTest extends TestCase {
 	public void testConvertTweetDateToLong() {
 		try {
 			StringUtil.convertTweetDateToLong(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -30,6 +31,7 @@ public class StringUtilTest extends TestCase {
 		//
 		try {
 			StringUtil.convertTweetDateToLong("");
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -48,6 +50,7 @@ public class StringUtilTest extends TestCase {
 	public void testSplit() {
 		try {
 			StringUtil.split(null, '|');
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -87,6 +90,7 @@ public class StringUtilTest extends TestCase {
 		//tag:search.twitter.com,2005:6866331107
 		try {
 			StringUtil.formatTweetID(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -102,6 +106,7 @@ public class StringUtilTest extends TestCase {
 	public void testRemoveTags() {
 		try {
 			StringUtil.removeTags(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -125,6 +130,7 @@ public class StringUtilTest extends TestCase {
 	public void testSplitTweetAuthorNames() {
 		try {
 			StringUtil.splitTweetAuthorNames(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
