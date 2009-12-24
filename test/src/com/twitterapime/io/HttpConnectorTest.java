@@ -27,6 +27,7 @@ public class HttpConnectorTest extends TestCase {
 	public void testOpen() {
 		try {
 			HttpConnector.open(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -34,6 +35,7 @@ public class HttpConnectorTest extends TestCase {
 		//
 		try {
 			HttpConnector.open("");
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -55,6 +57,7 @@ public class HttpConnectorTest extends TestCase {
 	public void testEncodeURL() {
 		try {
 			HttpConnector.encodeURL(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -73,6 +76,7 @@ public class HttpConnectorTest extends TestCase {
 	public void testEncodeBase64() {
 		try {
 			HttpConnector.encodeBase64(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();

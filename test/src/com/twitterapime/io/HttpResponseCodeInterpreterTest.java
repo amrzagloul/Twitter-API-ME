@@ -29,6 +29,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 	public void testPerform() {
 		try {
 			HttpResponseCodeInterpreter.perform(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();

@@ -48,6 +48,7 @@ public class PlatformProviderSelectorTest extends TestCase {
 		//
 		try {
 			PlatformProviderSelector.select(null);
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
