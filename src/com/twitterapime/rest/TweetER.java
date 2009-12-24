@@ -7,8 +7,8 @@
  */
 package com.twitterapime.rest;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -243,11 +243,11 @@ public final class TweetER {
 			final String content = tweet.getString(MetadataSet.TWEET_CONTENT);
 			//
 			conn.setRequestMethod(HttpConnection.POST);
-			DataOutputStream dout =
-				new DataOutputStream(conn.openOutputStream());
-			dout.write(("status=" + content).getBytes());
-			dout.flush();
-			dout.close();
+			//
+			OutputStream out = conn.openOutputStream();
+			out.write(("status=" + content).getBytes());
+			out.flush();
+			out.close();
 			//
 			HttpResponseCodeInterpreter.perform(conn);
 			//
