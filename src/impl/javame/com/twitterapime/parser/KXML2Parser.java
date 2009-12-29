@@ -52,7 +52,6 @@ public final class KXML2Parser extends Parser {
 		try {
 			parser.setInput(new InputStreamReader(stream));
 			int etype;
-			String qName;
 			//
 			while (true) {
 				etype = parser.next();
@@ -61,21 +60,17 @@ public final class KXML2Parser extends Parser {
 					xmlHandler.startDocument();
 				} else if (etype == XmlPullParser.START_TAG) {
 					attrs.loadAttributes(parser);
-					qName = parser.getPrefix();
-					if (qName != null && !qName.equals("")) {
-						qName += ":" + parser.getName();
-					}
 					//
 					xmlHandler.startElement(
 						parser.getNamespace(),
 						parser.getName(),
-						qName,
+						getQName(parser),
 						attrs);
 				} else if (etype == XmlPullParser.END_TAG) {
 					xmlHandler.endElement(
 						parser.getNamespace(),
-						null,
-						parser.getName());
+						parser.getName(),
+						getQName(parser));
 				} else if (etype == XmlPullParser.TEXT) {
 					xmlHandler.text(parser.getText().trim());
 				} else if (etype == XmlPullParser.END_DOCUMENT) {
@@ -86,5 +81,19 @@ public final class KXML2Parser extends Parser {
 		} catch (XmlPullParserException e) {
 			throw new ParserException(e.getMessage());
 		}
+	}
+	
+	/**
+	 * Get the qualified name of the current tag beig parsed.
+	 * @param p Parser.
+	 * @return Qualified name.
+	 */
+	private String getQName(KXmlParser p) {
+		String qName = p.getPrefix();
+		if (qName != null && !qName.equals("")) {
+			qName += ":" + p.getName();
+		}
+		//
+		return qName;
 	}
 }
