@@ -128,7 +128,7 @@ public class DefaultEntity implements Entity {
 		} else if (o == null || !(o instanceof DefaultEntity)) {
 			return false;
 		} else {
-			return toString().equals(o.toString());
+			return areEquals(data, ((DefaultEntity)o).data);
 		}
 	}
 	
@@ -136,7 +136,7 @@ public class DefaultEntity implements Entity {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public final int hashCode() {
-		return toString().hashCode();
+		return toString().hashCode(); //TODO: find a better way to generate this hash code.
 	}
 	
 	/**
@@ -161,6 +161,31 @@ public class DefaultEntity implements Entity {
 	 */
 	public final int size() {
 		return data.size();
+	}
+	
+	/**
+	 * Check whether the given hashtables contain the same pair of keys/values.
+	 * @param h1 Hashtable 1.
+	 * @param h2 Hashtable 2.
+	 * @return Equals (true).
+	 */
+	private boolean areEquals(Hashtable h1, Hashtable h2) {
+		if (h1.size() != h2.size()) {
+			return false;
+		}
+		//
+		Enumeration keys = h1.keys();
+		Object key;
+		//
+		while (keys.hasMoreElements()) {
+			key = keys.nextElement();
+			//
+			if (!h1.get(key).equals(h2.get(key))) {
+				return false;
+			}
+		}
+		//
+		return true;
 	}
 
 	/**
