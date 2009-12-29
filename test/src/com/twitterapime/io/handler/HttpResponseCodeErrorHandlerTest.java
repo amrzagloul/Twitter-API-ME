@@ -45,29 +45,6 @@ public class HttpResponseCodeErrorHandlerTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link com.twitterapime.io.handler.HttpResponseCodeErrorHandler#text(java.lang.String)}.
-	 */
-	public void testText() {
-		HttpResponseCodeErrorHandler h = new HttpResponseCodeErrorHandler();
-		//
-		try {
-			h.startElement(null, "hash", null, null);
-			h.startElement(null, "error", null, null);
-			h.text("Error message.");
-			assertEquals("Error message.", h.getParsedErrorMessage());
-			h.endElement(null, null, null);
-			h.endElement(null, null, null);
-			//
-			h.startElement(null, "hash", null, null);
-			h.startElement(null, "request", null, null);
-			h.text("Request message.");
-			assertEquals("Request message.", h.getParsedRequestMessage());
-		} catch (Exception e) {
-			fail();
-		}
-	}
-
-	/**
 	 * Test method for {@link com.twitterapime.io.handler.HttpResponseCodeErrorHandler#getParsedErrorMessage()}.
 	 */
 	public void testGetParsedErrorMessage() {
