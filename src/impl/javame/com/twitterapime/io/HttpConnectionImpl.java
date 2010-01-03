@@ -82,6 +82,13 @@ public final class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	/**
+	 * @see com.twitterapime.io.HttpConnection#getRequestProperty(java.lang.String)
+	 */
+	public String getRequestProperty(String key) throws IOException {
+		return httpConn.getRequestProperty(key);
+	}
+	
+	/**
 	 * @see com.twitterapime.io.HttpConnection#getHeaderField(java.lang.String)
 	 */
 	public String getHeaderField(String name) throws IOException {
