@@ -1,10 +1,10 @@
-<project name="TwitterAPIME" default="+build_all" basedir=".">
+<project name="Twitter API ME" default="+build_all" basedir=".">
 
 	<property file="build.properties"/>
 	<property file="build.number"/>
 	<property name="findbugs-report-prefixname" value="findbugs-report"/>
 	
-    <target name="-load_antenna">
+    <target name="-load_taskdefs">
 		<taskdef resource="antenna.properties">
 			<classpath location="${tapime.path.lib.antenna}"/>
 		</taskdef>
@@ -15,16 +15,18 @@
             <fileset dir="${tapime.path.build}" includes="*,*/**"/>
         	<fileset dir="${tapime.version.path.dist}" includes="*,*/**"/>
         	<fileset dir="${tapime.path.javadoc}" includes="*,*/**"/>
+        	<fileset dir="${tapime.path.test.bin}" includes="*,*/**"/>
         </delete>
     </target>
 
-	<target name="-init" depends="-clean, -load_antenna">
+	<target name="-init" depends="-clean, -load_taskdefs">
 		<mkdir dir="${tapime.path.build}"/>
 		<mkdir dir="${tapime.path.src.preprocessed}"/>
 		<mkdir dir="${tapime.path.build.bin}"/>
 		<mkdir dir="${tapime.path.dist}"/>
 		<mkdir dir="${tapime.version.path.dist}"/>
 		<mkdir dir="${tapime.path.javadoc}"/>
+		<mkdir dir="${tapime.path.test.bin}"/> 
 	</target>
 	
 	<target name="-preprocessor" depends="-init">
@@ -54,12 +56,32 @@
 		<javac srcdir="${tapime.path.src.preprocessed}"
 			   destdir="${tapime.path.build.bin}"
 			   encoding="${tapime.version.encoding}"
-			   source="${tapime.version.source}">
+			   source="${tapime.version.source}"
+			   target="${tapime.version.source}"
+			   optimize="true"
+			   debug="${tapime.compile.debug}">
 			<include name="com/twitterapime/**"/>
 			<include name="impl/javame/**" if="tapime.building.javame"/>
 			<include name="impl/android/**" if="tapime.building.android"/>
 
 			<classpath refid="tapime.classpath"/>
+		</javac>
+	</target>
+
+	<target name="-compile_unit_tests">
+		<javac srcdir="${tapime.path.test.src}"
+			   destdir="${tapime.path.test.bin}"
+			   encoding="${tapime.version.encoding}"
+			   source="${tapime.version.source}"
+			   target="${tapime.version.source}"
+			   optimize="true"
+			   debug="${tapime.compile.debug}">
+			<include name="com/twitterapime/**" if="tapime.building.javame"/>
+			<include name="impl/javame/**" if="tapime.building.javame"/>
+			<include name="impl/android/**" if="tapime.building.android"/>
+
+			<classpath refid="tapime.classpath"/>
+			<classpath path="${tapime.path.build.bin}"/>
 		</javac>
 	</target>
 	
@@ -78,12 +100,16 @@
 			<path path="${tapime.path.lib.midp20}"/>
 			<path path="${tapime.path.lib.cldc10}"/>
 			<path path="${tapime.path.lib.kxml2}"/>
+			<path path="${tapime.path.lib.junit}"/>
+			<path path="${tapime.path.lib.mobilejunit}"/>
+			<path path="${tapime.path.lib.mobilejunit-framework}"/>
 		</path>
 	</target>
 
 	<target name="-classpath_android" if="tapime.building.android">
 		<path id="tapime.classpath">
 			<pathelement path="${tapime.path.lib.android11}"/>
+			<path path="${tapime.path.lib.junit}"/>
 		</path>
 	</target>
 
@@ -91,7 +117,7 @@
 		<wtkpreverify jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
 	</target>
 
-	<target name="-run" depends="-classpath_javame, -classpath_android, -compile, -lib_javame, -lib_android, -preverify_javame, -findbugs"/>
+	<target name="-run" depends="-classpath_javame, -classpath_android, -compile, -lib_javame, -lib_android, -preverify_javame, -run_unit_tests_javame, -findbugs"/>
 	
 	<target name="+build_javame">
 		<antcall target="-run">
@@ -150,6 +176,8 @@
 		    <zipfileset dir="${tapime.path.javadoc}" prefix="${tapime.package}/doc/javadoc" includes="**/*.*"/>
 			<zipfileset dir="${tapime.path.design}" prefix="${tapime.package}/doc/design" includes="**/*.*"/>
 			<zipfileset dir="${tapime.path.src}" prefix="${tapime.package}/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.test.src}" prefix="${tapime.package}/test/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.test.res}" prefix="${tapime.package}/test/res" includes="**/*.*"/>
 			<zipfileset dir="${tapime.path.dist}" prefix="${tapime.package}/dist" includes="**/*.*"/>
 			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
@@ -179,6 +207,8 @@
 
 		<zip destfile="${basedir}/${tapime.package}-src.zip">
 			<zipfileset dir="${tapime.path.src}" prefix="${tapime.package}/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.test.src}" prefix="${tapime.package}/test/src" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.test.res}" prefix="${tapime.package}/test/res" includes="**/*.*"/>
 			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.properties"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="build.xml"/>
@@ -193,7 +223,31 @@
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="READ-ME.txt"/>
 		</zip>
+	</target>
+	
+	<target name="-run_unit_tests_javame" if="tapime.building.javame" depends="-compile_unit_tests">
+		<java classname="com.sonyericsson.sdkme.junit.OnDeviceTest"	fork="true" failonerror="true">
+			<classpath refid="tapime.classpath"/>
 
+			<arg value="--project-dir:${basedir}"/>
+			<arg value="--device:SonyEricsson_JP8_240x320_Emu"/>
+			<arg value="--wtk:${wtk.home}"/>
+			<arg value="--compile-midlet:false"/>
+			<arg value="--compile:true"/>
+			<arg value="--name:${ant.project.name}"/>
+			<arg value="--runmode:COMPILE-AND-RUN"/>
+			<arg value="--midlet-under-test:${tapime.version.path.dist}/${tapime.version.jar}"/>
+			<arg value="--progress:GUI"/>
+			<arg value="--midlet-source:${tapime.path.src.preprocessed}"/>
+			<arg value="--midlet-classes:${tapime.path.build.bin}"/>
+			<arg value="--add-line-numbers:true"/>
+			<arg value="--coverage:L"/>
+			<arg value="--coverage-report:${basedir}/unitests-coverage-javame.html"/>
+			<!--
+			Uncomment it to run the tests manually.
+			<arg value="-test-runner-class:com.sonyericsson.junit.midletrunner.StandaloneMIDlet"/>
+			-->
+		</java>
 	</target>
 
 	<target name="+build_all" depends="+build_javame, +build_android"/>
