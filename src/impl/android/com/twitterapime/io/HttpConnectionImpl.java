@@ -99,4 +99,11 @@ public final class HttpConnectionImpl implements HttpConnection {
 	public void setRequestProperty(String key, String value) throws IOException{
 		conn.setRequestProperty(key, value);
 	}
+	
+	/**
+	 * @see com.twitterapime.io.HttpConnection#getRequestProperty(java.lang.String)
+	 */
+	public String getRequestProperty(String key) throws IOException {
+		return conn.getRequestProperty(key);
+	}
 }
