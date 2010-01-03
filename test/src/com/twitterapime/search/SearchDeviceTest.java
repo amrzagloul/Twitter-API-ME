@@ -46,7 +46,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			fail();
 		}
 		//
-		Query q = QueryComposer.from("twiterapime");
+		Query q = QueryComposer.from("ernandesmjr");
 		//
 		try {
 			Tweet[] ts = s.searchTweets(q);
@@ -55,7 +55,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			assertTrue(ts.length > 0);
 			//
 			for (int i = 0; i < ts.length; i++) {
-				assertEquals("twiterapime", ts[i].getString(MetadataSet.TWEET_AUTHOR_USERNAME));
+				assertEquals("ernandesmjr", ts[i].getString(MetadataSet.TWEET_AUTHOR_USERNAME));
 			}
 		} catch (Exception e) {
 			fail();
@@ -84,11 +84,12 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			fail();
 		}
 		//
-		Query q = QueryComposer.from("twiterapime");
+		Query q = QueryComposer.from("ernandesmjr");
 		//
 		try {
 			Tweet[] ts = s.searchTweets("q=" + q.toString());
 			//
+			assertNotNull(ts);
 			assertTrue(ts.length > 0);
 		} catch (Exception e) {
 			fail();

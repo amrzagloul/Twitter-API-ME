@@ -190,5 +190,9 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		public void setRequestProperty(String key, String value)
 			throws IOException {
 		}
+
+		public String getRequestProperty(String key) throws IOException {
+			return null;
+		}
 	}
 }
