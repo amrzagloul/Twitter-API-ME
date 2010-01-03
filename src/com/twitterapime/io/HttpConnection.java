@@ -191,6 +191,20 @@ public interface HttpConnection {
 	
 	/**
 	 * <p>
+	 * Returns the value of the named general request property for this
+	 * connection. 
+	 * </p>
+	 * @param key The keyword by which the request property is known
+	 *            (e.g., "accept").
+	 * @return the value of the named general request property for this
+	 *         connection. If there is no key with the specified name then null
+	 *         is returned.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public String getRequestProperty(String key) throws IOException;
+
+	/**
+	 * <p>
 	 * Returns the value of the named header field. 
 	 * </p> 
 	 * @param name Name of a header field.
