@@ -1,29 +1,33 @@
 ********************************************************************************
-*                         TWITTER API ME 1.0 - READ ME                         *
+*                         TWITTER API ME 1.1 - READ ME                         *
 ********************************************************************************
-*                   http://kenai.com/projects/twitterapime                     *
+*                         http://www.twitterapime.com                          *
 ********************************************************************************
 
  DESCRIPTION:
 ********************************************************************************
 Twitter API ME defines a compelling and well defined API for Java developers
-that wish to access Twitter's services. This project is structured totally
-independent of platform (e.g. JSE, JME). However, just Java ME implementation
-is available.
+who wish to access Twitter's services. This project provides support for the
+main and more popular services on Twitter, e.g., searching and "tweet" posting.
+More services are added as new versions are released.
 
-This project aims to support Twitter's REST and Search API. However, just part
-of Search API is done. The next step is to work on posting "tweets". Although
-there are many things to be implemented yet, what is done is fully functional.
+Twitter API ME is defined in such a way that developers will learn how to use it
+quickly. In addition, the API is structured to work regardless of the underlying
+Java platform (e.g. Java ME and Android), in order to make easier and quicker
+for the developers to port their applications to other platforms.
 
  MINIMUM REQUIREMENTS:
 ********************************************************************************
 + Runtime Environment
   - Java ME: MIDP 2.0 / CLDC 1.0
+  - Android 1.1
 
 + Development Environment
   - Java SDK 1.6
   - Java ME platform SDK 3.0, WTK 2.5.2 or any other compatible Java ME SDK
+  - Android SDK 1.1 or newer.
   - Java Preprocessor (e.g. Antenna Preprocessor Plug-in for Eclipse)
+  - Sony Ericsson Mobile JUnit 1.0 (for Java ME unit testing)
   
 + Build Environment
   - Apache Ant 1.7.1
@@ -32,17 +36,23 @@ there are many things to be implemented yet, what is done is fully functional.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- Search API for searching "tweets"
-- Java ME implementation 
+- User account authentication.
+- Tweet posting.
+- Rate limit status access.
+- Android 1.1 support for all features available.
+- Some bug fixes and optimizations.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
 - None
 
- COMING NEXT VERSION: 1.1
+ COMING NEXT VERSION: 1.2
 ********************************************************************************
-- Android implementation for Search API
-- REST API for posting "tweets" (Java ME and Android)
+- Direct messages.
+- Retweet.
+- Friends and follower list.
+- Find people.
+- Much more...
 
  BUILD ENVIRONMENT SETUP:
 ********************************************************************************
@@ -56,3 +66,6 @@ tapime.path.lib.cldc10=${wtk.home}/<CLDC 1.0 JAR PATH>
 tapime.path.lib.antenna=<ANTENNA JAR PATH>
 tapime.path.findbugs=<FINDBUGS HOME DIR PATH>
 tapime.path.lib.findbugs=<FINDBUGS ANT JAR PATH>
+tapime.path.lib.android11=<ANDROID 1.1 JAR PATH>
+tapime.path.lib.junit=<JUnit 3.8.1 JAR PATH>
+tapime.path.lib.mobilejunit=<Mobile JUnit JAR PATH>
