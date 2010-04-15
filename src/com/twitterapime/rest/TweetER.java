@@ -17,7 +17,8 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
-import com.twitterapime.rest.handler.TweetHandler;
+import com.twitterapime.rest.handler.DirectMessageHandler;
+import com.twitterapime.rest.handler.StatusHandler;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Tweet;
@@ -40,7 +41,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  * @see Tweet
  * @see UserAccountManager
@@ -51,7 +52,7 @@ public final class TweetER {
 	 * TweetER pool used to cache instanced associated to user accounts.
 	 * </p>
 	 */
-	private static Hashtable tweetERPoll;
+	private static Hashtable tweetERPool;
 
 	/**
 	 * <p>
@@ -68,6 +69,22 @@ public final class TweetER {
 	 */
 	private static final String TWITTER_URL_SHOW_STATUS =
 		"http://twitter.com/statuses/show/";
+
+	/**
+	 * <p>
+	 * Twitter REST API send Direct Message URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_SEND_DIRECT_MESSAGE =
+		"http://api.twitter.com/1/direct_messages/new.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API repost status URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_REPOST_STATUS =
+		"http://api.twitter.com/1/statuses/retweet/";
 
 	/**
 	 * <p>
@@ -96,14 +113,14 @@ public final class TweetER {
 			throw new SecurityException("User's credential must be verified.");
 		}
 		//
-		if (tweetERPoll == null) {
-			tweetERPoll = new Hashtable();
+		if (tweetERPool == null) {
+			tweetERPool = new Hashtable();
 		}
 		//
-		TweetER ter = (TweetER)tweetERPoll.get(uam);
+		TweetER ter = (TweetER)tweetERPool.get(uam);
 		if (ter == null) {
 			ter = new TweetER(uam);
-			tweetERPoll.put(uam, ter);
+			tweetERPool.put(uam, ter);
 		}
 		//
 		return ter;
@@ -133,7 +150,7 @@ public final class TweetER {
 
 	/**
 	 * <p>
-	 * Create an instance of UserAccount class.
+	 * Create an instance of TweetER class.
 	 * </p>
 	 * <p>
 	 * Private constructor to avoid object instantiation.
@@ -144,7 +161,7 @@ public final class TweetER {
 	
 	/**
 	 * <p>
-	 * Create an instance of UserAccount class.
+	 * Create an instance of TweetER class.
 	 * </p>
 	 * <p>
 	 * Private constructor to avoid object instantiation.
@@ -180,12 +197,12 @@ public final class TweetER {
 			userAccountMngr != null ? userAccountMngr.getCredential() : null;
 		//
 		HttpConnection conn = UserAccountManager.getHttpConn(url, credential);
-		Parser parser = ParserFactory.getDefaultParser();
-		TweetHandler handler = new TweetHandler();
 		//
 		try {
 			HttpResponseCodeInterpreter.perform(conn);
 			//
+			Parser parser = ParserFactory.getDefaultParser();
+			StatusHandler handler = new StatusHandler();
 			parser.parse(conn.openInputStream(), handler);
 			//
 			return handler.getParsedTweet();
@@ -218,26 +235,20 @@ public final class TweetER {
 	 * @param tweet Tweet to be posted.
 	 * @return Tweet post with some additional data.
 	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not properly logged in.
 	 * @throws IllegalArgumentException If the given tweet is null/empty, etc.
 	 */
-	public Tweet post(Tweet tweet) throws IOException {
+	public Tweet post(Tweet tweet) throws IOException, LimitExceededException {
 		if (tweet == null) {
 			throw new IllegalArgumentException("Tweet must not be null.");
 		}
 		//
 		tweet.validateContent();
 		//
-		if (userAccountMngr == null) {
-			throw new SecurityException(
-			    "User's credential must be entered to perform this operation.");
-		}
+		checkUserAuth();
 		//
-		HttpConnection conn =
-			UserAccountManager.getHttpConn(
-				TWITTER_URL_UPDATE_STATUS, userAccountMngr.getCredential());
-		Parser parser = ParserFactory.getDefaultParser();
-		TweetHandler handler = new TweetHandler();
+		HttpConnection conn = getConn(TWITTER_URL_UPDATE_STATUS);
 		//
 		try {
 			final String content = tweet.getString(MetadataSet.TWEET_CONTENT);
@@ -251,21 +262,158 @@ public final class TweetER {
 			//
 			HttpResponseCodeInterpreter.perform(conn);
 			//
+			Parser parser = ParserFactory.getDefaultParser();
+			StatusHandler handler = new StatusHandler();
 			parser.parse(conn.openInputStream(), handler);
 			handler.loadParsedTweet(tweet);
 			//
 			return tweet;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
-		} catch (LimitExceededException e) {
-			//Twitter API specs states this operation is not API rate limited.
-			//That's why this exception is suppressed.
-			throw new IllegalStateException(
-				"Unexpected LimitExceededException: " + e.getMessage());
 		} finally {
 			if (conn != null) {
 				conn.close();
 			}
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Repost a given tweet to Twitter.
+	 * </p>
+	 * @param tweet Tweet to be reposted.
+	 * @return Tweet reposted.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IllegalArgumentException If the given tweet is null/empty, etc.
+	 * @throws InvalidQueryException If tweet's ID is invalid.
+	 */
+	public Tweet repost(Tweet tweet) throws IOException, LimitExceededException{
+		if (tweet == null) {
+			throw new IllegalArgumentException("Tweet must not be null.");
+		}
+		//
+		String id = tweet.getString(MetadataSet.TWEET_ID);
+		if (id == null || (id = id.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"Tweet ID must not be empty/null.");
+		}
+		//
+		checkUserAuth();
+		//
+		HttpConnection conn = getConn(TWITTER_URL_REPOST_STATUS + id + ".xml");
+		//
+		try {
+			conn.setRequestMethod(HttpConnection.POST);
+			//
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			StatusHandler handler = new StatusHandler();
+			parser.parse(conn.openInputStream(), handler);
+			handler.loadParsedTweet(tweet);
+			//
+			return tweet;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Send a given Direct Message to a given recipient. The DM's content must
+	 * be up to 140 characters, addressed to a proper user (he/she must also
+	 * follow you) and must be properly logged in ({@link UserAccountManager}).
+	 * </p>
+	 * @param dm Direct Message to be sent.
+	 * @return Sent Direct Message.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws InvalidQueryException If recipient does not exist or the sender
+	 *         does not follow the recipient and vice versa.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IllegalArgumentException If the given DM is null/empty, etc.
+	 */
+	public Tweet send(Tweet dm) throws IOException, LimitExceededException {
+		if (dm == null) {
+			throw new IllegalArgumentException("DM must not be null.");
+		}
+		//
+		dm.validateRecipient();
+		dm.validateContent();
+		//
+		checkUserAuth();
+		//
+		HttpConnection conn = getConn(TWITTER_URL_SEND_DIRECT_MESSAGE);
+		//
+		try {
+			final String content = dm.getString(MetadataSet.TWEET_CONTENT);
+			String recipient = dm.getString(MetadataSet.USERACCOUNT_ID);
+			//
+			if (recipient == null) {
+				recipient = dm.getString(MetadataSet.USERACCOUNT_USER_NAME);
+				if (recipient == null) {
+					recipient =	dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+				}
+			}
+			//
+			conn.setRequestMethod(HttpConnection.POST);
+			//
+			OutputStream out = conn.openOutputStream();
+			out.write(("user=" + recipient).getBytes());
+			out.write(("&text=" + content).getBytes());
+			out.flush();
+			out.close();
+			//
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			DirectMessageHandler handler = new DirectMessageHandler();
+			parser.parse(conn.openInputStream(), handler);
+			handler.loadParsedTweet(dm, 0);
+			//
+			return dm;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Check if the user's is authenticated.
+	 * </p>
+	 * @throws SecurityException User is not authenticated.
+	 */
+	private void checkUserAuth() {
+		if (userAccountMngr == null) {
+			throw new SecurityException(
+			    "User's credential must be entered to perform this operation.");
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Get HTTP connection for the given URL.
+	 * </p>
+	 * @param url URL.
+	 * @return Connection.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	private HttpConnection getConn(String url) throws IOException {
+		if (userAccountMngr != null) {
+			return UserAccountManager.getHttpConn(
+				url, userAccountMngr.getCredential());
+		} else {
+			return UserAccountManager.getHttpConn(url, null);
 		}
 	}
 }
