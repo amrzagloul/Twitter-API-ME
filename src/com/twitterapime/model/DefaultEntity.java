@@ -22,7 +22,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see Tweet
  * @see Credential
@@ -43,7 +43,7 @@ public class DefaultEntity implements Entity {
 	 * </p>
 	 */
 	public DefaultEntity() {
-		setData(null);
+		setData((Hashtable)null);
 	}
 
 	/**
@@ -68,7 +68,17 @@ public class DefaultEntity implements Entity {
 		}
 		this.data = data;
 	}
-
+	
+	/**
+	 * <p>
+	 * Set the given entity's data to the object.
+	 * </p>
+	 * @param e Entity.
+	 */
+	public final void setData(DefaultEntity e) {
+		setData(e.data);
+	}
+	
 	/**
 	 * @see com.twitterapime.model.Entity#getArray(java.lang.String)
 	 */
