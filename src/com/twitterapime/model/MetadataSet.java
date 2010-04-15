@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 public final class MetadataSet {
@@ -109,6 +109,23 @@ public final class MetadataSet {
 	 */
 	public static final String TWEET_USER_ACCOUNT = "TWEET_USER_ACCOUNT";
 
+	/**
+	 * <p>
+	 * Report the user account object of Direct Message's recipient, e.g.,
+	 * UserAccount class.
+	 * </p>
+	 */
+	public static final String TWEET_RECIPIENT_ACCOUNT =
+		"TWEET_RECIPIENT_ACCOUNT";
+
+	/**
+	 * <p>
+	 * Report the reposted tweet object from a repost operation, e.g.,
+	 * Tweet class.
+	 * </p>
+	 */
+	public static final String TWEET_REPOSTED_TWEET = "TWEET_REPOSTED_TWEET";
+	
 	/**
 	 * <p>
 	 * Report the credential's username, e.g., "johnsmith".
