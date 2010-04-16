@@ -44,6 +44,28 @@ public final class UserAccount extends DefaultEntity {
 	
 	/**
 	 * <p>
+	 * Create an instance of UserAccount class.<br/>
+	 * This constructor is used when the UserAccount object is going to be
+	 * used for Follow or Unfollow operations on {@link UserAccountManager}.
+	 * </p>
+	 * @param userNameOrID Username or ID.
+	 * @throws IllegalArgumentException If userNameOrID is empty/null.
+	 */
+	public UserAccount(String userNameOrID) {
+		if (userNameOrID == null
+				|| (userNameOrID = userNameOrID.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"Username/ID must not be empty/null.");
+		}
+		//
+		Hashtable data = new Hashtable();
+		data.put(MetadataSet.USERACCOUNT_ID, userNameOrID);
+		data.put(MetadataSet.USERACCOUNT_USER_NAME, userNameOrID);
+		setData(data);
+	}
+	
+	/**
+	 * <p>
 	 * Get the last tweet posted by the user.
 	 * </p>
 	 * @return Tweet.
