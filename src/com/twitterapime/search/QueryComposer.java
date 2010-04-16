@@ -18,7 +18,7 @@ import java.util.Date;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -164,6 +164,20 @@ public final class QueryComposer {
 	 */
 	private static final String PM_GEOCODE = "&geocode=";
 
+	/**
+	 * <p>
+	 * Constant that represents the "count" parameter.
+	 * </p>
+	 */
+	private static final String PM_COUNT = "&count=";
+
+	/**
+	 * <p>
+	 * Constant that represents the "max_id" parameter.
+	 * </p>
+	 */
+	private static final String PM_MAX_ID = "&max_id=";
+	
 	/**
 	 * <p>
 	 * Append a query to another one.
@@ -338,6 +352,18 @@ public final class QueryComposer {
 	public static Query sinceID(String id) {
 		return new Query(PM_SINCE_ID + id);
 	}
+	
+	/**
+	 * <p>
+	 * Create a query to search for tweets that are lesser than or equal to a
+	 * given ID, e.g., "123549789".
+	 * </p>
+	 * @param id The ID.
+	 * @return A new query.
+	 */
+	public static Query maxID(String id) {
+		return new Query(PM_MAX_ID + id);
+	}
 
 	/**
 	 * <p>
@@ -386,6 +412,21 @@ public final class QueryComposer {
 		return new Query(PM_RPP + count);
 	}
 
+	/**
+	 * <p>
+	 * Create a query to define the tweet count to be returned.
+	 * </p>
+	 * <p>
+	 * This query must be used only with REST API search methods. For Search API
+	 * search methods, use {@link QueryComposer#resultCount(int)} instead.
+	 * </p>
+	 * @param count The count.
+	 * @return A new query.
+	 */
+	public static Query count(int count) {
+		return new Query(PM_COUNT + count);
+	}
+	
 	/**
 	 * <p>
 	 * Create a query to define the number of tweets page to be returned.
