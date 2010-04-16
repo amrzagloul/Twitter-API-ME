@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Tweet;
 
 /**
@@ -154,6 +155,8 @@ public class TweetERTest extends TestCase {
 			assertSame(tw1, tw2);
 			assertEquals(msg, tw2.getString(MetadataSet.TWEET_CONTENT));
 		} catch (IOException e) {
+			fail();
+		} catch (LimitExceededException e) {
 			fail();
 		}
 	}

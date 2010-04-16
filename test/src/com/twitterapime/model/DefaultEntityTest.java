@@ -106,7 +106,7 @@ public class DefaultEntityTest extends TestCase {
 		DefaultEntity d = new DefaultEntity();
 		d.setData(dataSample);
 		assertTrue(dataSample.equals(d.data));
-		d.setData(null);
+		d.setData((Hashtable)null);
 		assertNotNull(d.data);
 		assertFalse(dataSample.equals(d.data));
 	}
@@ -218,7 +218,7 @@ public class DefaultEntityTest extends TestCase {
 		assertFalse(d.equals(null));
 		DefaultEntity dc = new DefaultEntity(dataSample);
 		assertTrue(d.equals(dc));
-		dc.setData(null);
+		dc.setData((Hashtable)null);
 		assertFalse(d.equals(dc));
 	}
 
