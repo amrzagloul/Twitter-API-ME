@@ -8,6 +8,8 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -17,8 +19,9 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
-import com.twitterapime.rest.handler.UserAccountHandler;
+import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 
 /**
@@ -36,7 +39,7 @@ import com.twitterapime.search.LimitExceededException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -63,6 +66,54 @@ public final class UserAccountManager {
 	 */
 	private static final String TWITTER_URL_RATE_STATUS_LIMIT =
 		"http://twitter.com/account/rate_limit_status.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API follow user URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_FOLLOW_USER =
+		"http://api.twitter.com/1/friendships/create.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API unfollow user URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_UNFOLLOW_USER =
+		"http://api.twitter.com/1/friendships/destroy.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API users friendship checking URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_IS_FOLLOWING_USER =
+		"http://api.twitter.com/1/friendships/exists.json";
+	
+	/**
+	 * <p>
+	 * Twitter REST API block user URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_BLOCK_USER =
+		"http://api.twitter.com/1/blocks/create.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API unblock user URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_UNBLOCK_USER =
+		"http://api.twitter.com/1/blocks/destroy.xml";
+	
+	/**
+	 * <p>
+	 * Twitter REST API users blocking checking URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_IS_BLOCKING_USER =
+		"http://api.twitter.com/1/blocks/exists/";
 	
 	/**
 	 * <p>
@@ -232,7 +283,7 @@ public final class UserAccountManager {
 				//
 				try {
 					Parser parser =	ParserFactory.getDefaultParser();
-					UserAccountHandler handler = new UserAccountHandler();
+					AccountHandler handler = new AccountHandler();
 					parser.parse(conn.openInputStream(), handler);
 					//
 					account = handler.getParsedUserAccount();
@@ -274,6 +325,159 @@ public final class UserAccountManager {
 	}
 	
 	/**
+	 * <p>
+	 * Allows the authenticating user to follow the user specified in the given
+	 * UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Info from followed user.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidQueryException User already followed or does not exist.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	public UserAccount follow(UserAccount ua) throws IOException {
+		return manageFriendship(TWITTER_URL_FOLLOW_USER, ua);
+	}
+	
+	/**
+	 * <p>
+	 * Allows the authenticating user to unfollow the user specified in the
+	 * given UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Info from unfollowed user.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidQueryException User already unfollowed or does not exist.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	public UserAccount unfollow(UserAccount ua) throws IOException {
+		return manageFriendship(TWITTER_URL_UNFOLLOW_USER, ua);
+	}
+	
+	/**
+	 * <p>
+	 * Verify whether the authenticating user is following the user specified in
+	 * the given UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Following (true).
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws InvalidQueryException If user does not exist or is protected.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	public boolean isFollowing(UserAccount ua) throws IOException,
+		LimitExceededException {
+		if (ua == null) {
+			throw new IllegalArgumentException(
+				"UserAccount object must not me null.");
+		}
+		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
+		if (id == null || (id = id.trim()).length() == 0) {
+			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			if (id == null || (id = id.trim()).length() == 0) {
+				throw new IllegalArgumentException(
+					"Username or ID must not be empty/null.");
+			}
+		}
+		//
+		checkVerified();
+		//
+		final String qryStr =
+			"?user_a=" + account.getString(MetadataSet.USERACCOUNT_USER_NAME) +
+			"&user_b=" + id;
+		//
+		HttpConnection conn =
+			getHttpConn(TWITTER_URL_IS_FOLLOWING_USER + qryStr, credential);
+		//
+		try {
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			InputStream dis = conn.openInputStream();
+			byte[] bs = new byte[dis.available()];
+			dis.read(bs);
+			final String result = new String(bs).trim().toLowerCase();
+			//
+			return result.equals("true");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+
+	/**
+	 * <p>
+	 * Allows the authenticating user to block the user specified in the given
+	 * UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Info from blocked user.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidQueryException User already blocked or does not exist.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	public UserAccount block(UserAccount ua) throws IOException {
+		return manageFriendship(TWITTER_URL_BLOCK_USER, ua);
+	}
+	
+	/**
+	 * <p>
+	 * Allows the authenticating user to unblock the user specified in the
+	 * given UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Info from unblocked user.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidQueryException User already unblocked or does not exist.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	public UserAccount unblock(UserAccount ua) throws IOException {
+		return manageFriendship(TWITTER_URL_UNBLOCK_USER, ua);
+	}
+	
+	/**
+	 * @param ua
+	 * @return
+	 * @throws IOException
+	 * @throws LimitExceededException
+	 */
+	public boolean isBlocking(UserAccount ua) throws IOException,
+		LimitExceededException {
+		if (ua == null) {
+			throw new IllegalArgumentException(
+				"UserAccount object must not me null.");
+		}
+		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
+		if (id == null || (id = id.trim()).length() == 0) {
+			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			if (id == null || (id = id.trim()).length() == 0) {
+				throw new IllegalArgumentException(
+					"Username or ID must not be empty/null.");
+			}
+		}
+		//
+		checkVerified();
+		//
+		HttpConnection conn =
+			getHttpConn(TWITTER_URL_IS_BLOCKING_USER + id + ".xml", credential);
+		//
+		try {
+			if (conn.getResponseCode() == HttpConnection.HTTP_NOT_FOUND) {
+				return false; //not blocked!
+			}
+			//
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			return true;
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
+
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
@@ -301,6 +505,70 @@ public final class UserAccountManager {
 	 */
 	Credential getCredential() {
 		return credential;
+	}
+
+	/**
+	 * <p>
+	 * Perform an operation on authenticating user regarding the friendship
+	 * management, e.g., follow, unfollow, block or unblock users.
+	 * </p>
+	 * @param actionUrl Action's URL to be performed.
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidQueryException User already affected by the action or does
+	 *         not exist.
+	 * @throws SecurityException If the user is not authenticated.
+	 */
+	private UserAccount manageFriendship(String actionUrl, UserAccount ua)
+		throws IOException {
+		if (ua == null) {
+			throw new IllegalArgumentException(
+				"UserAccount object must not me null.");
+		}
+		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
+		if (id == null || (id = id.trim()).length() == 0) {
+			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			if (id == null || (id = id.trim()).length() == 0) {
+				throw new IllegalArgumentException(
+					"Username or ID must not be empty/null.");
+			}
+		}
+		//
+		checkVerified();
+		//
+		HttpConnection conn = getHttpConn(actionUrl, credential);
+		//
+		try {
+			conn.setRequestMethod(HttpConnection.POST);
+			//
+			OutputStream out = conn.openOutputStream();
+			try {
+				Long.parseLong(id); // is only numbers?
+				out.write(("user_id=" + id).getBytes());
+			} catch (NumberFormatException e) {
+				//user name.
+				out.write(("screen_name=" + id).getBytes());
+			}
+			out.flush();
+			out.close();
+			//
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(conn.openInputStream(), handler);
+			//
+			return handler.getParsedUserAccount();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} catch (LimitExceededException e) {
+			throw new IllegalStateException(
+				"This type of error is not expected. Inform to tech support.");
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
 	}
 
 	/**
