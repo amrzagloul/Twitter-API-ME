@@ -22,14 +22,14 @@
     <url>url_1</url>
 
     <protected>false</protected>
-    <followers_count>followers_count_</followers_count>
+    <followers_count>followers_count_1</followers_count>
     <profile_background_color>bgcolor_1</profile_background_color>
     <profile_text_color>textcolor_1</profile_text_color>
     <profile_link_color>linkcolor_1</profile_link_color>
     <profile_sidebar_fill_color>f2f2f2</profile_sidebar_fill_color>
 
     <profile_sidebar_border_color>5eb2d1</profile_sidebar_border_color>
-    <friends_count>frind_count_1</friends_count>
+    <friends_count>friends_count_1</friends_count>
     <created_at>Sat May 09 18:57:42 +0000 2009</created_at>
     <favourites_count>favourites_count_1</favourites_count>
     <utc_offset>offset_1</utc_offset>
@@ -75,14 +75,14 @@
     <url>url_2</url>
 
     <protected>false</protected>
-    <followers_count>followers_count_</followers_count>
+    <followers_count>followers_count_2</followers_count>
     <profile_background_color>bgcolor_2</profile_background_color>
     <profile_text_color>textcolor_2</profile_text_color>
     <profile_link_color>linkcolor_2</profile_link_color>
     <profile_sidebar_fill_color>f2f2f2</profile_sidebar_fill_color>
 
     <profile_sidebar_border_color>5eb2d1</profile_sidebar_border_color>
-    <friends_count>frind_count_2</friends_count>
+    <friends_count>friends_count_2</friends_count>
     <created_at>Sat May 09 18:57:42 +0000 2009</created_at>
     <favourites_count>favourites_count_2</favourites_count>
     <utc_offset>offset_2</utc_offset>
@@ -128,14 +128,14 @@
     <url>url_3</url>
 
     <protected>false</protected>
-    <followers_count>followers_count_</followers_count>
+    <followers_count>followers_count_3</followers_count>
     <profile_background_color>bgcolor_3</profile_background_color>
     <profile_text_color>textcolor_3</profile_text_color>
     <profile_link_color>linkcolor_3</profile_link_color>
     <profile_sidebar_fill_color>f2f2f2</profile_sidebar_fill_color>
 
     <profile_sidebar_border_color>5eb2d1</profile_sidebar_border_color>
-    <friends_count>frind_count_3</friends_count>
+    <friends_count>friends_count_3</friends_count>
     <created_at>Sat May 09 18:57:42 +0000 2009</created_at>
     <favourites_count>favourites_count_3</favourites_count>
     <utc_offset>offset_3</utc_offset>
@@ -181,14 +181,14 @@
     <url>url_4</url>
 
     <protected>false</protected>
-    <followers_count>followers_count_</followers_count>
+    <followers_count>followers_count_4</followers_count>
     <profile_background_color>bgcolor_4</profile_background_color>
     <profile_text_color>textcolor_4</profile_text_color>
     <profile_link_color>linkcolor_4</profile_link_color>
     <profile_sidebar_fill_color>f2f2f2</profile_sidebar_fill_color>
 
     <profile_sidebar_border_color>5eb2d1</profile_sidebar_border_color>
-    <friends_count>frind_count_4</friends_count>
+    <friends_count>friends_count_4</friends_count>
     <created_at>Sat May 09 18:57:42 +0000 2009</created_at>
     <favourites_count>favourites_count_4</favourites_count>
     <utc_offset>offset_4</utc_offset>
@@ -234,14 +234,14 @@
     <url>url_5</url>
 
     <protected>false</protected>
-    <followers_count>followers_count_</followers_count>
+    <followers_count>followers_count_5</followers_count>
     <profile_background_color>bgcolor_5</profile_background_color>
     <profile_text_color>textcolor_5</profile_text_color>
     <profile_link_color>linkcolor_5</profile_link_color>
     <profile_sidebar_fill_color>f2f2f2</profile_sidebar_fill_color>
 
     <profile_sidebar_border_color>5eb2d1</profile_sidebar_border_color>
-    <friends_count>frind_count_5</friends_count>
+    <friends_count>friends_count_5</friends_count>
     <created_at>Sat May 09 18:57:42 +0000 2009</created_at>
     <favourites_count>favourites_count_5</favourites_count>
     <utc_offset>offset_5</utc_offset>

@@ -3,8 +3,6 @@
  */
 package com.twitterapime.rest;
 
-import java.io.IOException;
-
 import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.QueryComposer;
@@ -15,11 +13,41 @@ import com.twitterapime.search.Tweet;
  * @author ernandes
  *
  */
-public class TimelineTest extends TestCase {
+public class TimelineTest extends TestCase implements SearchDeviceListener {
+	/**
+	 * 
+	 */
+	private int count;
+	
+	/**
+	 * 
+	 */
+	private boolean finished;
+	
+	/**
+	 * 
+	 */
+	private int tweetsFromUserCount;
+	
+	/**
+	 * 
+	 */
+	private int tweetsFromFollowerCount;
+	
+	/**
+	 * 
+	 */
+	private int tweetsReferencesUserCount;
+	
+	/**
+	 * 
+	 */
+	private int tweetsFromRecipientUserCount;
+
 	/**
 	 * @param name
 	 */
-	public TimelineTest(String name) {
+	public TimelineTest() {
 		super("TimelineTest");
 	}
 
@@ -47,8 +75,8 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			uam.verifyCredential();
-		} catch (IOException e) {
+			assertTrue(uam.verifyCredential());
+		} catch (Exception e) {
 			fail();
 		}
 		//
@@ -81,23 +109,18 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			t.startGetPublicTweets(new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					count++;
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count > 0);
-				}
-			});	
+			count = 0;
+			//
+			t.startGetPublicTweets(this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(count > 0);
 		} catch (Exception e) {
 			fail();
 		}
 	}
-
+	
 	/**
 	 * Test method for {@link com.twitterapime.rest.Timeline#startGetHomeTweets(com.twitterapime.search.Query, com.twitterapime.search.SearchDeviceListener)}.
 	 */
@@ -122,11 +145,7 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			t.startGetHomeTweets(null, new SearchDeviceListener() {
-				public void tweetFound(Tweet tweet) {}
-				public void searchFailed(Throwable cause) {}
-				public void searchCompleted() {}
-			});
+			t.startGetHomeTweets(null, this);
 			fail();
 		} catch (SecurityException e) {
 		} catch (Exception e) {
@@ -136,49 +155,27 @@ public class TimelineTest extends TestCase {
 		t = Timeline.getInstance(uam);
 		//
 		try {
-			t.startGetHomeTweets(null, new SearchDeviceListener() {
-				private int countUser;
-				private int countFollower;
-				public void tweetFound(Tweet tweet) {
-					try {
-						String userName = tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME);
-						if (userName.equals("twiterapime")) {
-							countFollower++;
-						} else {
-							userName = tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME);
-							if (userName.equals("twiterapimetest")) {
-								countUser++;
-							}
-						}
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(countUser > 0);
-					assertTrue(countFollower > 0);
-				}
-			});	
+			tweetsFromUserCount = 0;
+			tweetsFromFollowerCount = 0;
+			//
+			t.startGetHomeTweets(null, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFromUserCount > 0);
+			assertTrue(tweetsFromFollowerCount > 0);
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
-			t.startGetHomeTweets(QueryComposer.count(1), new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					count++;
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count == 1);
-				}
-			});	
+			count = 0;
+			//
+			t.startGetHomeTweets(QueryComposer.count(1), this);
+			//
+			waitFor(10000);
+			//
+			assertEquals(1, count);
 		} catch (Exception e) {
 			fail();
 		}
@@ -208,11 +205,7 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			t.startGetUserTweets(null, new SearchDeviceListener() {
-				public void tweetFound(Tweet tweet) {}
-				public void searchFailed(Throwable cause) {}
-				public void searchCompleted() {}
-			});
+			t.startGetUserTweets(null, this);
 			fail();
 		} catch (SecurityException e) {
 		} catch (Exception e) {
@@ -222,46 +215,29 @@ public class TimelineTest extends TestCase {
 		t = Timeline.getInstance(uam);
 		//
 		try {
-			t.startGetUserTweets(null, new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count > 0);
-				}
-			});	
+			tweetsFromUserCount = 0;
+			count = 0;
+			//
+			t.startGetUserTweets(null, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFromUserCount > 0);
+			assertEquals(count, tweetsFromUserCount);
 		} catch (Exception e) {
 			fail();
 		}
 		//
-		//
 		try {
-			t.startGetUserTweets(QueryComposer.count(1), new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count == 1);
-				}
-			});	
+			count = 0;
+			tweetsFromUserCount = 0;
+			//
+			t.startGetUserTweets(QueryComposer.count(1), this);
+			//
+			waitFor(10000);
+			//
+			assertEquals(1, tweetsFromUserCount);
+			assertEquals(count, tweetsFromUserCount);
 		} catch (Exception e) {
 			fail();
 		}
@@ -291,11 +267,7 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			t.startGetMentions(null, new SearchDeviceListener() {
-				public void tweetFound(Tweet tweet) {}
-				public void searchFailed(Throwable cause) {}
-				public void searchCompleted() {}
-			});
+			t.startGetMentions(null, this);
 			fail();
 		} catch (SecurityException e) {
 		} catch (Exception e) {
@@ -305,45 +277,29 @@ public class TimelineTest extends TestCase {
 		t = Timeline.getInstance(uam);
 		//
 		try {
-			t.startGetMentions(null, new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertTrue(tweet.getString(MetadataSet.TWEET_CONTENT).indexOf("@twiterapimetest") != -1);
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count > 0);
-				}
-			});	
+			tweetsReferencesUserCount = 0;
+			count = 0;
+			//
+			t.startGetMentions(null, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsReferencesUserCount > 0);
+			assertEquals(count, tweetsReferencesUserCount);
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
-			t.startGetMentions(QueryComposer.count(1), new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertTrue(tweet.getString(MetadataSet.TWEET_CONTENT).indexOf("@twiterapimetest") != -1);
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count == 1);
-				}
-			});	
+			tweetsReferencesUserCount = 0;
+			count = 0;
+			//
+			t.startGetMentions(QueryComposer.count(1), this);
+			//
+			waitFor(10000);
+			//
+			assertEquals(1, tweetsReferencesUserCount);
+			assertEquals(count, tweetsReferencesUserCount);
 		} catch (Exception e) {
 			fail();
 		}
@@ -373,11 +329,7 @@ public class TimelineTest extends TestCase {
 		}
 		//
 		try {
-			t.startGetDirectMessages(null, true, new SearchDeviceListener() {
-				public void tweetFound(Tweet tweet) {}
-				public void searchFailed(Throwable cause) {}
-				public void searchCompleted() {}
-			});
+			t.startGetDirectMessages(null, true, this);
 			fail();
 		} catch (SecurityException e) {
 		} catch (Exception e) {
@@ -387,69 +339,110 @@ public class TimelineTest extends TestCase {
 		t = Timeline.getInstance(uam);
 		//
 		try {
-			t.startGetDirectMessages(null, true, new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getRecipientAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count > 0);
-				}
-			});	
+			count = 0;
+			tweetsFromRecipientUserCount = 0;
+			//
+			t.startGetDirectMessages(null, true, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFromRecipientUserCount > 0);
+			assertEquals(count, tweetsFromRecipientUserCount);
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
-			t.startGetDirectMessages(null, false, new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count > 0);
-				}
-			});	
+			count = 0;
+			tweetsFromUserCount = 0;
+			//
+			t.startGetDirectMessages(null, false, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFromUserCount > 0);
+			assertEquals(count, tweetsFromUserCount);
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
-			t.startGetDirectMessages(QueryComposer.count(1), true, new SearchDeviceListener() {
-				private int count;
-				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getRecipientAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
-				}
-				public void searchFailed(Throwable cause) {
-					fail();
-				}
-				public void searchCompleted() {
-					assertTrue(count == 1);
-				}
-			});	
+			count = 0;
+			tweetsFromRecipientUserCount = 0;
+			//
+			t.startGetDirectMessages(QueryComposer.count(1), true, this);
+			//
+			waitFor(10000);
+			//
+			assertEquals(1, tweetsFromRecipientUserCount);
+			assertEquals(count, tweetsFromRecipientUserCount);
 		} catch (Exception e) {
 			fail();
 		}
+	}
+
+	/**
+	 * @param maxTime
+	 */
+	public void waitFor(long maxTime) {
+		finished = false;
+		//
+		int st = (int)(maxTime / 1000);
+		//
+		while (st > 0) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {}
+			st--;
+			//
+			if (finished) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * @see com.twitterapime.search.SearchDeviceListener#tweetFound(com.twitterapime.search.Tweet)
+	 */
+	public void tweetFound(Tweet tweet) {
+		assertNotNull(tweet);
+		count++;
+		//
+		try {
+			UserAccount ua = tweet.getUserAccount();
+			if ("twiterapime".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {
+				tweetsFromFollowerCount++;
+			} else {
+				if ("twiterapimetest".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {
+					tweetsFromUserCount++;
+				}
+			}
+			//
+			if (tweet.getString(MetadataSet.TWEET_CONTENT).indexOf("@twiterapimetest") != -1) {
+				tweetsReferencesUserCount++;
+			}
+			//
+			ua = tweet.getRecipientAccount();
+			if (ua != null && "twiterapimetest".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {
+				tweetsFromRecipientUserCount++;
+			}
+		} catch (Exception e) {
+			fail();
+		}
+	}
+
+	/**
+	 * @see com.twitterapime.search.SearchDeviceListener#searchFailed(java.lang.Throwable)
+	 */
+	public void searchFailed(Throwable cause) {
+		System.out.println(cause);
+		fail();
+	}
+
+	/**
+	 * @see com.twitterapime.search.SearchDeviceListener#searchCompleted()
+	 */
+	public void searchCompleted() {
+		finished = true;
 	}
 }

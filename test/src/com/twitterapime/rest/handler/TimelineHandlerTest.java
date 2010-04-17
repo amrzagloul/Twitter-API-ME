@@ -13,7 +13,6 @@ import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
-import com.twitterapime.search.handler.SearchResultHandler;
 import com.twitterapime.util.StringUtil;
 
 /**
@@ -40,7 +39,7 @@ public class TimelineHandlerTest extends TestCase implements SearchDeviceListene
 		final int TWEETS_COUNT = 5;
 		//
 		InputStream errorXML = null;
-		SearchResultHandler handler = new SearchResultHandler();
+		TimelineHandler handler = new TimelineHandler();
 		handler.setSearchDeviceListener(this);
 		//
 		try {
@@ -94,13 +93,13 @@ public class TimelineHandlerTest extends TestCase implements SearchDeviceListene
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "false");
-			UserAccount ua = new UserAccount(userSample);
-			sample.put(MetadataSet.TWEET_USER_ACCOUNT, ua);
+			//
+			sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 			//
 			assertTrue(new Tweet(sample).equals(ts[i]));
 		}
 		//
-		assertEquals(0, new SearchResultHandler().getParsedTweets().length);
+		assertEquals(0, new TimelineHandler().getParsedTweets().length);
 	}
 
 	/**

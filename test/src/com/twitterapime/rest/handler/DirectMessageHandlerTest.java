@@ -13,7 +13,6 @@ import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
-import com.twitterapime.search.handler.SearchResultHandler;
 import com.twitterapime.util.StringUtil;
 
 /**
@@ -45,6 +44,8 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		handler.setSearchDeviceListener(this);
 		//
 		try {
+			tweetFoundCount = 0;
+			//
 			errorXML = getClass().getResourceAsStream("/xml/twitterapi-direct-messages.xml");
 			ParserFactory.getDefaultParser().parse(errorXML, handler);
 			//
@@ -81,7 +82,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_LOCATION, "sender_location_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_NAME, "sender_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_NOTIFICATIONS, "sender_notifications_" + id);
-			userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "sender_profile_background_image_url_" + id);
+			userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "sender_profile_image_url_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_COLOR, "sender_profile_background_color_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI, "sender_profile_background_image_url_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_LINK_COLOR, "sender_profile_link_color_" + id);
@@ -93,8 +94,8 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "sender_screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "sender_utc_offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "sender_verified_" + id);
-			UserAccount ua = new UserAccount(userSample);
-			sample.put(MetadataSet.TWEET_USER_ACCOUNT, ua);
+			//
+			sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 			//
 			userSample = new Hashtable();
 			userSample.put(MetadataSet.USERACCOUNT_CREATE_DATE, Long.toString(StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009")));
@@ -106,7 +107,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_LOCATION, "recipient_location_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_NAME, "recipient_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_NOTIFICATIONS, "recipient_notifications_" + id);
-			userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "recipient_profile_background_image_url_" + id);
+			userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "recipient_profile_image_url_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_COLOR, "recipient_profile_background_color_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI, "recipient_profile_background_image_url_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_PROFILE_LINK_COLOR, "recipient_profile_link_color_" + id);
@@ -118,20 +119,26 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "recipient_screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "recipient_utc_offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "recipient_verified_" + id);
-			ua = new UserAccount(userSample);
-			sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, ua);
+			//
+			sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, new UserAccount(userSample));
 			//
 			assertTrue(new Tweet(sample).equals(ts[i]));
 		}
 		//
-		assertEquals(0, new SearchResultHandler().getParsedTweets().length);
+		assertEquals(0, new DirectMessageHandler().getParsedTweets().length);
 		//
+		//*********************************************************************
+		//
+		handler = new DirectMessageHandler();
+		handler.setSearchDeviceListener(this);
 		//
 		try {
+			tweetFoundCount = 0;
+			//
 			errorXML = getClass().getResourceAsStream("/xml/twitterapi-direct-message.xml");
 			ParserFactory.getDefaultParser().parse(errorXML, handler);
 			//
-			assertEquals(TWEETS_COUNT, 1);
+			assertEquals(1, tweetFoundCount);
 		} catch (Exception e) {
 			fail();
 		} finally {
@@ -161,7 +168,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_LOCATION, "sender_location_1");
 		userSample.put(MetadataSet.USERACCOUNT_NAME, "sender_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_NOTIFICATIONS, "sender_notifications_1");
-		userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "sender_profile_background_image_url_1");
+		userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "sender_profile_image_url_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_COLOR, "sender_profile_background_color_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI, "sender_profile_background_image_url_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_LINK_COLOR, "sender_profile_link_color_1");
@@ -173,8 +180,8 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "sender_screen_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "sender_utc_offset_1");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "sender_verified_1");
-		UserAccount ua = new UserAccount(userSample);
-		sample.put(MetadataSet.TWEET_USER_ACCOUNT, ua);
+		//
+		sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 		//
 		userSample = new Hashtable();
 		userSample.put(MetadataSet.USERACCOUNT_CREATE_DATE, Long.toString(StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009")));
@@ -186,7 +193,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_LOCATION, "recipient_location_1");
 		userSample.put(MetadataSet.USERACCOUNT_NAME, "recipient_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_NOTIFICATIONS, "recipient_notifications_1");
-		userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "recipient_profile_background_image_url_1");
+		userSample.put(MetadataSet.USERACCOUNT_PICTURE_URI, "recipient_profile_image_url_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_COLOR, "recipient_profile_background_color_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_BACKGROUND_IMAGE_URI, "recipient_profile_background_image_url_1");
 		userSample.put(MetadataSet.USERACCOUNT_PROFILE_LINK_COLOR, "recipient_profile_link_color_1");
@@ -198,10 +205,10 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "recipient_screen_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "recipient_utc_offset_1");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "recipient_verified_1");
-		ua = new UserAccount(userSample);
-		sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, ua);
 		//
-		assertTrue(new Tweet(sample).equals(handler.getParsedTweets()[0]));
+		sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, new UserAccount(userSample));
+		//
+		assertTrue(new Tweet(sample).equals(ts[0]));
 	}
 
 	/**
@@ -228,6 +235,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		//
 		Tweet t = new Tweet();
 		handler.loadParsedTweet(t, 0);
+		assertTrue(t.size() > 0);
 		assertTrue(t.equals(handler.getParsedTweets()[0]));
 	}
 	
