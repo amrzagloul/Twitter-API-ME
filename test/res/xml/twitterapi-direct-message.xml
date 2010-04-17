@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<direct_message>
+  <id>id_1</id>
+  <sender_id>sender_id_1</sender_id>
+  <text>text_1</text>
+  <recipient_id>recipient_id</recipient_id>
+  <created_at>Sat Apr 10 16:45:26 +0000 2010</created_at>
+
+  <sender_screen_name>sender_screen_name_1</sender_screen_name>
+  <recipient_screen_name>recipient_screen_name_1</recipient_screen_name>
+  <sender>
+    <id>sender_id_1</id>
+    <name>sender_name_1</name>
+    <screen_name>sender_screen_name_1</screen_name>
+
+    <location>sender_location_1</location>
+    <description>sender_description_1</description>
+    <profile_image_url>sender_profile_image_url_1</profile_image_url>
+    <url>sender_url_1</url>
+    <protected>sender_protected_1</protected>
+    <followers_count>sender_followers_count_1</followers_count>
+    <profile_background_color>sender_profile_background_color_1</profile_background_color>
+
+    <profile_text_color>sender_profile_text_color_1</profile_text_color>
+    <profile_link_color>sender_profile_link_color_1</profile_link_color>
+    <profile_sidebar_fill_color>sender_profile_sidebar_fill_color_1</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>sender_profile_sidebar_border_color_1</profile_sidebar_border_color>
+    <friends_count>sender_friends_count_1</friends_count>
+    <created_at>Sat Nov 07 21:30:03 +0000 2009</created_at>
+
+    <favourites_count>sender_favourites_count_1</favourites_count>
+    <utc_offset>sender_utc_offset_1</utc_offset>
+    <time_zone>sender_time_zone_1</time_zone>
+    <profile_background_image_url>sender_profile_background_image_url_1</profile_background_image_url>
+    <profile_background_tile>sender_profile_background_tile_1</profile_background_tile>
+    <notifications>sender_notifications_1</notifications>
+
+    <geo_enabled>sender_geo_enabled_1</geo_enabled>
+    <verified>sender_verified_1</verified>
+    <following>sender_following_1</following>
+    <statuses_count>sender_statuses_count_1</statuses_count>
+    <lang>sender_lang_1</lang>
+    <contributors_enabled>sender_contributors_enabled_1</contributors_enabled>
+
+  </sender>
+  <recipient>
+    <id>recipient_id_1</id>
+    <name>recipient_name_1</name>
+    <screen_name>recipient_screen_name_1</screen_name>
+
+    <location>recipient_location_1</location>
+    <description>recipient_description_1</description>
+    <profile_image_url>recipient_profile_image_url_1</profile_image_url>
+    <url>recipient_url_1</url>
+    <protected>recipient_protected_1</protected>
+    <followers_count>recipient_followers_count_1</followers_count>
+    <profile_background_color>recipient_profile_background_color_1</profile_background_color>
+
+    <profile_text_color>recipient_profile_text_color_1</profile_text_color>
+    <profile_link_color>recipient_profile_link_color_1</profile_link_color>
+    <profile_sidebar_fill_color>recipient_profile_sidebar_fill_color_1</profile_sidebar_fill_color>
+    <profile_sidebar_border_color>recipient_profile_sidebar_border_color_1</profile_sidebar_border_color>
+    <friends_count>recipient_friends_count_1</friends_count>
+    <created_at>Sat Nov 07 21:30:03 +0000 2009</created_at>
+
+    <favourites_count>recipient_favourites_count_1</favourites_count>
+    <utc_offset>recipient_utc_offset_1</utc_offset>
+    <time_zone>recipient_time_zone_1</time_zone>
+    <profile_background_image_url>recipient_profile_background_image_url_1</profile_background_image_url>
+    <profile_background_tile>recipient_profile_background_tile_1</profile_background_tile>
+    <notifications>recipient_notifications_1</notifications>
+
+    <geo_enabled>recipient_geo_enabled_1</geo_enabled>
+    <verified>recipient_verified_1</verified>
+    <following>recipient_following_1</following>
+    <statuses_count>recipient_statuses_count_1</statuses_count>
+    <lang>recipient_lang_1</lang>
+    <contributors_enabled>recipient_contributors_enabled_1</contributors_enabled>
+    
+  </recipient>
+</direct_message>
