@@ -137,11 +137,19 @@ public class TimelineTest extends TestCase {
 		//
 		try {
 			t.startGetHomeTweets(null, new SearchDeviceListener() {
-				private int count;
+				private int countUser;
+				private int countFollower;
 				public void tweetFound(Tweet tweet) {
 					try {
-						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
+						String userName = tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+						if (userName.equals("twiterapime")) {
+							countFollower++;
+						} else {
+							userName = tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+							if (userName.equals("twiterapimetest")) {
+								countUser++;
+							}
+						}
 					} catch (Exception e) {
 						fail();
 					}
@@ -150,7 +158,8 @@ public class TimelineTest extends TestCase {
 					fail();
 				}
 				public void searchCompleted() {
-					assertTrue(count > 0);
+					assertTrue(countUser > 0);
+					assertTrue(countFollower > 0);
 				}
 			});	
 		} catch (Exception e) {
@@ -161,12 +170,7 @@ public class TimelineTest extends TestCase {
 			t.startGetHomeTweets(QueryComposer.count(1), new SearchDeviceListener() {
 				private int count;
 				public void tweetFound(Tweet tweet) {
-					try {
-						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
-						count++;
-					} catch (Exception e) {
-						fail();
-					}
+					count++;
 				}
 				public void searchFailed(Throwable cause) {
 					fail();
@@ -222,10 +226,8 @@ public class TimelineTest extends TestCase {
 				private int count;
 				public void tweetFound(Tweet tweet) {
 					try {
-						String userName = tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME);
-						if (userName.equals("twiterapime")) {
-							count++;
-						}
+						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
+						count++;
 					} catch (Exception e) {
 						fail();
 					}
@@ -235,6 +237,29 @@ public class TimelineTest extends TestCase {
 				}
 				public void searchCompleted() {
 					assertTrue(count > 0);
+				}
+			});	
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		//
+		try {
+			t.startGetUserTweets(QueryComposer.count(1), new SearchDeviceListener() {
+				private int count;
+				public void tweetFound(Tweet tweet) {
+					try {
+						assertEquals("twiterapimetest", tweet.getUserAccount().getString(MetadataSet.TWEET_AUTHOR_USERNAME));
+						count++;
+					} catch (Exception e) {
+						fail();
+					}
+				}
+				public void searchFailed(Throwable cause) {
+					fail();
+				}
+				public void searchCompleted() {
+					assertTrue(count == 1);
 				}
 			});	
 		} catch (Exception e) {
