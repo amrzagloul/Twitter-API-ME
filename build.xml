@@ -243,6 +243,7 @@
 			<arg value="--add-line-numbers:true"/>
 			<arg value="--coverage:L"/>
 			<arg value="--coverage-report:${basedir}/unitests-coverage-javame.html"/>
+			<arg value="--suite:com.twitterapime.test.TwitterAPIMETestSuite"/>
 			<!--
 			Uncomment it to run the tests manually.
 			<arg value="-test-runner-class:com.sonyericsson.junit.midletrunner.StandaloneMIDlet"/>
