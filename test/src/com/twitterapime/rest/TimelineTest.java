@@ -50,6 +50,35 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	public TimelineTest() {
 		super("TimelineTest");
 	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 */
+	public void setUp() throws Throwable {
+		UserAccountManager uam1 = UserAccountManager.getInstance(new Credential("twiterapimetst2", "f00bar"));
+		UserAccountManager uam2 = UserAccountManager.getInstance(new Credential("twiterapimetest", "f00bar"));
+		//
+		if (uam1.verifyCredential() && uam2.verifyCredential()) {
+			TweetER t1 = TweetER.getInstance(uam1);
+			t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
+			t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
+			t1.post(new Tweet("Test msg 3 @twiterapimetest " + System.currentTimeMillis()));
+			t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
+			t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
+			t1.send(new Tweet("twiterapimetest", "Test DM 3 " + System.currentTimeMillis()));
+			//
+			TweetER t2 = TweetER.getInstance(uam2);
+			t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
+			t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
+			t2.post(new Tweet("Test msg 3 " + System.currentTimeMillis()));
+			t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
+			t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
+			t2.send(new Tweet("twiterapimetst2", "Test DM 3 " + System.currentTimeMillis()));
+		}
+		//
+		uam1.signOut();
+		uam2.signOut();
+	}
 
 	/**
 	 * Test method for {@link com.twitterapime.rest.Timeline#getInstance(com.twitterapime.rest.UserAccountManager)}.
@@ -83,6 +112,12 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		Timeline t = Timeline.getInstance(uam);
 		assertNotNull(t);
 		assertSame(t, Timeline.getInstance(uam));
+		//
+		try {
+			uam.signOut();
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
@@ -179,6 +214,12 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		} catch (Exception e) {
 			fail();
 		}
+		//
+		try {
+			uam.signOut();
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**
@@ -241,6 +282,12 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		} catch (Exception e) {
 			fail();
 		}
+		//
+		try {
+			uam.signOut();
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**
@@ -300,6 +347,12 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			assertEquals(1, tweetsReferencesUserCount);
 			assertEquals(count, tweetsReferencesUserCount);
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			uam.signOut();
 		} catch (Exception e) {
 			fail();
 		}
@@ -379,6 +432,12 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		} catch (Exception e) {
 			fail();
 		}
+		//
+		try {
+			uam.signOut();
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**
@@ -410,7 +469,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		//
 		try {
 			UserAccount ua = tweet.getUserAccount();
-			if ("twiterapime".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {
+			if ("twiterapimetst2".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {
 				tweetsFromFollowerCount++;
 			} else {
 				if ("twiterapimetest".equals(ua.getString(MetadataSet.USERACCOUNT_USER_NAME))) {

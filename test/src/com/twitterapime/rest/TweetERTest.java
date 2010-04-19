@@ -46,14 +46,29 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			uam.verifyCredential();
+			assertTrue(uam.verifyCredential());
+			//
+			TweetER t = TweetER.getInstance(uam);
+			assertNotNull(t);
+			assertSame(t, TweetER.getInstance(uam));			
 		} catch (IOException e) {
 			fail();
 		}
 		//
-		TweetER t = TweetER.getInstance(uam);
-		assertNotNull(t);
-		assertSame(t, TweetER.getInstance(uam));
+		try {
+			uam.signOut();
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		UserAccountManager uam2 = UserAccountManager.getInstance(c);
+		try {
+			uam2.verifyCredential();
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		assertNotSame(uam, TweetER.getInstance(uam2));
 	}
 
 	/**
@@ -157,6 +172,12 @@ public class TweetERTest extends TestCase {
 		} catch (IOException e) {
 			fail();
 		} catch (LimitExceededException e) {
+			fail();
+		}
+		//
+		try {
+			uam.signOut();
+		} catch (Exception e) {
 			fail();
 		}
 	}
