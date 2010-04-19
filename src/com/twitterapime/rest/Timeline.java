@@ -418,7 +418,7 @@ public final class Timeline {
 	 * @throws SecurityException User is not authenticated.
 	 */
 	private void checkUserAuth() {
-		if (userAccountMngr == null) {
+		if (userAccountMngr == null || !userAccountMngr.isVerified()) {
 			throw new SecurityException(
 			    "User's credential must be entered to perform this operation.");
 		}

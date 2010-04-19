@@ -9,6 +9,7 @@ package com.twitterapime.rest;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -95,6 +96,26 @@ public final class TweetER {
 	
 	/**
 	 * <p>
+	 * Release the objects which account is no longer authenticated.
+	 * </p>
+	 */
+	private static void cleanPool() {
+		Enumeration keys = tweetERPool.keys();
+		Object key;
+		TweetER value;
+		//
+		while (keys.hasMoreElements()) {
+			key = keys.nextElement();
+			value = (TweetER)tweetERPool.get(key);
+			//
+			if (!value.userAccountMngr.isVerified()) {
+				tweetERPool.remove(key);
+			}
+		}
+	}
+	
+	/**
+	 * <p>
 	 * Get an instance of TweetER class and associate it to a given user
 	 * account.
 	 * </p>
@@ -117,6 +138,8 @@ public final class TweetER {
 			tweetERPool = new Hashtable();
 		}
 		//
+		cleanPool();
+		//
 		TweetER ter = (TweetER)tweetERPool.get(uam);
 		if (ter == null) {
 			ter = new TweetER(uam);
@@ -125,7 +148,7 @@ public final class TweetER {
 		//
 		return ter;
 	}
-
+	
 	/**
 	 * <p>
 	 * Get a single instance of TweetER class, which is NOT associated to any
@@ -193,8 +216,12 @@ public final class TweetER {
 		}
 		//
 		final String url = TWITTER_URL_SHOW_STATUS + id + ".xml";
-		final Credential credential =
-			userAccountMngr != null ? userAccountMngr.getCredential() : null;
+		Credential credential = null;
+		//
+		if (userAccountMngr != null) {
+			checkUserAuth();
+			credential = userAccountMngr.getCredential();
+		}
 		//
 		HttpConnection conn = UserAccountManager.getHttpConn(url, credential);
 		//
@@ -394,7 +421,7 @@ public final class TweetER {
 	 * @throws SecurityException User is not authenticated.
 	 */
 	private void checkUserAuth() {
-		if (userAccountMngr == null) {
+		if (userAccountMngr == null || !userAccountMngr.isVerified()) {
 			throw new SecurityException(
 			    "User's credential must be entered to perform this operation.");
 		}

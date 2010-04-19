@@ -10,6 +10,7 @@ package com.twitterapime.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -135,6 +136,26 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private UserAccount account;
+	
+	/**
+	 * <p>
+	 * Release the objects which account is no longer authenticated.
+	 * </p>
+	 */
+	private static void cleanPool() {
+		Enumeration keys = userAccountMngrPoll.keys();
+		Object key;
+		UserAccountManager value;
+		//
+		while (keys.hasMoreElements()) {
+			key = keys.nextElement();
+			value = (UserAccountManager)userAccountMngrPoll.get(key);
+			//
+			if (!value.isVerified()) {
+				userAccountMngrPoll.remove(key);
+			}
+		}
+	}
 
 	/**
 	 * <p>
@@ -155,12 +176,16 @@ public final class UserAccountManager {
 		if (userAccountMngrPoll == null) {
 			userAccountMngrPoll = new Hashtable();
 		} else {
-			uam = (UserAccountManager)userAccountMngrPoll.get(c);
+			synchronized (userAccountMngrPoll) {
+				cleanPool();
+				//
+				uam = (UserAccountManager)userAccountMngrPoll.get(c);
+			}
 		}
 		//
 		return uam != null ? uam : new UserAccountManager(c);
 	}
-
+	
 	/**
 	 * <p>
 	 * Create a Http connection to the given URL.
@@ -313,6 +338,22 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
+	 * Ends the session of the authenticating user.
+	 * </p>
+	 * @throws IOException If an I/O error occurs.
+	 * @throws SecurityException If it is not properly logged in.
+	 */
+	public synchronized void signOut() throws IOException {
+		if (verified) {
+			verified = false;
+			account = null;
+			userAccountMngrPoll.remove(credential);
+			//TODO: release objects from pools.
+		}
+	}
+	
+	/**
+	 * <p>
 	 * Get the user account.
 	 * </p>
 	 * @return User account object.
@@ -414,7 +455,7 @@ public final class UserAccountManager {
 	 * @param ua UserAccount object containing the user name or ID.
 	 * @return Info from blocked user.
 	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User already blocked or does not exist.
+	 * @throws InvalidQueryException User does not exist.
 	 * @throws SecurityException If the user is not authenticated.
 	 */
 	public UserAccount block(UserAccount ua) throws IOException {
@@ -429,7 +470,7 @@ public final class UserAccountManager {
 	 * @param ua UserAccount object containing the user name or ID.
 	 * @return Info from unblocked user.
 	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User already unblocked or does not exist.
+	 * @throws InvalidQueryException User does not exist.
 	 * @throws SecurityException If the user is not authenticated.
 	 */
 	public UserAccount unblock(UserAccount ua) throws IOException {
@@ -589,7 +630,7 @@ public final class UserAccountManager {
 	 * Save the instance on pool.
 	 * </p>
 	 */
-	private void saveSelfOnPool() {
+	private synchronized void saveSelfOnPool() {
 		if (userAccountMngrPoll.get(credential) == null) {
 			userAccountMngrPoll.put(credential, this);
 		}
