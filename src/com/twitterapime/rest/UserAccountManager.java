@@ -10,7 +10,6 @@ package com.twitterapime.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -139,24 +138,11 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
-	 * Release the objects which account is no longer authenticated.
+	 * Marks the instance as invalidated.
 	 * </p>
 	 */
-	private static void cleanPool() {
-		Enumeration keys = userAccountMngrPoll.keys();
-		Object key;
-		UserAccountManager value;
-		//
-		while (keys.hasMoreElements()) {
-			key = keys.nextElement();
-			value = (UserAccountManager)userAccountMngrPoll.get(key);
-			//
-			if (!value.isVerified()) {
-				userAccountMngrPoll.remove(key);
-			}
-		}
-	}
-
+	private boolean invalidated;
+	
 	/**
 	 * <p>
 	 * Get an instance of UserAccountManager class and associate it to a given
@@ -177,8 +163,6 @@ public final class UserAccountManager {
 			userAccountMngrPoll = new Hashtable();
 		} else {
 			synchronized (userAccountMngrPoll) {
-				cleanPool();
-				//
 				uam = (UserAccountManager)userAccountMngrPoll.get(c);
 			}
 		}
@@ -245,8 +229,11 @@ public final class UserAccountManager {
 	 * @return Rate status limit info.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SecurityException If it is not properly logged in.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public RateLimitStatus getRateLimitStatus() throws IOException {
+	public RateLimitStatus getRateLimitStatus() throws IOException,
+		LimitExceededException {
+		checkValid();
 		checkVerified();
 		//
 		HttpConnection conn =
@@ -262,11 +249,6 @@ public final class UserAccountManager {
 			return handler.getParsedRateLimitStatus();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
-		} catch (LimitExceededException e) {
-			//Twitter API specs states this operation is not API rate limited.
-			//That's why this exception is suppressed.
-			throw new IllegalStateException(
-				"Unexpected LimitExceededException: " + e.getMessage());
 		} finally {
 			if (conn != null) {
 				conn.close();
@@ -281,6 +263,8 @@ public final class UserAccountManager {
 	 * @return Verified (true).
 	 */
 	public boolean isVerified() {
+		checkValid();
+		//
 		return verified;
 	}
 	
@@ -293,6 +277,8 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public boolean verifyCredential() throws IOException {
+		checkValid();
+		//
 		if (verified) {
 			return true; //already verified.
 		}
@@ -340,15 +326,24 @@ public final class UserAccountManager {
 	 * <p>
 	 * Ends the session of the authenticating user.
 	 * </p>
+	 * <p>
+	 * Once signed out, this instance is no longer valid for use as well as
+	 * another one dependent of it. Dump them!
+	 * </p>
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SecurityException If it is not properly logged in.
 	 */
 	public synchronized void signOut() throws IOException {
+		checkValid();
+		//
 		if (verified) {
 			verified = false;
 			account = null;
 			userAccountMngrPoll.remove(credential);
-			//TODO: release objects from pools.
+			Timeline.cleanPool();
+			TweetER.cleanPool();
+			//
+			invalidated = true;
 		}
 	}
 	
@@ -360,6 +355,7 @@ public final class UserAccountManager {
 	 * @throws SecurityException If it is not properly logged in.
 	 */
 	public UserAccount getUserAccount() {
+		checkValid();
 		checkVerified();
 		//
 		return account;
@@ -375,8 +371,10 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User already followed or does not exist.
 	 * @throws SecurityException If the user is not authenticated.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public UserAccount follow(UserAccount ua) throws IOException {
+	public UserAccount follow(UserAccount ua) throws IOException,
+		LimitExceededException {
 		return manageFriendship(TWITTER_URL_FOLLOW_USER, ua);
 	}
 	
@@ -390,8 +388,10 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User already unfollowed or does not exist.
 	 * @throws SecurityException If the user is not authenticated.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public UserAccount unfollow(UserAccount ua) throws IOException {
+	public UserAccount unfollow(UserAccount ua) throws IOException,
+		LimitExceededException {
 		return manageFriendship(TWITTER_URL_UNFOLLOW_USER, ua);
 	}
 	
@@ -409,6 +409,8 @@ public final class UserAccountManager {
 	 */
 	public boolean isFollowing(UserAccount ua) throws IOException,
 		LimitExceededException {
+		checkValid();
+		//
 		if (ua == null) {
 			throw new IllegalArgumentException(
 				"UserAccount object must not me null.");
@@ -457,8 +459,10 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User does not exist.
 	 * @throws SecurityException If the user is not authenticated.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public UserAccount block(UserAccount ua) throws IOException {
+	public UserAccount block(UserAccount ua) throws IOException,
+		LimitExceededException {
 		return manageFriendship(TWITTER_URL_BLOCK_USER, ua);
 	}
 	
@@ -472,19 +476,29 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User does not exist.
 	 * @throws SecurityException If the user is not authenticated.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public UserAccount unblock(UserAccount ua) throws IOException {
+	public UserAccount unblock(UserAccount ua) throws IOException,
+		LimitExceededException {
 		return manageFriendship(TWITTER_URL_UNBLOCK_USER, ua);
 	}
 	
 	/**
-	 * @param ua
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Verify whether the authenticating user is blocking the user specified in
+	 * the given UserAccount object.
+	 * </p>
+	 * @param ua UserAccount object containing the user name or ID.
+	 * @return Blocking (true).
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws InvalidQueryException If user does not exist or is protected.
+	 * @throws SecurityException If the user is not authenticated.
 	 */
 	public boolean isBlocking(UserAccount ua) throws IOException,
 		LimitExceededException {
+		checkValid();
+		//
 		if (ua == null) {
 			throw new IllegalArgumentException(
 				"UserAccount object must not me null.");
@@ -547,6 +561,19 @@ public final class UserAccountManager {
 	Credential getCredential() {
 		return credential;
 	}
+	
+	/**
+	 * <p>
+	 * Check whether the instance is still valid.
+	 * </p>
+	 * @throws IllegalStateException Instance invalidated.
+	 */
+	private synchronized void checkValid() {
+		if (invalidated) {
+			throw new IllegalStateException(
+				"This instance is no longer valid. Get a new one!");
+		}
+	}
 
 	/**
 	 * <p>
@@ -559,9 +586,12 @@ public final class UserAccountManager {
 	 * @throws InvalidQueryException User already affected by the action or does
 	 *         not exist.
 	 * @throws SecurityException If the user is not authenticated.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
 	private UserAccount manageFriendship(String actionUrl, UserAccount ua)
-		throws IOException {
+		throws IOException, LimitExceededException {
+		checkValid();
+		//
 		if (ua == null) {
 			throw new IllegalArgumentException(
 				"UserAccount object must not me null.");
@@ -602,9 +632,6 @@ public final class UserAccountManager {
 			return handler.getParsedUserAccount();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
-		} catch (LimitExceededException e) {
-			throw new IllegalStateException(
-				"This type of error is not expected. Inform to tech support.");
 		} finally {
 			if (conn != null) {
 				conn.close();
