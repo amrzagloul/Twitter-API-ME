@@ -83,8 +83,7 @@ public final class Tweet extends DefaultEntity {
 	 *         invalid.
 	 */
 	public Tweet(String toUserNameOrID, String content) {
-		if (toUserNameOrID == null
-				|| (toUserNameOrID = toUserNameOrID.trim()).length() == 0) {
+		if (toUserNameOrID == null) {
 			throw new IllegalArgumentException(
 				"To username/ID must not be empty/null.");
 		}
@@ -92,13 +91,16 @@ public final class Tweet extends DefaultEntity {
 			throw new IllegalArgumentException("Content must not be null");
 		}
 		//
-		Hashtable data = new Hashtable();
-		data.put(MetadataSet.USERACCOUNT_ID, toUserNameOrID);
-		data.put(MetadataSet.USERACCOUNT_USER_NAME, toUserNameOrID);
-		data.put(MetadataSet.TWEET_AUTHOR_USERNAME, toUserNameOrID);
-		data.put(MetadataSet.TWEET_CONTENT, content);
-		setData(data);
+		Hashtable tweetData = new Hashtable();
+		tweetData.put(MetadataSet.TWEET_AUTHOR_USERNAME, toUserNameOrID);
+		tweetData.put(MetadataSet.TWEET_CONTENT, content);
+		Hashtable usrData = new Hashtable();
+		usrData.put(MetadataSet.USERACCOUNT_USER_NAME, toUserNameOrID);
+		usrData.put(MetadataSet.USERACCOUNT_ID, toUserNameOrID);
+		tweetData.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(usrData));
+		setData(tweetData);
 		//
+		validateRecipient();
 		validateContent();
 	}
 	
@@ -127,16 +129,22 @@ public final class Tweet extends DefaultEntity {
 	 * @throws IllegalArgumentException If the recipient info is null/empty.
 	 */
 	public void validateRecipient() {
-		String r = getString(MetadataSet.USERACCOUNT_ID);
+		String r = getString(MetadataSet.TWEET_AUTHOR_USERNAME);
 		//
 		if (r == null || (r = r.trim()).length() == 0) {
-			r = getString(MetadataSet.USERACCOUNT_USER_NAME);
-			if (r == null || (r = r.trim()).length() == 0) {
-				r = getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+			UserAccount ua = getUserAccount();
+			if (ua != null) {
+				r = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
 				if (r == null || (r = r.trim()).length() == 0) {
-					throw new IllegalArgumentException(
-						"Recipient's user name or ID must not be empty/null.");
+					r = ua.getString(MetadataSet.USERACCOUNT_ID);
+					if (r == null || (r = r.trim()).length() == 0) {
+						throw new IllegalArgumentException(
+							"Recipient's username/ID must not be empty/null.");
+					}
 				}
+			} else {
+				throw new IllegalArgumentException(
+					"Recipient's username/ID must not be empty/null.");
 			}
 		}
 	}

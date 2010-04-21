@@ -376,12 +376,12 @@ public final class TweetER {
 		//
 		try {
 			final String content = dm.getString(MetadataSet.TWEET_CONTENT);
-			String recipient = dm.getString(MetadataSet.USERACCOUNT_ID);
-			//
+			String recipient = dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
 			if (recipient == null) {
-				recipient = dm.getString(MetadataSet.USERACCOUNT_USER_NAME);
+				UserAccount ua = dm.getUserAccount();
+				recipient = ua.getString(MetadataSet.USERACCOUNT_ID);
 				if (recipient == null) {
-					recipient =	dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+					recipient =	ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
 				}
 			}
 			//
