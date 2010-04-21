@@ -94,7 +94,8 @@ public final class StatusHandler extends DefaultXMLHandler {
 			retweetValues.put(
 				MetadataSet.TWEET_USER_ACCOUNT,
 				new UserAccount(reuserAccountValues));
-			tweetValues.put(MetadataSet.TWEET_REPOSTED_TWEET, retweetValues);
+			tweetValues.put(
+				MetadataSet.TWEET_REPOSTED_TWEET, new Tweet(retweetValues));
 		}
 	}
 	
