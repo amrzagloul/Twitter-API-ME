@@ -99,17 +99,19 @@ public final class TweetER {
 	 * Release the objects which account is no longer authenticated.
 	 * </p>
 	 */
-	private static void cleanPool() {
-		Enumeration keys = tweetERPool.keys();
-		Object key;
-		TweetER value;
-		//
-		while (keys.hasMoreElements()) {
-			key = keys.nextElement();
-			value = (TweetER)tweetERPool.get(key);
+	static void cleanPool() {
+		if (tweetERPool != null) {
+			Enumeration keys = tweetERPool.keys();
+			Object key;
+			TweetER value;
 			//
-			if (!value.userAccountMngr.isVerified()) {
-				tweetERPool.remove(key);
+			while (keys.hasMoreElements()) {
+				key = keys.nextElement();
+				value = (TweetER)tweetERPool.get(key);
+				//
+				if (!value.userAccountMngr.isVerified()) {
+					tweetERPool.remove(key);
+				}
 			}
 		}
 	}
@@ -137,8 +139,6 @@ public final class TweetER {
 		if (tweetERPool == null) {
 			tweetERPool = new Hashtable();
 		}
-		//
-		cleanPool();
 		//
 		TweetER ter = (TweetER)tweetERPool.get(uam);
 		if (ter == null) {
@@ -226,6 +226,14 @@ public final class TweetER {
 		HttpConnection conn = UserAccountManager.getHttpConn(url, credential);
 		//
 		try {
+			final int repCode = conn.getResponseCode();
+			//
+			if (repCode == HttpConnection.HTTP_FORBIDDEN) {
+				throw new SecurityException(); //the refereed tweet id is protected.
+			} else if (repCode == HttpConnection.HTTP_NOT_FOUND) {
+				return (Tweet)null; //tweet id not found.
+			}
+			//
 			HttpResponseCodeInterpreter.perform(conn);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
@@ -235,18 +243,6 @@ public final class TweetER {
 			return handler.getParsedTweet();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
-		} catch (InvalidQueryException e) {
-			final int repCode = conn.getResponseCode();
-			//
-			if (repCode == HttpConnection.HTTP_FORBIDDEN) {
-				//the refered tweet id is protected.
-				throw new SecurityException(e.getMessage());
-			} else if (repCode == HttpConnection.HTTP_NOT_FOUND) {
-				//tweet id not found.
-				return (Tweet)null;
-			} else {
-				throw e;
-			}
 		} finally {
 			if (conn != null) {
 				conn.close();
