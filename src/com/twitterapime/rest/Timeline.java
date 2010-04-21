@@ -8,6 +8,7 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -113,6 +114,28 @@ public final class Timeline {
 	 * </p>
 	 */
 	private static Timeline singleInstance;
+	
+	/**
+	 * <p>
+	 * Release the objects which account is no longer authenticated.
+	 * </p>
+	 */
+	static void cleanPool() {
+		if (timelinePool != null) {
+			Enumeration keys = timelinePool.keys();
+			Object key;
+			Timeline value;
+			//
+			while (keys.hasMoreElements()) {
+				key = keys.nextElement();
+				value = (Timeline)timelinePool.get(key);
+				//
+				if (!value.userAccountMngr.isVerified()) {
+					timelinePool.remove(key);
+				}
+			}			
+		}
+	}
 	
 	/**
 	 * <p>
