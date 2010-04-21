@@ -14,7 +14,17 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */
+	private boolean finished;
+	
+	/**
+	 * 
+	 */
 	private int tweetsFoundCount;
+	
+	/**
+	 * 
+	 */
+	private int tweetsFromUserCount;
 
 	/**
 	 * 
@@ -121,7 +131,15 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		Query q = QueryComposer.from("twiterapime");
 		//
 		try {
+			tweetsFoundCount = 0;
+			tweetsFromUserCount = 0;
+			//
 			s.startSearchTweets(q, this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFoundCount > 0);
+			assertEquals(tweetsFoundCount, tweetsFromUserCount);
 		} catch (Exception e) {
 			fail();
 		}
@@ -152,13 +170,27 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		Query q = QueryComposer.from("twiterapime");
 		//
 		try {
+			tweetsFoundCount = 0;
+			tweetsFromUserCount = 0;
+			//
 			s.startSearchTweets(q.toString(), this);
+			//
+			waitFor(10000);
+			//
+			assertTrue(tweetsFoundCount > 0);
+			assertEquals(tweetsFoundCount, tweetsFromUserCount);
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
+			tweetsFoundCount = 0;
+			//
 			s.startSearchTweets("?", this);
+			//
+			waitFor(10000);
+			//
+			assertEquals(-1, tweetsFoundCount);
 		} catch (Exception e) {
 			fail();
 		}
@@ -200,22 +232,47 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 	 * @see com.twitterapime.search.SearchDeviceListener#searchCompleted()
 	 */
 	public void searchCompleted() {
-		if (tweetsFoundCount == 0) {
-			fail();
-		}
+		finished = true;
 	}
 
 	/**
 	 * @see com.twitterapime.search.SearchDeviceListener#searchFailed(java.lang.Throwable)
 	 */
 	public void searchFailed(Throwable cause) {
-		assertTrue(cause instanceof InvalidQueryException);
+		if (cause instanceof InvalidQueryException) {
+			tweetsFoundCount = -1;
+		}
+		//
+		finished = true;
 	}
 
 	/**
 	 * @see com.twitterapime.search.SearchDeviceListener#tweetFound(com.twitterapime.search.Tweet)
 	 */
 	public void tweetFound(Tweet tweet) {
-		assertEquals("twiterapime", tweet.getString(MetadataSet.TWEET_AUTHOR_USERNAME));
+		tweetsFoundCount++;
+		if ("twiterapime".equals(tweet.getString(MetadataSet.TWEET_AUTHOR_USERNAME))) {
+			tweetsFromUserCount++;
+		}
+	}
+	
+	/**
+	 * @param maxTime
+	 */
+	public void waitFor(long maxTime) {
+		finished = false;
+		//
+		int st = (int)(maxTime / 1000);
+		//
+		while (st > 0) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {}
+			st--;
+			//
+			if (finished) {
+				break;
+			}
+		}
 	}
 }

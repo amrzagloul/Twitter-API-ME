@@ -50,7 +50,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 			fail();
 		}
 		//
-		int[] codes = new int[] {HttpConnection.HTTP_NOT_FOUND, HttpConnection.HTTP_NOT_ACCEPTABLE, HttpConnection.HTTP_FORBIDDEN};
+		int[] codes = new int[] {HttpConnection.HTTP_NOT_FOUND, HttpConnection.HTTP_NOT_ACCEPTABLE};
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
@@ -61,7 +61,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 			}
 		}
 		//
-		codes = new int[] {HttpConnection.HTTP_BAD_REQUEST, HttpConnection.HTTP_UNAVAILABLE};
+		codes = new int[] {HttpConnection.HTTP_BAD_REQUEST, HttpConnection.HTTP_FORBIDDEN, HttpResponseCodeInterpreter.CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM};
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
@@ -80,7 +80,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 			fail();
 		}
 		//
-		codes = new int[] {HttpConnection.HTTP_BAD_GATEWAY, HttpConnection.HTTP_INTERNAL_ERROR};
+		codes = new int[] {HttpConnection.HTTP_BAD_GATEWAY, HttpConnection.HTTP_INTERNAL_ERROR, HttpConnection.HTTP_UNAVAILABLE};
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
@@ -105,7 +105,8 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		assertFalse(HttpResponseCodeInterpreter.isLimitExceededError(HttpConnection.HTTP_NOT_FOUND));
 		assertFalse(HttpResponseCodeInterpreter.isLimitExceededError(HttpConnection.HTTP_NOT_MODIFIED));
 		assertFalse(HttpResponseCodeInterpreter.isLimitExceededError(HttpConnection.HTTP_OK));
-		assertTrue(HttpResponseCodeInterpreter.isLimitExceededError(HttpConnection.HTTP_UNAVAILABLE));
+		assertFalse(HttpResponseCodeInterpreter.isLimitExceededError(HttpConnection.HTTP_UNAVAILABLE));
+		assertTrue(HttpResponseCodeInterpreter.isLimitExceededError(HttpResponseCodeInterpreter.CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM));
 	}
 
 	/**
@@ -115,13 +116,14 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_UNAUTHORIZED));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_BAD_GATEWAY));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_BAD_REQUEST));
-		assertTrue(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_FORBIDDEN));
+		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_FORBIDDEN));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_INTERNAL_ERROR));
 		assertTrue(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_NOT_ACCEPTABLE));
 		assertTrue(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_NOT_FOUND));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_NOT_MODIFIED));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_OK));
 		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpConnection.HTTP_UNAVAILABLE));
+		assertFalse(HttpResponseCodeInterpreter.isInvalidQueryError(HttpResponseCodeInterpreter.CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM));
 	}
 
 	/**
@@ -137,7 +139,8 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		assertFalse(HttpResponseCodeInterpreter.isServiceError(HttpConnection.HTTP_NOT_FOUND));
 		assertFalse(HttpResponseCodeInterpreter.isServiceError(HttpConnection.HTTP_NOT_MODIFIED));
 		assertFalse(HttpResponseCodeInterpreter.isServiceError(HttpConnection.HTTP_OK));
-		assertFalse(HttpResponseCodeInterpreter.isServiceError(HttpConnection.HTTP_UNAVAILABLE));
+		assertTrue(HttpResponseCodeInterpreter.isServiceError(HttpConnection.HTTP_UNAVAILABLE));
+		assertFalse(HttpResponseCodeInterpreter.isServiceError(HttpResponseCodeInterpreter.CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM));
 	}
 
 	/**
@@ -154,6 +157,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		assertFalse(HttpResponseCodeInterpreter.isSecurityError(HttpConnection.HTTP_NOT_MODIFIED));
 		assertFalse(HttpResponseCodeInterpreter.isSecurityError(HttpConnection.HTTP_OK));
 		assertFalse(HttpResponseCodeInterpreter.isSecurityError(HttpConnection.HTTP_UNAVAILABLE));
+		assertFalse(HttpResponseCodeInterpreter.isSecurityError(HttpResponseCodeInterpreter.CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM));
 	}
 	
 	private class HttpConnMock implements HttpConnection {

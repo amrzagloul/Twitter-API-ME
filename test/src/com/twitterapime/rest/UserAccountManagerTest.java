@@ -107,12 +107,12 @@ public class UserAccountManagerTest extends TestCase {
 			c = new Credential("twiterapimetest", "f00bar");
 			uam = UserAccountManager.getInstance(c);
 			//
-			uam.verifyCredential();
+			assertTrue(uam.verifyCredential());
 			//
 			assertNotNull(uam.getRateLimitStatus());
 			assertTrue(uam.getRateLimitStatus().size() > 0);
 		} catch (Exception e) {
-			fail();
+			fail(e.toString());
 		}
 		//
 		try {
@@ -483,8 +483,13 @@ public class UserAccountManagerTest extends TestCase {
 			//
 			u.signOut();
 			//
-			assertFalse(u.isVerified());
 			assertNotSame(u, UserAccountManager.getInstance(c));
+			//
+			try {
+				u.verifyCredential();
+				fail();
+			} catch (IllegalStateException e) {
+			}
 		} catch (Exception e) {
 			fail();
 		}

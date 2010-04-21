@@ -62,18 +62,14 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			TweetER t1 = TweetER.getInstance(uam1);
 			t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
 			t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
-			t1.post(new Tweet("Test msg 3 @twiterapimetest " + System.currentTimeMillis()));
 			t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
 			t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
-			t1.send(new Tweet("twiterapimetest", "Test DM 3 " + System.currentTimeMillis()));
 			//
 			TweetER t2 = TweetER.getInstance(uam2);
 			t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
 			t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
-			t2.post(new Tweet("Test msg 3 " + System.currentTimeMillis()));
 			t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
 			t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
-			t2.send(new Tweet("twiterapimetst2", "Test DM 3 " + System.currentTimeMillis()));
 		}
 		//
 		uam1.signOut();
@@ -439,6 +435,39 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			fail();
 		}
 	}
+	
+	/**
+	 * Test method related to {@link com.twitterapime.rest.UserAccountManager#signOut()}.
+	 */
+	public void testSignOut() {
+		Credential c = new Credential("twiterapimetest", "f00bar");
+		UserAccountManager u = UserAccountManager.getInstance(c);
+		//
+		try {
+			assertTrue(u.verifyCredential());
+			assertTrue(u.isVerified());
+			//
+			Timeline tr = Timeline.getInstance(u);
+			//
+			u.signOut();
+			//
+			u = UserAccountManager.getInstance(c);
+			assertTrue(u.verifyCredential());
+			assertTrue(u.isVerified());
+			//
+			assertNotSame(tr, Timeline.getInstance(u));
+			//
+			try {
+				tr.startGetHomeTweets(null, this);
+				fail();
+			} catch (IllegalStateException e) {
+			}
+			//
+			u.signOut();
+		} catch (Exception e) {
+			fail();
+		}
+	}
 
 	/**
 	 * @param maxTime
@@ -494,7 +523,6 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * @see com.twitterapime.search.SearchDeviceListener#searchFailed(java.lang.Throwable)
 	 */
 	public void searchFailed(Throwable cause) {
-		System.out.println(cause);
 		fail();
 	}
 
