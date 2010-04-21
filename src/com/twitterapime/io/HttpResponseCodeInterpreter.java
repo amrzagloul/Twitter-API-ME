@@ -23,12 +23,20 @@ import com.twitterapime.search.LimitExceededException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  * @see LimitExceededException
  * @see InvalidQueryException
  */
 public final class HttpResponseCodeInterpreter {
+	/**
+	 * <p>
+	 * 420: Custom Http code from Twitter API which means to wait a little bit
+	 * for a new request.
+	 * </p> 
+	 */
+	public static final int CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM = 420;
+	
 	/**
 	 * <p>
 	 * Perform an analyze of a given HttpConnection object's response-code in
@@ -52,31 +60,45 @@ public final class HttpResponseCodeInterpreter {
 		//
 		if (respCode != HttpConnection.HTTP_OK
 				&& respCode != HttpConnection.HTTP_NOT_MODIFIED) {
-			String errorMsg = null;
-			Parser parser = ParserFactory.getDefaultParser();
-			HttpResponseCodeErrorHandler handler =
-				new HttpResponseCodeErrorHandler();
-			//
-			try {
-				parser.parse(conn.openInputStream(), handler);
-				//
-				errorMsg = handler.getParsedErrorMessage();
-			} catch (ParserException e) {
-				errorMsg = "HTTP ERROR CODE: " + respCode;
-			}
-			//
 			if (isInvalidQueryError(respCode)) {
-				throw new InvalidQueryException(errorMsg);
+				throw new InvalidQueryException(getErrorMessage(conn));
 			} else if (isLimitExceededError(respCode)) {
-				throw new LimitExceededException(errorMsg);
+				throw new LimitExceededException(getErrorMessage(conn));
 			} else if (isSecurityError(respCode)) {
-				throw new SecurityException(errorMsg);
+				throw new SecurityException(getErrorMessage(conn));
 			} else {
-				throw new IOException(errorMsg);
+				throw new IOException(getErrorMessage(conn));
 			}
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Get error messages from connection.
+	 * </p>
+	 * @param conn Http connection.
+	 * @return Messages.
+	 * @throws IOException If any I/O error occurs.
+	 */
+	public static String getErrorMessage(HttpConnection conn)
+		throws IOException {
+		String errorMsg = null;
+		//
+		Parser parser = ParserFactory.getDefaultParser();
+		HttpResponseCodeErrorHandler handler =
+			new HttpResponseCodeErrorHandler();
+		//
+		try {
+			parser.parse(conn.openInputStream(), handler);
+			//
+			errorMsg = handler.getParsedErrorMessage();
+		} catch (ParserException e) {
+			errorMsg = "HTTP ERROR CODE: " + conn.getResponseCode();
+		}
+		//
+		return errorMsg;
+	}
+
 	/**
 	 * <p>
 	 * Check if the response-code reports a request limit exceeded error.
@@ -86,8 +108,8 @@ public final class HttpResponseCodeInterpreter {
 	 */
 	static boolean isLimitExceededError(int code) {
 		return code == HttpConnection.HTTP_BAD_REQUEST
-				|| code == HttpConnection.HTTP_UNAVAILABLE
-				|| code == HttpConnection.HTTP_FORBIDDEN;
+				|| code == HttpConnection.HTTP_FORBIDDEN
+				|| code == CUSTOM_HTTP_CODE_ENHANCE_YOUR_CALM;
 	}
 	
 	/**
@@ -99,8 +121,7 @@ public final class HttpResponseCodeInterpreter {
 	 */
 	static boolean isInvalidQueryError(int code) {
 		return code == HttpConnection.HTTP_NOT_FOUND
-				|| code == HttpConnection.HTTP_NOT_ACCEPTABLE
-				|| code == HttpConnection.HTTP_FORBIDDEN;
+				|| code == HttpConnection.HTTP_NOT_ACCEPTABLE;
 	}
 	
 	/**
@@ -112,7 +133,8 @@ public final class HttpResponseCodeInterpreter {
 	 */
 	static boolean isServiceError(int code) {
 		return code == HttpConnection.HTTP_BAD_GATEWAY
-				|| code == HttpConnection.HTTP_INTERNAL_ERROR;
+				|| code == HttpConnection.HTTP_INTERNAL_ERROR
+				|| code == HttpConnection.HTTP_UNAVAILABLE;
 	}
 	
 	/**
