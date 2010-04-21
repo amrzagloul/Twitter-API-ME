@@ -241,4 +241,20 @@ public class QueryComposerTest extends TestCase {
 	public void testContainQuestion() {
 		assertEquals(new Query("&tude[]=?"), QueryComposer.containQuestion());
 	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#count(int)}.
+	 */
+	public void testCount() {
+		assertEquals(new Query("&count=6"), QueryComposer.count(6));
+		assertEquals(new Query("&count=7"), QueryComposer.count(7));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#maxID(String)}.
+	 */
+	public void testMaxID() {
+		assertEquals(new Query("&max_id=654321"), QueryComposer.maxID("654321"));
+		assertEquals(new Query("&max_id=7890"), QueryComposer.maxID("7890"));
+	}
 }
