@@ -36,7 +36,7 @@ import com.twitterapime.search.handler.SearchResultHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see SearchDeviceListener
  * @see QueryComposer
@@ -279,6 +279,12 @@ public final class SearchDevice {
 		//
 		try {
 			c.setRequestMethod(HttpConnection.GET);
+			//
+			if (c.getResponseCode() == HttpConnection.HTTP_FORBIDDEN) {
+				throw new InvalidQueryException(
+					HttpResponseCodeInterpreter.getErrorMessage(c));
+			}
+			//
 			//verify whether there is an error in the request.
 			HttpResponseCodeInterpreter.perform(c);
 			hasException = false;
