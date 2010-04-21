@@ -9,11 +9,11 @@ import com.sonyericsson.junit.framework.TestSuite;
  * @author Main
  *
  */
-public class HandlerTestSuite extends TestSuite {
+public class IOHandlerTestSuite extends TestSuite {
 	/**
 	 * 
 	 */
-	public HandlerTestSuite() {
+	public IOHandlerTestSuite() {
 		addTest(new HttpResponseCodeErrorHandlerTest());
 	}
 }
