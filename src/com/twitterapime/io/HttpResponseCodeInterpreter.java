@@ -74,10 +74,10 @@ public final class HttpResponseCodeInterpreter {
 	
 	/**
 	 * <p>
-	 * Get error messages from connection.
+	 * Get error messages from connection's response.
 	 * </p>
 	 * @param conn Http connection.
-	 * @return Messages.
+	 * @return Message.
 	 * @throws IOException If any I/O error occurs.
 	 */
 	public static String getErrorMessage(HttpConnection conn)
