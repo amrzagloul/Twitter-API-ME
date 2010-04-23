@@ -53,7 +53,7 @@ public class TweetERTest extends TestCase {
 			TweetER t = TweetER.getInstance(uam);
 			assertNotNull(t);
 			assertSame(t, TweetER.getInstance(uam));			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			fail();
 		}
 		//
