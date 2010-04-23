@@ -7,6 +7,8 @@
  */
 package com.twitterapime.search;
 
+import com.twitterapime.rest.Timeline;
+
 /**
  * <p>
  * This interface defines the methods of a listener interested on the result of
@@ -14,10 +16,11 @@ package com.twitterapime.search;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
- * @see SearchDeviceListener
+ * @see SearchDevice
  * @see Tweet
+ * @see Timeline
  */
 public interface SearchDeviceListener {
 	/**

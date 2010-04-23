@@ -99,7 +99,7 @@ public final class TweetER {
 	 * Release the objects which account is no longer authenticated.
 	 * </p>
 	 */
-	static void cleanPool() {
+	static synchronized void cleanPool() {
 		if (tweetERPool != null) {
 			Enumeration keys = tweetERPool.keys();
 			Object key;
@@ -206,7 +206,7 @@ public final class TweetER {
 	 * @return Tweet.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws IOException If an I/O error occurs.
-	 * @throws SecurityException If the request tweet is protected.
+	 * @throws SecurityException If the requested tweet is protected.
 	 * @throws IllegalArgumentException If the given ID is empty/null.
 	 */
 	public Tweet findByID(String id) throws LimitExceededException,

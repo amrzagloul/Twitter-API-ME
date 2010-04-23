@@ -120,7 +120,7 @@ public final class Timeline {
 	 * Release the objects which account is no longer authenticated.
 	 * </p>
 	 */
-	static void cleanPool() {
+	static synchronized void cleanPool() {
 		if (timelinePool != null) {
 			Enumeration keys = timelinePool.keys();
 			Object key;
@@ -239,8 +239,8 @@ public final class Timeline {
 	/**
 	 * <p>
 	 * Get most recent tweets, including retweets, posted by the
-	 * authenticating user and that user's friends according to given filter.
-	 * This is the equivalent of timeline home on the Web.
+	 * authenticating user and the user's friends according to given filter.
+	 * This is the equivalent to timeline home on the Web.
 	 * </p>
 	 * <p>
 	 * This method does not wait for the search process is completed to return.
@@ -257,11 +257,9 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * </ul>
 	 * </p>
-	 * <p>
-	 * <b>This method requires user authentication.</b>
-	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
 	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
 	public void startGetHomeTweets(Query q, SearchDeviceListener l) {
@@ -292,11 +290,9 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * </ul>
 	 * </p>
-	 * <p>
-	 * <b>This method requires user authentication.</b>
-	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
 	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
 	public void startGetUserTweets(Query q, SearchDeviceListener l) {
@@ -326,11 +322,9 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * </ul>
 	 * </p>
-	 * <p>
-	 * <b>This method requires user authentication.</b>
-	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
 	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
 	public void startGetMentions(Query q, SearchDeviceListener l) {
@@ -342,8 +336,8 @@ public final class Timeline {
 	
 	/**
 	 * <p>
-	 * Get all Direct Messages from the authenticating user according to given
-	 * filter.
+	 * Get all Direct Messages from/to the authenticating user according to
+	 * given filter.
 	 * </p>
 	 * <p>
 	 * This method does not wait for the search process is completed to return.
@@ -360,12 +354,10 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * </ul>
 	 * </p>
-	 * <p>
-	 * <b>This methods requires user authentication.</b>
-	 * </p>
 	 * @param q The filter query. If null all DMs are returned.
 	 * @param l Listener object to be notified about the search's result.
-	 * @param received Return received DMs (true).
+	 * @param received Return received DMs (true), otherwise, sent ones.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
 	public void startGetDirectMessages(Query q, boolean received, 
@@ -382,13 +374,15 @@ public final class Timeline {
 		
 	/**
 	 * <p>
-	 * Start a retrieval on a given URL according to a filter.
+	 * Start a retrieval of a given URL's response according to a filter.
 	 * </p>
 	 * @param url The URL.
 	 * @param q The filter query.
 	 * @param l Listener object to be notified about the search's result.
 	 * @param h Content handler.
 	 * @param checkAuth Authentication required (true).
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException Invalid parameters.
 	 */
 	private void startGet(final String url, final Query q,
 		final SearchDeviceListener l, final Handler h, final boolean checkAuth){

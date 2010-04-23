@@ -35,6 +35,7 @@ import com.twitterapime.search.LimitExceededException;
  * if (uam.verifyCredential()) {
  *   System.out.println("User logged in...");
  * }
+ * uam.signOut();
  * </pre>
  * </p>
  * 
@@ -275,8 +276,10 @@ public final class UserAccountManager {
 	 * </p>
 	 * @return Valid credentials (true).
 	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public boolean verifyCredential() throws IOException {
+	public boolean verifyCredential() throws IOException,
+		LimitExceededException {
 		checkValid();
 		//
 		if (verified) {
@@ -306,12 +309,7 @@ public final class UserAccountManager {
 			} else if (respCode == HttpConnection.HTTP_UNAUTHORIZED) {
 				verified = false;
 			} else {
-				try {
-					HttpResponseCodeInterpreter.perform(conn);
-				} catch (LimitExceededException e) {
-					//Twitter API specs states this operation is not API rate
-					//limited. That's why this exception is suppressed.
-				}
+				HttpResponseCodeInterpreter.perform(conn);
 			}
 		} finally {
 			if (conn != null) {
@@ -332,8 +330,10 @@ public final class UserAccountManager {
 	 * </p>
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SecurityException If it is not properly logged in.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public synchronized void signOut() throws IOException {
+	public synchronized void signOut() throws IOException,
+		LimitExceededException {
 		checkValid();
 		//
 		if (verified) {
@@ -370,7 +370,7 @@ public final class UserAccountManager {
 	 * @return Info from followed user.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User already followed or does not exist.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
 	public UserAccount follow(UserAccount ua) throws IOException,
@@ -387,7 +387,7 @@ public final class UserAccountManager {
 	 * @return Info from unfollowed user.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User already unfollowed or does not exist.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
 	public UserAccount unfollow(UserAccount ua) throws IOException,
@@ -405,7 +405,7 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws InvalidQueryException If user does not exist or is protected.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 */
 	public boolean isFollowing(UserAccount ua) throws IOException,
 		LimitExceededException {
@@ -458,7 +458,7 @@ public final class UserAccountManager {
 	 * @return Info from blocked user.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User does not exist.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
 	public UserAccount block(UserAccount ua) throws IOException,
@@ -475,7 +475,7 @@ public final class UserAccountManager {
 	 * @return Info from unblocked user.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User does not exist.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
 	public UserAccount unblock(UserAccount ua) throws IOException,
@@ -493,7 +493,7 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws InvalidQueryException If user does not exist or is protected.
-	 * @throws SecurityException If the user is not authenticated.
+	 * @throws SecurityException If it is not authenticated.
 	 */
 	public boolean isBlocking(UserAccount ua) throws IOException,
 		LimitExceededException {
@@ -614,6 +614,7 @@ public final class UserAccountManager {
 			//
 			OutputStream out = conn.openOutputStream();
 			try {
+				//TODO: move this checking to UserAccount(String).
 				Long.parseLong(id); // is only numbers?
 				out.write(("user_id=" + id).getBytes());
 			} catch (NumberFormatException e) {

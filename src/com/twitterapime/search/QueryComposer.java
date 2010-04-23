@@ -10,6 +10,8 @@ package com.twitterapime.search;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.twitterapime.rest.Timeline;
+
 /**
  * <p>
  * This class is responsible for composing queries that are used to be sent to
@@ -22,6 +24,7 @@ import java.util.Date;
  * @since 1.0
  * @see Query
  * @see SearchDevice
+ * @see Timeline
  */
 public final class QueryComposer {
 	/**
