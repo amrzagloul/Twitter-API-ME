@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.1 - READ ME                         *
+*                         TWITTER API ME 1.2 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -36,23 +36,43 @@ for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- User account authentication.
-- Tweet posting.
-- Rate limit status access.
-- Android 1.1 support for all features available.
+- Retweet.
+- Direct message posting and retrieval.
+- Friendship management, i.e., follow/unfollow and block/unblock.
+- Access to Public, Home, User and Mentions timelines.
+- Rate limit status access for Search API.
 - Some bug fixes and optimizations.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
 - None
 
- COMING NEXT VERSION: 1.2
+ REMARKS:
 ********************************************************************************
-- Direct messages.
-- Retweet.
-- Friends and follower list.
+- In this version 1.2 we had to make a change in some methods signatures that
+  will cause incompatibility with some codes written with the previous versions
+  of this API. However, we advance those incompatibilities are easy and quick to
+  fix.
+  
+  This change consists that every method that directly access Twitter API has to
+  throw a LimitExceededException exception, even if Twitter says the opposite.
+  Our objective is to be prepared just in case, in the future, Twitter API
+  decides to change regarding rating or not a given service.
+  
+  The methods affected by this change are TweetER.post(),
+  AccountManager.verifyCredential() and AccountManager.getRateStatusLimit(). In
+  order to fix this incompatibility, you just need to catch the
+  LimitExceededException exception. That's it!
+  
+  We apologize for this inconvenience and appreciate your comprehension.
+
+ COMING NEXT VERSION: 1.3
+********************************************************************************
+- Authentication via OAuth.
+- Trends.
+- Followers list.
 - Find people.
-- Much more...
+- Much more... Let us know what you need.
 
  BUILD ENVIRONMENT SETUP:
 ********************************************************************************
@@ -69,3 +89,16 @@ tapime.path.lib.findbugs=<FINDBUGS ANT JAR PATH>
 tapime.path.lib.android11=<ANDROID 1.1 JAR PATH>
 tapime.path.lib.junit=<JUnit 3.8.1 JAR PATH>
 tapime.path.lib.mobilejunit=<Mobile JUnit JAR PATH>
+
+ PREPROCESSOR DIRECTIVES:
+********************************************************************************
+- If you intend to work with the API's source code directly, you need to know
+  that this code contains some preprocessing directives, in order to manage the
+  proper compilation for each target platform. Currently, the code is prepared
+  for Java ME and Android, since they are target platforms of Twitter API ME.
+  
+  Before compiling the source code, you need to specify which platform this
+  compilation is for in your IDE. For instance, you can use Antenna Preprocessor
+  Plug-in for Eclipse for that. In case you want to compile for Java ME, use the
+  directive PP_JAVA_ME. For Android, use PP_ANDROID. Otherwise, your binaries
+  may present some strange behaviors during runtime.
