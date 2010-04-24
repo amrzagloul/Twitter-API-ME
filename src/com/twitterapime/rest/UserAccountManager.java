@@ -616,15 +616,19 @@ public final class UserAccountManager {
 			//
 			OutputStream out = conn.openOutputStream();
 			try {
-				//TODO: move this checking to UserAccount(String).
 				Long.parseLong(id); // is only numbers?
 				out.write(("user_id=" + id).getBytes());
 			} catch (NumberFormatException e) {
-				//user name.
-				out.write(("screen_name=" + id).getBytes());
+				out.write(("screen_name=" + id).getBytes()); //user name.
 			}
 			out.flush();
 			out.close();
+			//
+			if (conn.getResponseCode() == HttpConnection.HTTP_FORBIDDEN) {
+				//already following/blocking.
+				throw new InvalidQueryException(
+					HttpResponseCodeInterpreter.getErrorMessage(conn));
+			}
 			//
 			HttpResponseCodeInterpreter.perform(conn);
 			//
