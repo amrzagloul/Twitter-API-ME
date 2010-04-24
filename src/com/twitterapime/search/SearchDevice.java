@@ -15,6 +15,8 @@ import com.twitterapime.io.HttpResponseCodeInterpreter;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.rest.RateLimitStatus;
+import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.handler.SearchResultHandler;
 
 /**
@@ -49,6 +51,14 @@ public final class SearchDevice {
 	 */
 	private static final String TWITTER_URL_ATOM =
 		"http://search.twitter.com/search.atom";
+	
+	/**
+	 * <p>
+	 * Twitter REST API rate status limit URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_RATE_STATUS_LIMIT =
+		"http://twitter.com/account/rate_limit_status.xml";
 
 	/**
 	 * <p>
@@ -195,12 +205,52 @@ public final class SearchDevice {
 		Thread t = new Thread(r);
 		t.start();
 	}
+	
+	/**
+	 * <p>
+	 * Return a set of info about the number of API requests available to the
+	 * requesting IP address before the REST API limit is reached for the
+	 * current hour.
+	 * </p>
+	 * <p>
+	 * Stay aware of these limits, since it can impact the usage of some methods
+	 * of this API.
+	 * </p>
+	 * @return Rate limiting status info.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @see SearchDevice#getAPICallsCount()
+	 */
+	public RateLimitStatus getRateLimitStatus() throws IOException,
+		LimitExceededException {
+		HttpConnection conn = HttpConnector.open(TWITTER_URL_RATE_STATUS_LIMIT);
+		//
+		Parser parser = ParserFactory.getDefaultParser();
+		RateLimitStatusHandler handler = new RateLimitStatusHandler();
+		//
+		try {
+			HttpResponseCodeInterpreter.perform(conn);
+			//
+			parser.parse(conn.openInputStream(), handler);
+			//
+			return handler.getParsedRateLimitStatus();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+	}
 
 	/**
 	 * <p>
-	 * Get the call count submitted to Twitter Search API.
+	 * Get the calls count submitted to Twitter Search API since the API was
+	 * loaded by class loader. So this number is reseted when the API is
+	 * unloaded.
 	 * </p>
 	 * @return Call count.
+	 * @see SearchDevice#getRateLimitStatus()
 	 */
 	public int getAPICallsCount() {
 		return apiCallsCount;
