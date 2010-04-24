@@ -231,23 +231,30 @@ public class UserAccountManagerTest extends TestCase {
 		UserAccount ua = new UserAccount("twiterapime");
 		//
 		try {
-			try {
-				u.follow(null);
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				u.follow(new UserAccount());
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				UserAccountManager.getInstance(new Credential("username", "password")).follow(ua);
-				fail();
-			} catch (SecurityException e1) {
-			}
+			u.follow(null);
+			fail();
+		} catch (IllegalArgumentException e1) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			u.follow(new UserAccount());
+			fail();
+		} catch (IllegalArgumentException e1) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			UserAccountManager.getInstance(new Credential("username", "password")).follow(ua);
+			fail();
+		} catch (SecurityException e1) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
 			//
 			assertTrue(u.verifyCredential());
 			//
@@ -261,18 +268,22 @@ public class UserAccountManagerTest extends TestCase {
 			assertEquals("twiterapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
 			assertTrue(u.isFollowing(ua));
-			//
-			try {
-				u.follow(ua);
-				fail();
-			} catch (InvalidQueryException e) {
-			}
-			//
-			try {
-				u.follow(new UserAccount("jdahsjkdhadkja"));
-				fail();
-			} catch (InvalidQueryException e) {
-			}
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			u.follow(ua);
+			fail();
+		} catch (InvalidQueryException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			u.follow(new UserAccount("jdahsjkdhadkja"));
+			fail();
+		} catch (InvalidQueryException e) {
 		} catch (Exception e) {
 			fail();
 		}

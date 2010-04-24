@@ -5,6 +5,7 @@ package com.twitterapime.search;
 
 import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.rest.RateLimitStatus;
 
 /**
  * @author Main
@@ -225,6 +226,25 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			assertTrue(s.getLastAPICallTime() > now);
 		} catch (Exception e) {
 			fail();
+		}
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.SearchDevice#getRateLimitStatus()}.
+	 */
+	public void testGetRateLimitStatus() {
+		try {
+			SearchDevice sd = SearchDevice.getInstance();
+			//
+			RateLimitStatus rls = sd.getRateLimitStatus();
+			assertNotNull(rls);
+			assertTrue(rls.size() > 0);
+			//
+			assertTrue(rls.getString(MetadataSet.RATELIMITSTATUS_HOURLY_LIMIT).length() > 0);
+			assertTrue(rls.getString(MetadataSet.RATELIMITSTATUS_REMAINING_HITS).length() > 0);
+			assertTrue(rls.getString(MetadataSet.RATELIMITSTATUS_RESET_TIME).length() > 0);
+		} catch (Exception e) {
+			fail(e.toString());
 		}
 	}
 
