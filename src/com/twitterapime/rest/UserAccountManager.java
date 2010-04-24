@@ -221,13 +221,15 @@ public final class UserAccountManager {
 
 	/**
 	 * <p>
-	 * Get the rate status limit info. This info describes the access limits to
-	 * Twitter REST API, e.g., {@link MetadataSet#RATELIMITSTATUS_HOURLY_LIMIT},
-	 * {@link MetadataSet#RATELIMITSTATUS_REMAINING_HITS} and
-	 * {@link MetadataSet#RATELIMITSTATUS_RESET_TIME}. Stay aware of these
-	 * limits, since it can impact the usage of some methods of this API.
+	 * Returns a set of info about the number of API requests available to the
+	 * requesting user before the REST API limit is reached for the current
+	 * hour.
 	 * </p>
-	 * @return Rate status limit info.
+	 * <p>
+	 * Stay aware of these limits, since it can impact the usage of some methods
+	 * of this API.
+	 * </p>
+	 * @return Rate limiting status info.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws SecurityException If it is not properly logged in.
 	 * @throws LimitExceededException If limit has been hit.
