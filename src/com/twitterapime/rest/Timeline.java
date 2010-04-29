@@ -30,18 +30,21 @@ import com.twitterapime.search.SearchDeviceListener;
  * <p>
  * <pre>
  * Credential c = new Credential("username", "password");
- * UserAccountManager uam = UserAccountManager.getInstance(c)
- * Timeline ter = Timeline.getInstance(uam);
+ * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
- * Query q = QueryComposer.count(5); //return only 5 latest tweets.
+ * if (uam.verifyCredential()) {
+ *   Timeline ter = Timeline.getInstance(uam);
  * 
- * ter.startGetHomeTweets(q, new SearchDeviceListener() {
- *     public void searchCompleted() {}
- *     public void searchFailed(Throwable cause) {}
- *     public void tweetFound(Tweet tweet) {
- *         System.out.println(tweet);
- *     }
- * });
+ *   Query q = QueryComposer.count(5); //return only 5 latest tweets.
+ * 
+ *   ter.startGetHomeTweets(q, new SearchDeviceListener() {
+ *       public void searchCompleted() {}
+ *       public void searchFailed(Throwable cause) {}
+ *       public void tweetFound(Tweet tweet) {
+ *           System.out.println(tweet);
+ *       }
+ *   });
+ * }
  * </pre>
  * </p>
  * 

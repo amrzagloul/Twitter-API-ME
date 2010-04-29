@@ -32,10 +32,13 @@ import com.twitterapime.search.Tweet;
  * <p>
  * <pre>
  * Credential c = new Credential("username", "password");
- * UserAccountManager uam = UserAccountManager.getInstance(c)
- * TweetER ter = TweetER.getInstance(uam);
- * Tweet t = ter.post(new Tweet("status message"));
+ * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
+ * if (uam.verifyCredential()) {
+ *   TweetER ter = TweetER.getInstance(uam);
+ *   Tweet t = ter.post(new Tweet("status message"));
+ * }
+ * ...
  * TweetER ter = TweetER.getInstance();
  * Tweet t = ter.findByID("12635687984");
  * </pre>
