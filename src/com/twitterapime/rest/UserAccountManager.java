@@ -132,7 +132,7 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private static final String TWITTER_URL_SHOW_USER_ACCOUNT =
-		"http://api.twitter.com/version/users/show.xml";
+		"http://api.twitter.com/1/users/show.xml";
 	
 	/**
 	 * <p>
@@ -147,13 +147,6 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private boolean verified;
-	
-	/**
-	 * <p>
-	 * User account data.
-	 * </p>
-	 */
-	private UserAccount account;
 	
 	/**
 	 * <p>
@@ -344,7 +337,6 @@ public final class UserAccountManager {
 		//
 		if (verified) {
 			verified = false;
-			account = null;
 			token = null;
 			signer = null;
 			userAccountMngrPoll.remove(credential);
@@ -369,7 +361,9 @@ public final class UserAccountManager {
 		checkValid();
 		checkVerified();
 		//
-		HttpRequest req = createRequest(TWITTER_URL_SHOW_USER_ACCOUNT);
+		String username = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
+		HttpRequest req = createRequest(
+			TWITTER_URL_SHOW_USER_ACCOUNT + "?id=" + username);
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -454,7 +448,7 @@ public final class UserAccountManager {
 		checkVerified();
 		//
 		final String qryStr =
-			"?user_a=" + account.getString(MetadataSet.USERACCOUNT_USER_NAME) +
+			"?user_a=" + credential.getString(MetadataSet.CREDENTIAL_USERNAME) +
 			"&user_b=" + id;
 		//
 		HttpRequest req = createRequest(TWITTER_URL_IS_FOLLOWING_USER + qryStr);
