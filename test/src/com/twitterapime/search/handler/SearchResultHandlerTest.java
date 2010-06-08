@@ -59,7 +59,7 @@ public class SearchResultHandlerTest extends TestCase implements SearchDeviceLis
 		//
 		Hashtable sample = new Hashtable();
 		sample.put(MetadataSet.TWEET_AUTHOR_NAME, "Twitter API ME");
-		sample.put(MetadataSet.TWEET_AUTHOR_USERNAME, "twiterapime");
+		sample.put(MetadataSet.TWEET_AUTHOR_USERNAME, "twapime");
 		sample.put(MetadataSet.TWEET_AUTHOR_URI, "http://twitter.com/twiterapime");
 		sample.put(MetadataSet.TWEET_LANG, "en");
 		sample.put(MetadataSet.TWEET_SOURCE, "TweetDeck");

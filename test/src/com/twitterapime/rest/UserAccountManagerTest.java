@@ -191,7 +191,7 @@ public class UserAccountManagerTest extends TestCase {
 	public void testFollow() {
 		Credential c = new Credential("twiterapimetest", "f00bar");
 		UserAccountManager u = UserAccountManager.getInstance(c);
-		UserAccount ua = new UserAccount("twiterapime");
+		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
 			u.follow(null);
@@ -228,7 +228,7 @@ public class UserAccountManagerTest extends TestCase {
 			ua = u.follow(ua);
 			//
 			assertNotNull(ua);
-			assertEquals("twiterapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
 			assertTrue(u.isFollowing(ua));
 		} catch (Exception e) {
@@ -264,7 +264,7 @@ public class UserAccountManagerTest extends TestCase {
 	public void testUnfollow() {
 		Credential c = new Credential("twiterapimetest", "f00bar");
 		UserAccountManager u = UserAccountManager.getInstance(c);
-		UserAccount ua = new UserAccount("twiterapime");
+		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
 			try {
@@ -294,7 +294,7 @@ public class UserAccountManagerTest extends TestCase {
 			ua = u.unfollow(ua);
 			//
 			assertNotNull(ua);
-			assertEquals("twiterapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
 			assertFalse(u.isFollowing(ua));
 			//
@@ -332,7 +332,7 @@ public class UserAccountManagerTest extends TestCase {
 	public void testBlock() {
 		Credential c = new Credential("twiterapimetest", "f00bar");
 		UserAccountManager u = UserAccountManager.getInstance(c);
-		UserAccount ua = new UserAccount("twiterapime");
+		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
 			try {
@@ -362,7 +362,7 @@ public class UserAccountManagerTest extends TestCase {
 			ua = u.block(ua);
 			//
 			assertNotNull(ua);
-			assertEquals("twiterapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
 			assertTrue(u.isBlocking(ua));
 			//
@@ -394,7 +394,7 @@ public class UserAccountManagerTest extends TestCase {
 	public void testUnblock() {
 		Credential c = new Credential("twiterapimetest", "f00bar");
 		UserAccountManager u = UserAccountManager.getInstance(c);
-		UserAccount ua = new UserAccount("twiterapime");
+		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
 			try {
@@ -424,7 +424,7 @@ public class UserAccountManagerTest extends TestCase {
 			ua = u.unblock(ua);
 			//
 			assertNotNull(ua);
-			assertEquals("twiterapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
 			assertFalse(u.isBlocking(ua));
 			//

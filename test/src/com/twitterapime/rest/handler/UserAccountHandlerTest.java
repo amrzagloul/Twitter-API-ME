@@ -45,7 +45,7 @@ public class UserAccountHandlerTest extends TestCase {
 		sampleRef.put(MetadataSet.USERACCOUNT_TIME_ZONE, "Santiago");
 		sampleRef.put(MetadataSet.USERACCOUNT_TWEETS_COUNT, "17");
 		sampleRef.put(MetadataSet.USERACCOUNT_URL, "http://www.twitterapime.com");
-		sampleRef.put(MetadataSet.USERACCOUNT_USER_NAME, "twiterapime");
+		sampleRef.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
 		sampleRef.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "-14400");
 		sampleRef.put(MetadataSet.USERACCOUNT_VERIFIED, "false");
 		//
@@ -70,7 +70,7 @@ public class UserAccountHandlerTest extends TestCase {
 		h.populate(sampleTest, "/time_zone", "Santiago");
 		h.populate(sampleTest, "/statuses_count", "17");
 		h.populate(sampleTest, "/url", "http://www.twitterapime.com");
-		h.populate(sampleTest, "/screen_name", "twiterapime");
+		h.populate(sampleTest, "/screen_name", "twapime");
 		h.populate(sampleTest, "/utc_offset", "-14400");
 		h.populate(sampleTest, "/verified", "false");
 		//

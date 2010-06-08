@@ -129,7 +129,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			fail();
 		}
 		//
-		Query q = QueryComposer.from("twiterapime");
+		Query q = QueryComposer.from("twapime");
 		//
 		try {
 			tweetsFoundCount = 0;
@@ -168,7 +168,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			fail();
 		}
 		//
-		Query q = QueryComposer.from("twiterapime");
+		Query q = QueryComposer.from("twapime");
 		//
 		try {
 			tweetsFoundCount = 0;
@@ -205,7 +205,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		int apiCount = s.getAPICallsCount();
 		//
 		try {
-			s.searchTweets(QueryComposer.from("twiterapime"));
+			s.searchTweets(QueryComposer.from("twapime"));
 			//
 			assertEquals(apiCount +1, s.getAPICallsCount());
 		} catch (Exception e) {
@@ -221,7 +221,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		long now = s.getLastAPICallTime();
 		//
 		try {
-			s.searchTweets(QueryComposer.from("twiterapime"));
+			s.searchTweets(QueryComposer.from("twapime"));
 			//
 			assertTrue(s.getLastAPICallTime() > now);
 		} catch (Exception e) {
@@ -271,7 +271,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 	 */
 	public void tweetFound(Tweet tweet) {
 		tweetsFoundCount++;
-		if ("twiterapime".equals(tweet.getString(MetadataSet.TWEET_AUTHOR_USERNAME))) {
+		if ("twapime".equals(tweet.getString(MetadataSet.TWEET_AUTHOR_USERNAME))) {
 			tweetsFromUserCount++;
 		}
 	}

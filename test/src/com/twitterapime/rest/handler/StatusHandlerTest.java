@@ -78,7 +78,7 @@ public class StatusHandlerTest extends TestCase {
 		userSample.put(MetadataSet.USERACCOUNT_TIME_ZONE, "Eastern Time (US and Canada)");
 		userSample.put(MetadataSet.USERACCOUNT_TWEETS_COUNT, "3390");
 		userSample.put(MetadataSet.USERACCOUNT_URL, "http://www.twitterapime.com");
-		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "twiterapime");
+		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "-18000");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "true");
 		UserAccount ua = new UserAccount(userSample);

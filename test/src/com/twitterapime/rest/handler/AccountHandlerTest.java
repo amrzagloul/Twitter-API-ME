@@ -66,7 +66,7 @@ public class AccountHandlerTest extends TestCase {
 		sample.put(MetadataSet.USERACCOUNT_TIME_ZONE, "Santiago");
 		sample.put(MetadataSet.USERACCOUNT_TWEETS_COUNT, "17");
 		sample.put(MetadataSet.USERACCOUNT_URL, "http://www.twitterapime.com");
-		sample.put(MetadataSet.USERACCOUNT_USER_NAME, "twiterapime");
+		sample.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
 		sample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "-14400");
 		sample.put(MetadataSet.USERACCOUNT_VERIFIED, "false");
 		Tweet tweet = new Tweet();
