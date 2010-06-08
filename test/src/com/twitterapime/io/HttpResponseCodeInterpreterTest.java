@@ -39,13 +39,13 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		//
 		try {
 			conn.setResponseCode(HttpConnection.HTTP_OK);
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 		} catch (Exception e) {
 			fail();
 		}
 		try {
 			conn.setResponseCode(HttpConnection.HTTP_NOT_MODIFIED);
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 		} catch (Exception e) {
 			fail();
 		}
@@ -54,7 +54,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
-				HttpResponseCodeInterpreter.perform(conn);
+				HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 			} catch (InvalidQueryException e) {
 			} catch (Exception e) {
 				fail();
@@ -65,7 +65,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
-				HttpResponseCodeInterpreter.perform(conn);
+				HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 			} catch (LimitExceededException e) {
 			} catch (Exception e) {
 				fail();
@@ -74,7 +74,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		//
 		try {
 			conn.setResponseCode(HttpConnection.HTTP_UNAUTHORIZED);
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 		} catch (SecurityException e) {
 		} catch (Exception e) {
 			fail();
@@ -84,7 +84,7 @@ public class HttpResponseCodeInterpreterTest extends TestCase {
 		for (int i = 0; i < codes.length; i++) {
 			try {
 				conn.setResponseCode(codes[i]);
-				HttpResponseCodeInterpreter.perform(conn);
+				HttpResponseCodeInterpreter.perform(new HttpResponse(conn));
 			} catch (IOException e) {
 			} catch (Exception e) {
 				fail();

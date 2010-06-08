@@ -4,8 +4,6 @@
 package com.twitterapime.rest;
 
 import com.sonyericsson.junit.framework.TestCase;
-import com.twitterapime.io.HttpConnection;
-import com.twitterapime.io.HttpConnector;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.InvalidQueryException;
 
@@ -48,41 +46,6 @@ public class UserAccountManagerTest extends TestCase {
 		//
 		try {
 			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
-	}
-
-	/**
-	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getHttpConn(java.lang.String, com.twitterapime.rest.Credential)}.
-	 */
-	public void testGetHttpConn() {
-		try {
-			UserAccountManager.getHttpConn(null, null);
-			fail();
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			UserAccountManager.getHttpConn("", null);
-			fail();
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			assertNotNull(UserAccountManager.getHttpConn("http://www.twitterapime.com", null));
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			Credential cred = new Credential("username", "password");
-			HttpConnection c = UserAccountManager.getHttpConn("http://www.twitter.com", cred);
-			assertEquals(c.getRequestProperty("Authorization"), "Basic " + HttpConnector.encodeBase64(cred.getBasicHttpAuthCredential()));
 		} catch (Exception e) {
 			fail();
 		}
