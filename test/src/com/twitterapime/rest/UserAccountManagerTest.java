@@ -12,6 +12,11 @@ import com.twitterapime.search.InvalidQueryException;
  *
  */
 public class UserAccountManagerTest extends TestCase {
+	
+	private Credential c1 = new Credential("twiterapimetest", "f00bar");
+	private Credential c2 = new Credential("username", "password");
+	private Credential c3 = new Credential("twiterapimetest", "foobar");
+	
 	/**
 	 * 
 	 */
@@ -31,10 +36,9 @@ public class UserAccountManagerTest extends TestCase {
 			fail();
 		}
 		//
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		UserAccountManager uam = UserAccountManager.getInstance(c1);
 		assertNotNull(uam);
-		assertEquals(uam, UserAccountManager.getInstance(c));
+		assertEquals(uam, UserAccountManager.getInstance(c1));
 		//
 		try {
 			uam.verifyCredential();
@@ -42,7 +46,7 @@ public class UserAccountManagerTest extends TestCase {
 			fail();
 		}
 		//
-		assertSame(uam, UserAccountManager.getInstance(c));
+		assertSame(uam, UserAccountManager.getInstance(c1));
 		//
 		try {
 			uam.signOut();
@@ -55,8 +59,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getRateLimitStatus()}.
 	 */
 	public void testGetRateLimitStatus() {
-		Credential c = new Credential("username", "password");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		UserAccountManager uam = UserAccountManager.getInstance(c2);
 		//
 		try {
 			uam.getRateLimitStatus();
@@ -67,8 +70,7 @@ public class UserAccountManagerTest extends TestCase {
 		}
 		//
 		try {
-			c = new Credential("twiterapimetest", "f00bar");
-			uam = UserAccountManager.getInstance(c);
+			uam = UserAccountManager.getInstance(c1);
 			//
 			assertTrue(uam.verifyCredential());
 			//
@@ -89,14 +91,12 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#isVerified()}.
 	 */
 	public void testIsVerified() {
-		Credential c = new Credential("username", "password");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		UserAccountManager uam = UserAccountManager.getInstance(c2);
 		//
 		assertFalse(uam.isVerified());
 		//
 		try {
-			c = new Credential("twiterapimetest", "f00bar");
-			uam = UserAccountManager.getInstance(c);
+			uam = UserAccountManager.getInstance(c1);
 			//
 			uam.verifyCredential();
 			//
@@ -116,8 +116,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#verifyCredential()}.
 	 */
 	public void testVerifyCredential() {
-		Credential c = new Credential("twiterapimetest", "foobar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		UserAccountManager uam = UserAccountManager.getInstance(c3);
 		//
 		try {
 			assertFalse(uam.verifyCredential());
@@ -125,8 +124,7 @@ public class UserAccountManagerTest extends TestCase {
 			fail();
 		}
 		//
-		c = new Credential("twiterapimetest", "f00bar");
-		uam = UserAccountManager.getInstance(c);
+		uam = UserAccountManager.getInstance(c1);
 		//
 		try {
 			assertTrue(uam.verifyCredential());
@@ -145,8 +143,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getUserAccount()}.
 	 */
 	public void testGetUserAccount() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		UserAccountManager uam = UserAccountManager.getInstance(c1);
 		//
 		try {
 			uam.getUserAccount();
@@ -157,8 +154,7 @@ public class UserAccountManagerTest extends TestCase {
 		}
 		//
 		try {
-			c = new Credential("twiterapimetest", "f00bar");
-			uam = UserAccountManager.getInstance(c);
+			uam = UserAccountManager.getInstance(c1);
 			//
 			uam.verifyCredential();
 			//
@@ -180,17 +176,15 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getCredential()}.
 	 */
 	public void testGetCredential() {
-		Credential c = new Credential("username", "password");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		assertSame(c, uam.getCredential());
+		UserAccountManager uam = UserAccountManager.getInstance(c2);
+		assertSame(c2, uam.getCredential());
 	}
 	
 	/**
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#follow(UserAccount)}.
 	 */
 	public void testFollow() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
+		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
@@ -210,7 +204,7 @@ public class UserAccountManagerTest extends TestCase {
 		}
 		//
 		try {
-			UserAccountManager.getInstance(new Credential("username", "password")).follow(ua);
+			UserAccountManager.getInstance(c2).follow(ua);
 			fail();
 		} catch (SecurityException e1) {
 		} catch (Exception e) {
@@ -262,8 +256,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#unfollow(UserAccount)}.
 	 */
 	public void testUnfollow() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
+		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
@@ -280,7 +273,7 @@ public class UserAccountManagerTest extends TestCase {
 			}
 			//
 			try {
-				UserAccountManager.getInstance(new Credential("username", "password")).unfollow(ua);
+				UserAccountManager.getInstance(c2).unfollow(ua);
 				fail();
 			} catch (SecurityException e1) {
 			}
@@ -330,8 +323,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#block(UserAccount)}.
 	 */
 	public void testBlock() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
+		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
@@ -348,7 +340,7 @@ public class UserAccountManagerTest extends TestCase {
 			}
 			//
 			try {
-				UserAccountManager.getInstance(new Credential("username", "password")).block(ua);
+				UserAccountManager.getInstance(c2).block(ua);
 				fail();
 			} catch (SecurityException e1) {
 			}
@@ -392,8 +384,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#unblock(UserAccount)}.
 	 */
 	public void testUnblock() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
+		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
@@ -410,7 +401,7 @@ public class UserAccountManagerTest extends TestCase {
 			}
 			//
 			try {
-				UserAccountManager.getInstance(new Credential("username", "password")).unblock(ua);
+				UserAccountManager.getInstance(c2).unblock(ua);
 				fail();
 			} catch (SecurityException e1) {
 			}
@@ -448,8 +439,7 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#signOut()}.
 	 */
 	public void testSignOut() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
+		UserAccountManager u = UserAccountManager.getInstance(c1);
 		//
 		try {
 			assertTrue(u.verifyCredential());
@@ -457,7 +447,7 @@ public class UserAccountManagerTest extends TestCase {
 			//
 			u.signOut();
 			//
-			assertNotSame(u, UserAccountManager.getInstance(c));
+			assertNotSame(u, UserAccountManager.getInstance(c1));
 			//
 			try {
 				u.verifyCredential();
