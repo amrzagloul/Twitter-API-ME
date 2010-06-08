@@ -23,7 +23,7 @@ import com.twitterapime.search.LimitExceededException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  * @see LimitExceededException
  * @see InvalidQueryException
@@ -39,35 +39,35 @@ public final class HttpResponseCodeInterpreter {
 	
 	/**
 	 * <p>
-	 * Perform an analyze of a given HttpConnection object's response-code in
+	 * Perform an analyze of a given HttpResponse object's response-code in
 	 * order to interpret whether the requests to Twitter API went well.
 	 * Otherwise, an exception is thrown describing the problem.
 	 * </p>
-	 * @param conn HttpConnection object to be interpreted.
+	 * @param response HttpResponse object to be interpreted.
 	 * @throws IOException If an I/O or service error occurs.
 	 * @throws LimitExceededException If a request limit exceeded error occurs.
 	 * @throws InvalidQueryException If an invalid query error occurs.
 	 * @throws SecurityException If a security error occurs.
-	 * @throws IllegalArgumentException If conn is null.
+	 * @throws IllegalArgumentException If response is null.
 	 */
-	public static void perform(HttpConnection conn) throws IOException,
+	public static void perform(HttpResponse response) throws IOException,
 		LimitExceededException {
-		if (conn == null) {
-			throw new IllegalArgumentException("Connection must not be null.");
+		if (response == null) {
+			throw new IllegalArgumentException("Response must not be null.");
 		}
 		//
-		final int respCode = conn.getResponseCode();
+		final int respCode = response.getCode();
 		//
 		if (respCode != HttpConnection.HTTP_OK
 				&& respCode != HttpConnection.HTTP_NOT_MODIFIED) {
 			if (isInvalidQueryError(respCode)) {
-				throw new InvalidQueryException(getErrorMessage(conn));
+				throw new InvalidQueryException(getErrorMessage(response));
 			} else if (isLimitExceededError(respCode)) {
-				throw new LimitExceededException(getErrorMessage(conn));
+				throw new LimitExceededException(getErrorMessage(response));
 			} else if (isSecurityError(respCode)) {
-				throw new SecurityException(getErrorMessage(conn));
+				throw new SecurityException(getErrorMessage(response));
 			} else {
-				throw new IOException(getErrorMessage(conn));
+				throw new IOException(getErrorMessage(response));
 			}
 		}
 	}
@@ -76,11 +76,11 @@ public final class HttpResponseCodeInterpreter {
 	 * <p>
 	 * Get error messages from connection's response.
 	 * </p>
-	 * @param conn Http connection.
+	 * @param response Http response.
 	 * @return Message.
 	 * @throws IOException If any I/O error occurs.
 	 */
-	public static String getErrorMessage(HttpConnection conn)
+	public static String getErrorMessage(HttpResponse response)
 		throws IOException {
 		String errorMsg = null;
 		//
@@ -89,11 +89,11 @@ public final class HttpResponseCodeInterpreter {
 			new HttpResponseCodeErrorHandler();
 		//
 		try {
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(response.getStream(), handler);
 			//
 			errorMsg = handler.getParsedErrorMessage();
 		} catch (ParserException e) {
-			errorMsg = "HTTP ERROR CODE: " + conn.getResponseCode();
+			errorMsg = "HTTP ERROR CODE: " + response.getCode();
 		}
 		//
 		return errorMsg;
