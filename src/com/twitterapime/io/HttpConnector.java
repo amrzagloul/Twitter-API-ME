@@ -27,7 +27,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see HttpConnection
  */
@@ -86,10 +86,11 @@ public final class HttpConnector {
 	 * </p>
 	 * 
 	 * @param url The URL to be encoded.
+	 * @param full Encode all characters, no exception.
 	 * @return An encoded URL.
 	 * @throws IllegalArgumentException If url is null or empty.
 	 */
-	public static String encodeURL(String url) {
+	public static String encodeURL(String url, boolean full) {
 		if (url == null) {
 			throw new IllegalArgumentException("URL must not be null.");
 		}
@@ -120,18 +121,18 @@ public final class HttpConnector {
 			case ';':
 				eURL.append("%3B");
 				break;
-			// case ':':
-			// eURL.append("%3A");
-			// break;
+			case ':':
+			    eURL.append(full ? "%3A" : String.valueOf(urlChars[i]));
+			    break;
 			case '@':
 				eURL.append("%40");
 				break;
-			// case '&':
-			// eURL.append("%26");
-			// break;
-			// case '=':
-			// eURL.append("%3D");
-			// break;
+			case '&':
+			    eURL.append(full ? "%26" : String.valueOf(urlChars[i]));
+			    break;
+			case '=':
+				eURL.append(full ? "%3D" : String.valueOf(urlChars[i]));
+			    break;
 			case '+':
 				eURL.append("%2B");
 				break;
@@ -141,12 +142,12 @@ public final class HttpConnector {
 			case ',':
 				eURL.append("%2C");
 				break;
-			// case '/':
-			// eURL.append("%2F");
-			// break;
-			// case '?':
-			// eURL.append("%3F");
-			// break;
+			case '/':
+				eURL.append(full ? "%2F" : String.valueOf(urlChars[i]));
+			    break;
+			case '?':
+			    eURL.append(full ? "%3F" : String.valueOf(urlChars[i]));
+			    break;
 			case '%':
 				eURL.append("%25");
 				break;
