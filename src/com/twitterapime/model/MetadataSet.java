@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  */
 public final class MetadataSet {
@@ -139,6 +139,22 @@ public final class MetadataSet {
 	 * </p>
 	 */
 	public static final String CREDENTIAL_PASSWORD = "CREDENTIAL_PASSWORD";
+
+	/**
+	 * <p>
+	 * Report the credential's consumer key, e.g., "jhdas78asjdhajsdas87d8adj".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_CONSUMER_KEY =
+		"CREDENTIAL_CONSUMER_KEY";
+
+	/**
+	 * <p>
+	 * Report the credential's consumer secret, e.g., "fiuwnmlfd89d23hspmghuyf".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_CONSUMER_SECRET =
+		"CREDENTIAL_CONSUMER_SECRET";
 
 	/**
 	 * <p>
