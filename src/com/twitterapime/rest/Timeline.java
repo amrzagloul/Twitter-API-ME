@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.twitterapime.io.HttpConnection;
+import com.twitterapime.io.HttpRequest;
+import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
 import com.twitterapime.parser.Handler;
 import com.twitterapime.parser.Parser;
@@ -49,7 +50,7 @@ import com.twitterapime.search.SearchDeviceListener;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.2
  * @see UserAccountManager
  * @see SearchDeviceListener
@@ -405,24 +406,29 @@ public final class Timeline {
 		//
 		Runnable r = new Runnable() {
 			public void run() {
-				HttpConnection conn = null;
+				HttpRequest req;
+				String nurl = q != null ? url + '?' + q.toString() : url;
+				if (userAccountMngr != null) {
+					req = userAccountMngr.createRequest(nurl);
+				} else {
+					req = new HttpRequest(nurl);
+				}
 				//
 				try {
-					conn = getConn(q != null ? url + '?' + q.toString() : url);
-					HttpResponseCodeInterpreter.perform(conn);
+					HttpResponse resp = req.send();
+					//
+					HttpResponseCodeInterpreter.perform(resp);
 					//
 					Parser parser = ParserFactory.getDefaultParser();
-					parser.parse(conn.openInputStream(), h);
+					parser.parse(resp.getStream(), h);
 					//
 					l.searchCompleted();
 				} catch (Exception e) {
 					l.searchFailed(e);
 				} finally {
-					if (conn != null) {
-						try {
-							conn.close();
-						} catch (IOException e) {}
-					}
+					try {
+						req.close();
+					} catch (IOException e) {}
 				}
 			}
 		};
@@ -441,23 +447,6 @@ public final class Timeline {
 		if (userAccountMngr == null || !userAccountMngr.isVerified()) {
 			throw new SecurityException(
 			    "User's credential must be entered to perform this operation.");
-		}
-	}
-	
-	/**
-	 * <p>
-	 * Get HTTP connection for the given URL.
-	 * </p>
-	 * @param url URL.
-	 * @return Connection.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	private HttpConnection getConn(String url) throws IOException {
-		if (userAccountMngr != null) {
-			return UserAccountManager.getHttpConn(
-				url, userAccountMngr.getCredential());
-		} else {
-			return UserAccountManager.getHttpConn(url, null);
 		}
 	}
 }

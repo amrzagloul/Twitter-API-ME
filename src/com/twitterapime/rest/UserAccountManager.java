@@ -8,12 +8,12 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpConnector;
+import com.twitterapime.io.HttpRequest;
+import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
@@ -23,6 +23,8 @@ import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.xauth.Token;
+import com.twitterapime.xauth.XAuthSigner;
 
 /**
  * <p>
@@ -40,7 +42,7 @@ import com.twitterapime.search.LimitExceededException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -60,6 +62,14 @@ public final class UserAccountManager {
 	private static final String TWITTER_URL_VERIFY_CREDENTIALS =
 		"http://twitter.com/account/verify_credentials.xml";
 
+	/**
+	 * <p>
+	 * Twitter REST API verify XAuth credentials URI.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_VERIFY_XAUTH_CREDENTIALS =
+		"https://api.twitter.com/oauth/access_token";
+	
 	/**
 	 * <p>
 	 * Twitter REST API rate status limit URI.
@@ -118,6 +128,14 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
+	 * Twitter REST API show user account.
+	 * </p>
+	 */
+	private static final String TWITTER_URL_SHOW_USER_ACCOUNT =
+		"http://api.twitter.com/version/users/show.xml";
+	
+	/**
+	 * <p>
 	 * User's credentials.
 	 * </p>
 	 */
@@ -143,6 +161,20 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private boolean invalidated;
+	
+	/**
+	 * <p>
+	 * Access token.
+	 * </p>
+	 */
+	private Token token;
+	
+	/**
+	 * <p>
+	 * XAuth signer instance.
+	 * </p>
+	 */
+	private XAuthSigner signer;
 	
 	/**
 	 * <p>
@@ -173,41 +205,6 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
-	 * Create a Http connection to the given URL.
-	 * </p>
-	 * @param url URL.
-	 * @param c User's credential for log in purposes.
-	 * @return Http connection.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	static synchronized HttpConnection getHttpConn(String url, Credential c)
-		throws IOException {
-		if (url == null || (url = url.trim()).length() == 0) {
-			throw new IllegalArgumentException("URL must not be empty/null.");
-		}
-		//
-		HttpConnection conn = HttpConnector.open(url);
-		boolean hasException = true;
-		//
-		try {
-			if (c != null) {
-				String crdntls = c.getBasicHttpAuthCredential();
-				crdntls = HttpConnector.encodeBase64(crdntls);
-				conn.setRequestProperty("Authorization", "Basic " + crdntls);
-			}
-			//
-			hasException = false;
-		} finally {
-			if (hasException) {
-				conn.close();
-			}
-		}
-		//
-		return conn;
-	}
-	
-	/**
-	 * <p>
 	 * Create an instance of UserAccountManager class.
 	 * </p>
 	 * <p>
@@ -217,6 +214,13 @@ public final class UserAccountManager {
 	 */
 	private UserAccountManager(Credential c) {
 		credential = c;
+		//
+		if (c.hasXAuthCredentials()) {
+			String conKey = c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY);
+			String conSec = c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET);
+			//
+			signer = new XAuthSigner(conKey, conSec);
+		}
 	}
 
 	/**
@@ -239,23 +243,22 @@ public final class UserAccountManager {
 		checkValid();
 		checkVerified();
 		//
-		HttpConnection conn =
-			getHttpConn(TWITTER_URL_RATE_STATUS_LIMIT, credential);
-		Parser parser = ParserFactory.getDefaultParser();
-		RateLimitStatusHandler handler = new RateLimitStatusHandler();
+		HttpRequest req = createRequest(TWITTER_URL_RATE_STATUS_LIMIT);
 		//
 		try {
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponse resp = req.send();
 			//
-			parser.parse(conn.openInputStream(), handler);
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			RateLimitStatusHandler handler = new RateLimitStatusHandler();
+			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedRateLimitStatus();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 
@@ -288,35 +291,36 @@ public final class UserAccountManager {
 			return true; //already verified.
 		}
 		//
-		HttpConnection conn =
-			getHttpConn(TWITTER_URL_VERIFY_CREDENTIALS, credential);
+		HttpRequest req;
+		if (credential.hasXAuthCredentials()) {
+			String user = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
+			String pass = credential.getString(MetadataSet.CREDENTIAL_PASSWORD);
+			//
+			req = createRequest(TWITTER_URL_VERIFY_XAUTH_CREDENTIALS);
+			req.setMethod(HttpConnection.POST);
+			//
+			signer.signForAccessToken(req, user, pass);
+		} else {
+			req = createRequest(TWITTER_URL_VERIFY_CREDENTIALS);
+		}
 		//
 		try {
-			final int respCode = conn.getResponseCode();
+			HttpResponse resp = req.send();
 			//
-			if (respCode == HttpConnection.HTTP_OK) {
+			if (resp.getCode() == HttpConnection.HTTP_OK) {
+				if (credential.hasXAuthCredentials()) {
+					token = Token.parse(resp.getBodyContent()); //access token.
+				}
 				verified = true;
 				//
-				try {
-					Parser parser =	ParserFactory.getDefaultParser();
-					AccountHandler handler = new AccountHandler();
-					parser.parse(conn.openInputStream(), handler);
-					//
-					account = handler.getParsedUserAccount();
-				} catch (ParserException e) {
-					throw new IOException(e.getMessage());
-				}
-				//
 				saveSelfOnPool();
-			} else if (respCode == HttpConnection.HTTP_UNAUTHORIZED) {
+			} else if (resp.getCode() == HttpConnection.HTTP_UNAUTHORIZED) {
 				verified = false;
 			} else {
-				HttpResponseCodeInterpreter.perform(conn);
+				HttpResponseCodeInterpreter.perform(resp);
 			}
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 		//
 		return verified;
@@ -341,6 +345,8 @@ public final class UserAccountManager {
 		if (verified) {
 			verified = false;
 			account = null;
+			token = null;
+			signer = null;
 			userAccountMngrPoll.remove(credential);
 			Timeline.cleanPool();
 			TweetER.cleanPool();
@@ -355,12 +361,31 @@ public final class UserAccountManager {
 	 * </p>
 	 * @return User account object.
 	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public UserAccount getUserAccount() {
+	public UserAccount getUserAccount() throws IOException,
+		LimitExceededException {
 		checkValid();
 		checkVerified();
 		//
-		return account;
+		HttpRequest req = createRequest(TWITTER_URL_SHOW_USER_ACCOUNT);
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedUserAccount();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}		
 	}
 	
 	/**
@@ -432,22 +457,16 @@ public final class UserAccountManager {
 			"?user_a=" + account.getString(MetadataSet.USERACCOUNT_USER_NAME) +
 			"&user_b=" + id;
 		//
-		HttpConnection conn =
-			getHttpConn(TWITTER_URL_IS_FOLLOWING_USER + qryStr, credential);
+		HttpRequest req = createRequest(TWITTER_URL_IS_FOLLOWING_USER + qryStr);
 		//
 		try {
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponse resp = req.send();
 			//
-			InputStream dis = conn.openInputStream();
-			byte[] bs = new byte[dis.available()];
-			dis.read(bs);
-			final String result = new String(bs).trim().toLowerCase();
+			HttpResponseCodeInterpreter.perform(resp);
 			//
-			return result.equals("true");
+			return resp.getBodyContent().toLowerCase().equals("true");
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 
@@ -516,21 +535,20 @@ public final class UserAccountManager {
 		//
 		checkVerified();
 		//
-		HttpConnection conn =
-			getHttpConn(TWITTER_URL_IS_BLOCKING_USER + id + ".xml", credential);
+		HttpRequest req =
+			createRequest(TWITTER_URL_IS_BLOCKING_USER + id + ".xml");
 		//
 		try {
-			if (conn.getResponseCode() == HttpConnection.HTTP_NOT_FOUND) {
+			HttpResponse resp = req.send();
+			if (resp.getCode() == HttpConnection.HTTP_NOT_FOUND) {
 				return false; //not blocked!
 			}
 			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			return true;
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 
@@ -564,6 +582,30 @@ public final class UserAccountManager {
 		return credential;
 	}
 	
+	/**
+	 * <p>
+	 * Create a HttpRequest object.
+	 * </p>
+	 * @param url URL.
+	 * @param method Http method.
+	 * @return Request object.
+	 */
+	synchronized HttpRequest createRequest(String url) {
+		HttpRequest req = new HttpRequest(url);
+		//
+		if (credential.hasXAuthCredentials()) {
+			if (token != null) {
+				req.setSigner(signer, token);
+			}
+		} else {
+			String crdntls = credential.getBasicHttpAuthCredential();
+			crdntls = HttpConnector.encodeBase64(crdntls);
+			req.setHeaderField("Authorization", "Basic " + crdntls);
+		}
+		//
+		return req;
+	}
+
 	/**
 	 * <p>
 	 * Check whether the instance is still valid.
@@ -609,40 +651,35 @@ public final class UserAccountManager {
 		//
 		checkVerified();
 		//
-		HttpConnection conn = getHttpConn(actionUrl, credential);
+		HttpRequest req = createRequest(actionUrl);
+		req.setMethod(HttpConnection.POST);
+		try {
+			Long.parseLong(id); // is only numbers?
+			req.setBodyParameter("user_id", id);
+		} catch (NumberFormatException e) {
+			req.setBodyParameter("screen_name", id); //user name.
+		}
 		//
 		try {
-			conn.setRequestMethod(HttpConnection.POST);
+			HttpResponse resp = req.send();
 			//
-			OutputStream out = conn.openOutputStream();
-			try {
-				Long.parseLong(id); // is only numbers?
-				out.write(("user_id=" + id).getBytes());
-			} catch (NumberFormatException e) {
-				out.write(("screen_name=" + id).getBytes()); //user name.
-			}
-			out.flush();
-			out.close();
-			//
-			if (conn.getResponseCode() == HttpConnection.HTTP_FORBIDDEN) {
+			if (resp.getCode() == HttpConnection.HTTP_FORBIDDEN) {
 				//already following/blocking.
 				throw new InvalidQueryException(
-					HttpResponseCodeInterpreter.getErrorMessage(conn));
+					HttpResponseCodeInterpreter.getErrorMessage(resp));
 			}
 			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
 			AccountHandler handler = new AccountHandler();
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedUserAccount();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 

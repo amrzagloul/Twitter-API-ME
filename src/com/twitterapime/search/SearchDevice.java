@@ -11,6 +11,8 @@ import java.io.IOException;
 
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpConnector;
+import com.twitterapime.io.HttpRequest;
+import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
@@ -38,7 +40,7 @@ import com.twitterapime.search.handler.SearchResultHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see SearchDeviceListener
  * @see QueryComposer
@@ -223,23 +225,22 @@ public final class SearchDevice {
 	 */
 	public RateLimitStatus getRateLimitStatus() throws IOException,
 		LimitExceededException {
-		HttpConnection conn = HttpConnector.open(TWITTER_URL_RATE_STATUS_LIMIT);
-		//
-		Parser parser = ParserFactory.getDefaultParser();
-		RateLimitStatusHandler handler = new RateLimitStatusHandler();
+		HttpRequest req = new HttpRequest(TWITTER_URL_RATE_STATUS_LIMIT);
 		//
 		try {
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponse resp = req.send();
 			//
-			parser.parse(conn.openInputStream(), handler);
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			RateLimitStatusHandler handler = new RateLimitStatusHandler();
+			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedRateLimitStatus();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 
@@ -283,33 +284,39 @@ public final class SearchDevice {
 		throws IOException, LimitExceededException {
 		updateAPIInfo();
 		//
-		HttpConnection conn = getHttpConn(query.toString());
-		Parser parser = ParserFactory.getDefaultParser();
-		SearchResultHandler handler = new SearchResultHandler();
-		handler.setSearchDeviceListener(l);
+		HttpRequest req = createRequest(query.toString());
 		//
 		try {
-			parser.parse(conn.openInputStream(), handler);
+			HttpResponse resp = req.send();
+			//
+			if (resp.getCode() == HttpConnection.HTTP_FORBIDDEN) {
+				throw new InvalidQueryException(
+					HttpResponseCodeInterpreter.getErrorMessage(resp));
+			}
+			//verify whether there is an error in the request.
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			SearchResultHandler handler = new SearchResultHandler();
+			handler.setSearchDeviceListener(l);
+			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedTweets();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			conn.close();
+			req.close();
 		}
 	}
 	
 	/**
 	 * <p>
-	 * Get a Http connection to the given query string.
+	 * Get a Http request to the given query string.
 	 * </p>
 	 * @param queryStr The query string.
-	 * @return The Http connection object.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @return The Http request object.
 	 */
-	private HttpConnection getHttpConn(String queryStr) throws IOException,
-		LimitExceededException {
+	private HttpRequest createRequest(String queryStr) {
 		if (queryStr == null || (queryStr = queryStr.trim()).length() == 0) {
 			throw new IllegalArgumentException(
 				"Query String must not be empty/null.");
@@ -323,28 +330,8 @@ public final class SearchDevice {
 			}
 		}
 		//
-		final String url = TWITTER_URL_ATOM + HttpConnector.encodeURL(queryStr);
-		HttpConnection c = HttpConnector.open(url);
-		boolean hasException = true;
-		//
-		try {
-			c.setRequestMethod(HttpConnection.GET);
-			//
-			if (c.getResponseCode() == HttpConnection.HTTP_FORBIDDEN) {
-				throw new InvalidQueryException(
-					HttpResponseCodeInterpreter.getErrorMessage(c));
-			}
-			//
-			//verify whether there is an error in the request.
-			HttpResponseCodeInterpreter.perform(c);
-			hasException = false;
-		} finally {
-			if (hasException) {
-				c.close();
-			}
-		}
-		//
-		return c;
+		return new HttpRequest(
+			TWITTER_URL_ATOM + HttpConnector.encodeURL(queryStr, false));
 	}
 	
 	/**

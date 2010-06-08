@@ -8,11 +8,12 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
+import com.twitterapime.io.HttpRequest;
+import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
@@ -45,7 +46,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  * @see Tweet
  * @see UserAccountManager
@@ -219,37 +220,35 @@ public final class TweetER {
 		}
 		//
 		final String url = TWITTER_URL_SHOW_STATUS + id + ".xml";
-		Credential credential = null;
+		HttpRequest req;
 		//
 		if (userAccountMngr != null) {
 			checkUserAuth();
-			credential = userAccountMngr.getCredential();
+			req = userAccountMngr.createRequest(url);
+		} else {
+			req = new HttpRequest(url);
 		}
 		//
-		HttpConnection conn = UserAccountManager.getHttpConn(url, credential);
-		//
 		try {
-			final int repCode = conn.getResponseCode();
+			HttpResponse resp = req.send();
 			//
-			if (repCode == HttpConnection.HTTP_FORBIDDEN) {
+			if (resp.getCode() == HttpConnection.HTTP_FORBIDDEN) {
 				throw new SecurityException(); //the refereed tweet id is protected.
-			} else if (repCode == HttpConnection.HTTP_NOT_FOUND) {
+			} else if (resp.getCode() == HttpConnection.HTTP_NOT_FOUND) {
 				return (Tweet)null; //tweet id not found.
 			}
 			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
 			StatusHandler handler = new StatusHandler();
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedTweet();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 
@@ -274,32 +273,27 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpConnection conn = getConn(TWITTER_URL_UPDATE_STATUS);
+		HttpRequest req =
+			userAccountMngr.createRequest(TWITTER_URL_UPDATE_STATUS);
+		req.setMethod(HttpConnection.POST);
+		req.setBodyParameter(
+			"status", tweet.getString(MetadataSet.TWEET_CONTENT));
 		//
 		try {
-			final String content = tweet.getString(MetadataSet.TWEET_CONTENT);
+			HttpResponse resp = req.send();
 			//
-			conn.setRequestMethod(HttpConnection.POST);
-			//
-			OutputStream out = conn.openOutputStream();
-			out.write(("status=" + content).getBytes());
-			out.flush();
-			out.close();
-			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
 			StatusHandler handler = new StatusHandler();
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(resp.getStream(), handler);
 			handler.loadParsedTweet(tweet);
 			//
 			return tweet;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 	
@@ -328,25 +322,25 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpConnection conn = getConn(TWITTER_URL_REPOST_STATUS + id + ".xml");
+		HttpRequest req =
+			userAccountMngr.createRequest(TWITTER_URL_REPOST_STATUS+id+".xml");
+		req.setMethod(HttpConnection.POST);
 		//
 		try {
-			conn.setRequestMethod(HttpConnection.POST);
+			HttpResponse resp = req.send();
 			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
 			StatusHandler handler = new StatusHandler();
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(resp.getStream(), handler);
 			handler.loadParsedTweet(tweet);
 			//
 			return tweet;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 	
@@ -375,41 +369,36 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpConnection conn = getConn(TWITTER_URL_SEND_DIRECT_MESSAGE);
+		HttpRequest req =
+			userAccountMngr.createRequest(TWITTER_URL_SEND_DIRECT_MESSAGE);
+		req.setMethod(HttpConnection.POST);
+		//
+		String recipient = dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
+		if (recipient == null) {
+			UserAccount ua = dm.getUserAccount();
+			recipient = ua.getString(MetadataSet.USERACCOUNT_ID);
+			if (recipient == null) {
+				recipient =	ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			}
+		}
+		req.setBodyParameter("user", recipient);
+		req.setBodyParameter("text", dm.getString(MetadataSet.TWEET_CONTENT));
 		//
 		try {
-			final String content = dm.getString(MetadataSet.TWEET_CONTENT);
-			String recipient = dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
-			if (recipient == null) {
-				UserAccount ua = dm.getUserAccount();
-				recipient = ua.getString(MetadataSet.USERACCOUNT_ID);
-				if (recipient == null) {
-					recipient =	ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
-				}
-			}
+			HttpResponse resp = req.send();
 			//
-			conn.setRequestMethod(HttpConnection.POST);
-			//
-			OutputStream out = conn.openOutputStream();
-			out.write(("user=" + recipient).getBytes());
-			out.write(("&text=" + content).getBytes());
-			out.flush();
-			out.close();
-			//
-			HttpResponseCodeInterpreter.perform(conn);
+			HttpResponseCodeInterpreter.perform(resp);
 			//
 			Parser parser = ParserFactory.getDefaultParser();
 			DirectMessageHandler handler = new DirectMessageHandler();
-			parser.parse(conn.openInputStream(), handler);
+			parser.parse(resp.getStream(), handler);
 			handler.loadParsedTweet(dm, 0);
 			//
 			return dm;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
+			req.close();
 		}
 	}
 	
@@ -423,23 +412,6 @@ public final class TweetER {
 		if (userAccountMngr == null || !userAccountMngr.isVerified()) {
 			throw new SecurityException(
 			    "User's credential must be entered to perform this operation.");
-		}
-	}
-	
-	/**
-	 * <p>
-	 * Get HTTP connection for the given URL.
-	 * </p>
-	 * @param url URL.
-	 * @return Connection.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	private HttpConnection getConn(String url) throws IOException {
-		if (userAccountMngr != null) {
-			return UserAccountManager.getHttpConn(
-				url, userAccountMngr.getCredential());
-		} else {
-			return UserAccountManager.getHttpConn(url, null);
 		}
 	}
 }
