@@ -58,6 +58,23 @@ public class CredentialTest extends TestCase {
 			Credential c = new Credential("twitterapime", "password");
 			assertEquals("twitterapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
 			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
+			assertFalse(c.hasXAuthCredentials());
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Credential c = new Credential("twitterapime", "password", "1234567890", "0987654321");
+			assertEquals("twitterapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
+			assertEquals("1234567890", c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
+			assertEquals("0987654321", c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
+			assertTrue(c.hasXAuthCredentials());
+			//
+			c = new Credential("twitterapime", "password", "", "");
+			assertNull(c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
+			assertNull(c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
+			assertFalse(c.hasXAuthCredentials());
 		} catch (Exception e) {
 			fail();
 		}
