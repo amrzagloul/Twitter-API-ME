@@ -60,7 +60,7 @@ public class SearchResultHandlerTest extends TestCase implements SearchDeviceLis
 		Hashtable sample = new Hashtable();
 		sample.put(MetadataSet.TWEET_AUTHOR_NAME, "Twitter API ME");
 		sample.put(MetadataSet.TWEET_AUTHOR_USERNAME, "twapime");
-		sample.put(MetadataSet.TWEET_AUTHOR_URI, "http://twitter.com/twiterapime");
+		sample.put(MetadataSet.TWEET_AUTHOR_URI, "http://twitter.com/twapime");
 		sample.put(MetadataSet.TWEET_LANG, "en");
 		sample.put(MetadataSet.TWEET_SOURCE, "TweetDeck");
 		sample.put(MetadataSet.TWEET_AUTHOR_PICTURE_URI, "http://a3.twimg.com/profile_images/45684621/pic_normal.JPG");
@@ -69,7 +69,7 @@ public class SearchResultHandlerTest extends TestCase implements SearchDeviceLis
 		for (int i = 0; i < ts.length; i++) {
 			sample.put(MetadataSet.TWEET_ID, Integer.toString(i +1));
 			sample.put(MetadataSet.TWEET_CONTENT, "Tweet message " + Integer.toString(i +1));
-			sample.put(MetadataSet.TWEET_URI, "http://twitter.com/twiterapime/statuses/" + Integer.toString(i +1));
+			sample.put(MetadataSet.TWEET_URI, "http://twitter.com/twapime/statuses/" + Integer.toString(i +1));
 			//
 			assertTrue(new Tweet(sample).equals(ts[i]));
 		}
