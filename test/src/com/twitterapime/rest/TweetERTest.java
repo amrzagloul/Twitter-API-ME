@@ -20,8 +20,59 @@ public class TweetERTest extends TestCase {
 	/**
 	 * 
 	 */
+	private Credential credential1;
+	
+	/**
+	 * 
+	 */
+	private Credential credential2;
+	
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr1;
+	
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr2;
+
+	/**
+	 * 
+	 */
 	public TweetERTest() {
 		super("TweetERTest");
+	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 */
+	public void setUp() throws Throwable {
+		credential1 = new Credential("twiterapimetest", "f00bar");
+		credential2 = new Credential("twiterapimetst2", "f00bar");
+		//
+		userMngr1 = UserAccountManager.getInstance(credential1);
+		userMngr2 = UserAccountManager.getInstance(credential2);
+		//
+		if (userMngr1.verifyCredential() && userMngr2.verifyCredential()) {
+			throw new IllegalStateException("TweetERTest: Login failed!");
+		}
+	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 */
+	public void tearDown() throws Throwable {
+		userMngr1.signOut();
+		userMngr2.signOut();
+		//
+		try {
+			TweetER tr = TweetER.getInstance(userMngr1);
+			tr.post(new Tweet("text"));
+			//
+			throw new IllegalStateException("TweetERTest: Sign out failed!");
+		} catch (IllegalStateException e) {
+		}
 	}
 
 	/**
@@ -30,53 +81,29 @@ public class TweetERTest extends TestCase {
 	public void testGetInstanceUserAccountManager() {
 		try {
 			TweetER.getInstance(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
 		try {
-			TweetER.getInstance(uam);
-			fail();
+			TweetER.getInstance(userMngr1);
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		try {
-			assertTrue(uam.verifyCredential());
-			//
-			TweetER t = TweetER.getInstance(uam);
-			assertNotNull(t);
-			assertSame(t, TweetER.getInstance(uam));			
+			TweetER t = TweetER.getInstance(userMngr1);
+			assertNotNull("test: 5", t);
+			assertSame("test: 6", t, TweetER.getInstance(UserAccountManager.getInstance(credential1)));			
 		} catch (Exception e) {
-			fail();
+			fail("test: 7");
 		}
 		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		UserAccountManager uam2 = UserAccountManager.getInstance(c);
-		try {
-			uam2.verifyCredential();
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		assertNotSame(uam, TweetER.getInstance(uam2));
-		//
-		try {
-			uam2.signOut();
-		} catch (Exception e) {
-			fail();
-		}
+		assertNotSame("test: 8", TweetER.getInstance(userMngr1), TweetER.getInstance(userMngr2));
 	}
 
 	/**
@@ -84,8 +111,8 @@ public class TweetERTest extends TestCase {
 	 */
 	public void testGetInstance() {
 		TweetER t = TweetER.getInstance();
-		assertNotNull(t);
-		assertSame(t, TweetER.getInstance());
+		assertNotNull("test: 1", t);
+		assertSame("test: 2", t, TweetER.getInstance());
 	}
 
 	/**
@@ -96,40 +123,40 @@ public class TweetERTest extends TestCase {
 		//
 		try {
 			t.findByID(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.findByID("");
-			fail();
+			fail("test: 3");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		try {
 			t.findByID("7141196879");
-			fail();
+			fail("test: 5");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
 		}
 		//
 		try {
-			assertNull(t.findByID("9890asdh9809"));
+			assertNull("test: 7", t.findByID("9890asdh9809"));
 		} catch (Exception e) {
-			fail();
+			fail("test: 8");
 		}
 		//
 		try {
 			Tweet tw = t.findByID("7041609437");
-			assertNotNull(tw);
-			assertEquals("7041609437", tw.getString(MetadataSet.TWEET_ID));
+			assertNotNull("test: 9", tw);
+			assertEquals("test: 10", "7041609437", tw.getString(MetadataSet.TWEET_ID));
 		} catch (Exception e) {
-			fail();
+			fail("test: 11");
 		}
 	}
 
@@ -141,52 +168,41 @@ public class TweetERTest extends TestCase {
 		//
 		try {
 			t.post(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.post(new Tweet());
-			fail();
+			fail("test: 3");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		try {
 			t.post(new Tweet("Hello, Twitters!!!"));
-			fail();
+			fail("test: 5");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
 		}
 		//
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
 		try {
-			uam.verifyCredential();
-			//
-			t = TweetER.getInstance(uam);
+			t = TweetER.getInstance(userMngr1);
 			//
 			String msg = "Test at " + System.currentTimeMillis() + " milis.";
 			Tweet tw1 = new Tweet(msg);
 			Tweet tw2 = t.post(tw1);
 			//
-			assertSame(tw1, tw2);
-			assertEquals(msg, tw2.getString(MetadataSet.TWEET_CONTENT));
+			assertSame("test: 7", tw1, tw2);
+			assertEquals("test: 8", msg, tw2.getString(MetadataSet.TWEET_CONTENT));
 		} catch (IOException e) {
-			fail();
+			fail("test: 9");
 		} catch (LimitExceededException e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 	}
 
@@ -198,18 +214,18 @@ public class TweetERTest extends TestCase {
 		//
 		try {
 			t1.repost(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t1.repost(new Tweet());
-			fail();
+			fail("test: 3");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		Hashtable ht = new Hashtable();
@@ -217,23 +233,15 @@ public class TweetERTest extends TestCase {
 		//
 		try {
 			t1.repost(new Tweet(ht));
-			fail();
+			fail("test: 5");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
 		}
 		//
-		Credential c1 = new Credential("twiterapimetst2", "f00bar");
-		UserAccountManager uam1 = UserAccountManager.getInstance(c1);
-		Credential c2 = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam2 = UserAccountManager.getInstance(c2);
-		//
 		try {
-			assertTrue(uam1.verifyCredential());
-			assertTrue(uam2.verifyCredential());
-			//
-			t1 = TweetER.getInstance(uam1);
-			TweetER t2 = TweetER.getInstance(uam2);
+			t1 = TweetER.getInstance(userMngr1);
+			TweetER t2 = TweetER.getInstance(userMngr2);
 			//
 			Tweet tw = new Tweet("Test at " + System.currentTimeMillis() + " milis.");
 			tw = t1.post(tw);
@@ -243,30 +251,19 @@ public class TweetERTest extends TestCase {
 			//
 			Tweet rtw = t2.repost(tww);
 			//
-			assertNotNull(rtw.getRepostedTweet());
-			assertTrue(rtw.getRepostedTweet().size() > 0);
-			assertTrue(tw.equals(rtw.getRepostedTweet()));
+			assertNotNull("test: 7", rtw.getRepostedTweet());
+			assertTrue("test: 8", rtw.getRepostedTweet().size() > 0);
+			assertTrue("test: 9", tw.equals(rtw.getRepostedTweet()));
 		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 		//
 		try {
 			t1.repost(new Tweet(ht));
-			fail();
+			fail("test: 11");
 		} catch (InvalidQueryException e) {
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam1.signOut();
-		} catch (Exception e) {
-			fail();
-		}
-		try {
-			uam2.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 12");
 		}
 	}
 	
@@ -278,104 +275,60 @@ public class TweetERTest extends TestCase {
 		//
 		try {
 			t.send(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.send(new Tweet());
-			fail();
+			fail("test: 3");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		try {
 			t.send(new Tweet(null, "direct message"));
-			fail();
+			fail("test: 5");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
 		}
 		//
 		try {
 			t.send(new Tweet("1234567890", null));
-			fail();
+			fail("test: 7");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 8");
 		}
 		//
 		try {
 			t.send(new Tweet("1234567890", "direct message"));
-			fail();
+			fail("test: 9");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 		//
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
 		try {
-			assertTrue(uam.verifyCredential());
-			//
-			t = TweetER.getInstance(uam);
+			t = TweetER.getInstance(userMngr1);
 			//
 			String msg = "DM at " + System.currentTimeMillis() + " milis.";
 			Tweet tw1 = new Tweet("twiterapimetst2", msg);
 			Tweet tw2 = t.send(tw1);
 			//
-			assertSame(tw1, tw2);
-			assertEquals(msg, tw2.getString(MetadataSet.TWEET_CONTENT));
-			assertNotNull(tw2.getRecipientAccount());
-			assertTrue(tw2.getRecipientAccount().size() > 0);
-			assertEquals("twiterapimetst2", tw2.getRecipientAccount().getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertSame("test: 11", tw1, tw2);
+			assertEquals("test: 12", msg, tw2.getString(MetadataSet.TWEET_CONTENT));
+			assertNotNull("test: 13", tw2.getRecipientAccount());
+			assertTrue("test: 14", tw2.getRecipientAccount().size() > 0);
+			assertEquals("test: 15", "twiterapimetst2", tw2.getRecipientAccount().getString(MetadataSet.USERACCOUNT_USER_NAME));
 		} catch (IOException e) {
-			fail();
+			fail("test: 16");
 		} catch (LimitExceededException e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
-	}
-	
-	/**
-	 * Test method related to {@link com.twitterapime.rest.UserAccountManager#signOut()}.
-	 */
-	public void testSignOut() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(u.verifyCredential());
-			assertTrue(u.isVerified());
-			//
-			TweetER tr = TweetER.getInstance(u);
-			//
-			u.signOut();
-			//
-			u = UserAccountManager.getInstance(c);
-			assertTrue(u.verifyCredential());
-			assertTrue(u.isVerified());
-			//
-			assertNotSame(tr, TweetER.getInstance(u));
-			//
-			try {
-				tr.post(new Tweet("text"));
-				fail();
-			} catch (IllegalStateException e) {
-			}
-			//
-			u.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 17");
 		}
 	}
 }
