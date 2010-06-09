@@ -65,9 +65,10 @@ final class OAuthParameters {
 				buffer.append(
 					HttpConnector.encodeURL(
 						(String)params.get(sKeys[i]), true));
+				buffer.append('"');
 				//
 				if (i +1 < sKeys.length) {
-					buffer.append("\", ");
+					buffer.append(", ");
 				}
 			}
 		}

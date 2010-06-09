@@ -219,17 +219,20 @@ public final class HttpRequest {
 	 * @throws IOException
 	 */
 	private void setBodyParameters(HttpConnection conn) throws IOException {
-		byte[] content = queryString(bodyParams).getBytes();
-		//
-		conn.setRequestProperty(
-			"Content-Length", String.valueOf(content.length));
 		conn.setRequestProperty(
 			"Content-Type", "application/x-www-form-urlencoded");
 		//
-		OutputStream out = conn.openOutputStream();
-		out.write(content);
-		out.flush();
-		out.close();
+		if (bodyParams.size() > 0) {
+			byte[] content = queryString(bodyParams).getBytes();
+			//
+			conn.setRequestProperty(
+				"Content-Length", String.valueOf(content.length));
+			//
+			OutputStream out = conn.openOutputStream();
+			out.write(content);
+			out.flush();
+			out.close();
+		}
 	}
 
 	/**
