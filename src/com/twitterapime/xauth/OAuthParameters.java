@@ -21,11 +21,11 @@ final class OAuthParameters {
 	 */
 	public OAuthParameters(String consumerKey) {
 		params = new Hashtable();
-		params.put(XAuth.TIMESTAMP, getTimestampInSeconds());
-		params.put(XAuth.SIGN_METHOD, "HMAC-SHA1");
-		params.put(XAuth.VERSION, "1.0");
-		params.put(XAuth.NONCE, getTimestampInSeconds());
-		params.put(XAuth.CONSUMER_KEY, consumerKey);
+		params.put(XAuthConstants.TIMESTAMP, getTimestampInSeconds());
+		params.put(XAuthConstants.SIGN_METHOD, "HMAC-SHA1");
+		params.put(XAuthConstants.VERSION, "1.0");
+		params.put(XAuthConstants.NONCE, getTimestampInSeconds());
+		params.put(XAuthConstants.CONSUMER_KEY, consumerKey);
 	}
 
 	/**
@@ -58,7 +58,7 @@ final class OAuthParameters {
 		//
 		String[] sKeys = sortedKeys();
 		for (int i = 0; i < sKeys.length; i++) {
-			if (sKeys[i].startsWith(XAuth.PARAM_PREFIX)) {
+			if (sKeys[i].startsWith(XAuthConstants.PARAM_PREFIX)) {
 				buffer.append(sKeys[i]);
 				buffer.append('=');
 				buffer.append('"');
