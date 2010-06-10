@@ -232,7 +232,7 @@ public class UserAccountManagerTest extends TestCase {
 			//
 			assertTrue("test: 9", userMngr1.isFollowing(ua));
 		} catch (Exception e) {
-			fail("test: 10");
+			fail("test: 10 -> " + e.getClass().getName());
 		}
 		//
 		try {
@@ -391,7 +391,7 @@ public class UserAccountManagerTest extends TestCase {
 		}
 		//
 		try {
-			userMngr2.unblock(ua);
+			userMngr3.unblock(ua);
 			fail("test: 5");
 		} catch (SecurityException e1) {
 		} catch (Exception e) {
