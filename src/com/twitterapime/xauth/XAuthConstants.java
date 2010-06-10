@@ -16,7 +16,7 @@ package com.twitterapime.xauth;
  * @version 1.0
  * @since 1.3
  */
-class XAuthConstants {
+final class XAuthConstants {
 	/**
 	 * <p>
 	 * TIMESTAMP.

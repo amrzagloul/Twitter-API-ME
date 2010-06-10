@@ -1,3 +1,10 @@
+/*
+ * XAuthSigner.java
+ * 05/06/2010
+ * Twitter API Micro Edition
+ * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
+ * All rights reserved
+ */
 package com.twitterapime.xauth;
 
 import java.util.Enumeration;
@@ -9,25 +16,37 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
 import com.twitterapime.xauth.encoders.HMAC;
 
 /**
- * @author ernandes
- *
+ * <p>
+ * This class implements a xAuth signer.
+ * </p>
+ * 
+ * @author Ernandes Mourao Junior (ernandes@gmail.com)
+ * @version 1.0
+ * @since 1.3
  */
 public final class XAuthSigner {
 	/**
-	 * 
+	 * <p>
+	 * Consumer key.
+	 * </p>
 	 */
 	private final String consumerKey;
 
 	/**
-	 * 
+	 * <p>
+	 * Consumer secret.
+	 * </p>
 	 */
 	private final String consumerSecret;
 
 	/**
-	 * @param baseString
-	 * @param consumerSecret
-	 * @param tokenSecret
-	 * @return
+	 * <p>
+	 * Generate a signature from the given base string.
+	 * </p>
+	 * @param baseString Base string.
+	 * @param consumerSecret Consumer secret.
+	 * @param tokenSecret Token secret.
+	 * @return Signature.
 	 */
 	private static String getSignature(String baseString, String consumerSecret,
 		String tokenSecret) {
@@ -37,18 +56,36 @@ public final class XAuthSigner {
 	}
 
 	/**
-	 * @param consumerKey
-	 * @param consumerSecret
+	 * <p>
+	 * Create an instance of XAuthSigner class.
+	 * </p>
+	 * @param consumerKey Consumer key.
+	 * @param consumerSecret Consumer secret.
+	 * @throws IllegalArgumentException If consumer key/secret is empty or null.
 	 */
 	public XAuthSigner(String consumerKey, String consumerSecret) {
+		if (consumerKey == null
+				|| (consumerKey = consumerKey.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"Consumer key must not be empty/null");
+		}
+		if (consumerSecret == null
+				|| (consumerSecret = consumerSecret.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"Consumer secret must not be empty/null");
+		}
+		//
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 	}
 
 	/**
-	 * @param req
-	 * @param username
-	 * @param password
+	 * <p>
+	 * Sign the given request to obtain the access token.
+	 * </p>
+	 * @param req Http request.
+	 * @param username User name.
+	 * @param password Password.
 	 */
 	public void signForAccessToken(HttpRequest req, String username,
 		String password) {
@@ -68,8 +105,11 @@ public final class XAuthSigner {
 	}
 
 	/**
-	 * @param req
-	 * @param access
+	 * <p>
+	 * Sign the given request.
+	 * </p>
+	 * @param req Http request.
+	 * @param access Access token.
 	 */
 	public void sign(HttpRequest req, Token access) {
 		OAuthParameters params = new OAuthParameters(consumerKey);
@@ -85,9 +125,12 @@ public final class XAuthSigner {
 	}
 
 	/**
-	 * @param req
-	 * @param params
-	 * @return
+	 * <p>
+	 * Get the signature base string from the given request and parameters.
+	 * </p>
+	 * @param req Http request.
+	 * @param params OAuth parameters.
+	 * @return Signature base string.
 	 */
 	private String getSignatureBaseString(HttpRequest req,
 		OAuthParameters params) {
@@ -105,8 +148,11 @@ public final class XAuthSigner {
 	}
 	
 	/**
-	 * @param params
-	 * @param p
+	 * <p>
+	 * Add the given Hashtable parameters into OAuth parameters.
+	 * </p>
+	 * @param params OAuth parameters.
+	 * @param p Hashtable parameters.
 	 */
 	private void addParams(OAuthParameters params, Hashtable p) {
 		String key;

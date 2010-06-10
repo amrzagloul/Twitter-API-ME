@@ -1,3 +1,10 @@
+/*
+ * OAuthParameters.java
+ * 05/06/2010
+ * Twitter API Micro Edition
+ * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
+ * All rights reserved
+ */
 package com.twitterapime.xauth;
 
 import java.util.Enumeration;
@@ -7,19 +14,36 @@ import com.twitterapime.io.HttpConnector;
 import com.twitterapime.util.QSort;
 
 /**
- * @author ernandes
- *
+ * <p>
+ * This class implements an OAuth parameter.
+ * </p>
+ * 
+ * @author Ernandes Mourao Junior (ernandes@gmail.com)
+ * @version 1.0
+ * @since 1.3
  */
 final class OAuthParameters {
 	/**
-	 * 
+	 * <p>
+	 * Parameters.
+	 * </p>
 	 */
 	private Hashtable params;
 
 	/**
-	 * @param consumerKey
+	 * <p>
+	 * Create an instance of OAuthParameters class.
+	 * </p>
+	 * @param consumerSecret Consumer secret.
+	 * @throws IllegalArgumentException If consumer key/secret is empty or null.
 	 */
 	public OAuthParameters(String consumerKey) {
+		if (consumerKey == null
+				|| (consumerKey = consumerKey.trim()).length() == 0) {
+			throw new IllegalArgumentException(
+				"Consumer key must not be empty/null");
+		}
+		//
 		params = new Hashtable();
 		params.put(XAuthConstants.TIMESTAMP, getTimestampInSeconds());
 		params.put(XAuthConstants.SIGN_METHOD, "HMAC-SHA1");
@@ -29,7 +53,10 @@ final class OAuthParameters {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get a string with all the parameters sorted.
+	 * </p>
+	 * @return Sorted string.
 	 */
 	public String getSortedEncodedParamsAsString() {
 		StringBuffer buffer = new StringBuffer();
@@ -50,7 +77,10 @@ final class OAuthParameters {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the Authorization header value.
+	 * </p>
+	 * @return Value.
 	 */
 	public String getAuthorizationHeaderValue() {
 		StringBuffer buffer = new StringBuffer();
@@ -77,15 +107,21 @@ final class OAuthParameters {
 	}
 
 	/**
-	 * @param key
-	 * @param value
+	 * <p>
+	 * Put a given parameter.
+	 * </p>
+	 * @param key Parameter key.
+	 * @param value Parameter value.
 	 */
 	public void put(String key, String value) {
 		params.put(key, value);
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get an array with all parameter keys sorted.
+	 * </p>
+	 * @return Sorted keys.
 	 */
 	private String[] sortedKeys() {
 		int i = 0;
@@ -103,7 +139,10 @@ final class OAuthParameters {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get the current time in seconds.
+	 * </p>
+	 * @return Timestamp.
 	 */
 	private String getTimestampInSeconds() {
 		return String.valueOf(System.currentTimeMillis() / 1000);

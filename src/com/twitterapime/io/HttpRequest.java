@@ -80,7 +80,6 @@ public final class HttpRequest {
 	 * Create an instance of HttpRequest class.
 	 * </p>
 	 * @param url URL.
-	 * @param method Http method.
 	 * @throws IllegalArgumentException If URL is empty or null.
 	 */
 	public HttpRequest(String url) {
