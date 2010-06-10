@@ -168,7 +168,7 @@ public final class HttpRequest {
 	 * <p>
 	 * Set Http method.
 	 * </p>
-	 * @param method
+	 * @param method Method.
 	 * @throws IllegalArgumentException If method is invalid.
 	 * @see HttpConnection#GET
 	 * @see HttpConnection#POST
