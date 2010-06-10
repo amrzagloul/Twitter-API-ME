@@ -18,6 +18,7 @@ import com.twitterapime.xauth.XAuthSigner;
 
 /**
  * <p>
+ * This class implements a Http request.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
@@ -26,45 +27,67 @@ import com.twitterapime.xauth.XAuthSigner;
  */
 public final class HttpRequest {
 	/**
-	 * 
+	 * <p>
+	 * URL.
+	 * </p>
 	 */
 	private String url;
 	
 	/**
-	 * 
+	 * <p>
+	 * Http method.
+	 * </p>
 	 */
 	private String method;
 	
 	/**
-	 * 
+	 * <p>
+	 * Body params.
+	 * </p>
 	 */
 	private Hashtable bodyParams;
 	
 	/**
-	 * 
+	 * <p>
+	 * Header params.
+	 * </p>
 	 */
 	private Hashtable headers;
 	
 	/**
-	 * 
+	 * <p>
+	 * Http connection object.
+	 * </p>
 	 */
 	private HttpConnection conn;
 	
 	/**
-	 * 
+	 * <p>
+	 * xAuthSigner object.
+	 * </p>
 	 */
 	private XAuthSigner signer;
 	
 	/**
-	 * 
+	 * <p>
+	 * xAuth access token.
+	 * </p>
 	 */
 	private Token token;
 
 	/**
-	 * @param url
-	 * @param method
+	 * <p>
+	 * Create an instance of HttpRequest class.
+	 * </p>
+	 * @param url URL.
+	 * @param method Http method.
+	 * @throws IllegalArgumentException If URL is empty or null.
 	 */
 	public HttpRequest(String url) {
+		if (url == null || (url = url.trim()).length() == 0) {
+			throw new IllegalArgumentException("URL must not be empty/null");
+		}
+		//
 		this.url = url;
 		method = HttpConnection.GET;
 		bodyParams = new Hashtable();
@@ -72,8 +95,11 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @return
-	 * @throws IOException
+	 * <p>
+	 * Send a given to the URL.
+	 * </p>
+	 * @return Http response object.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	public HttpResponse send() throws IOException {
 		close();
@@ -94,7 +120,10 @@ public final class HttpRequest {
 	}
 	
 	/**
-	 * @throws IOException
+	 * <p>
+	 * Close the request object connection.
+	 * </p>
+	 * @throws IOException If an I/O error occurs.
 	 */
 	public void close() throws IOException {
 		if (conn != null) {
@@ -104,44 +133,70 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @param key
-	 * @param value
+	 * <p>
+	 * Set a header field's value.
+	 * </p>
+	 * @param key Field key.
+	 * @param value Field value.
 	 */
 	public void setHeaderField(String key, String value) {
 		this.headers.put(key, value);
 	}
 
 	/**
-	 * @param key
-	 * @param value
+	 * <p>
+	 * Set a body parameter value.
+	 * </p>
+	 * @param key Paramenter key.
+	 * @param value Parameter value.
 	 */
 	public void setBodyParameter(String key, String value) {
 		this.bodyParams.put(key, value);
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get header fields.
+	 * </p>
+	 * @return Fields.
 	 */
 	public Hashtable getHeaderFields() {
 		return headers;
 	}
 	
 	/**
+	 * <p>
+	 * Set Http method.
+	 * </p>
 	 * @param method
+	 * @throws IllegalArgumentException If method is invalid.
+	 * @see HttpConnection#GET
+	 * @see HttpConnection#POST
 	 */
 	public void setMethod(String method) {
-		this.method = method;
+		if (HttpConnection.GET.equals(method)
+				|| HttpConnection.POST.equals(method)) {
+			this.method = method;
+		} else {
+			throw new IllegalArgumentException("Invalid Http method: "+method);
+		}
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get body parameters.
+	 * </p>
+	 * @return Parameters.
 	 */
 	public Hashtable getBodyParameters() {
 		return bodyParams;
 	}
 	
 	/**
-	 * @return
+	 * <p>
+	 * Get URL's query string parameters.
+	 * </p>
+	 * @return Parameters.
 	 */
 	public Hashtable getQueryStringParams() {
 		Hashtable params = new Hashtable();
@@ -161,21 +216,30 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get URL.
+	 * </p>
+	 * @return URL.
 	 */
 	public String getURL() {
 		return url;
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get Http method.
+	 * </p>
+	 * @return Method.
 	 */
 	public String getMethod() {
 		return method; 
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get sanitized URL.
+	 * </p>
+	 * @return URL.
 	 */
 	public String getSanitizedURL() {
 		final int i = url.indexOf('?');
@@ -184,7 +248,10 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @return
+	 * <p>
+	 * Get URL's query string.
+	 * </p>
+	 * @return Query string.
 	 */
 	public String getQueryString() {
 		final int i = url.indexOf('?');
@@ -193,7 +260,11 @@ public final class HttpRequest {
 	}
 	
 	/**
-	 * @param signer
+	 * <p>
+	 * Set xAuth signer and access token.
+	 * </p>
+	 * @param signer Signer.
+	 * @param token Access token.
 	 */
 	public void setSigner(XAuthSigner signer, Token token) {
 		this.signer = signer;
@@ -201,8 +272,11 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @param conn
-	 * @throws IOException
+	 * <p>
+	 * Set header fields into connection.
+	 * </p>
+	 * @param conn Http connection.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	private void setHeaderFields(HttpConnection conn) throws IOException {
 		String key;
@@ -215,8 +289,11 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @param conn
-	 * @throws IOException
+	 * <p>
+	 * Set body fields into connection.
+	 * </p>
+	 * @param conn Http connection.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	private void setBodyParameters(HttpConnection conn) throws IOException {
 		conn.setRequestProperty(
@@ -236,8 +313,11 @@ public final class HttpRequest {
 	}
 
 	/**
-	 * @param p
-	 * @return
+	 * <p>
+	 * Create query string from a set of parameters.
+	 * </p>
+	 * @param p Parameters.
+	 * @return Query string.
 	 */
 	private String queryString(Hashtable p) {
 		String key;
