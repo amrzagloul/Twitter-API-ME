@@ -12,16 +12,86 @@ import com.twitterapime.search.InvalidQueryException;
  *
  */
 public class UserAccountManagerTest extends TestCase {
+	/**
+	 * 
+	 */
+	public static final String CONSUMER_KEY = "KQlYF5kzKrBHm6s9gOyAVQ";
 	
-	private Credential c1 = new Credential("twiterapimetest", "f00bar");
-	private Credential c2 = new Credential("username", "password");
-	private Credential c3 = new Credential("twiterapimetest", "foobar");
+	/**
+	 * 
+	 */
+	public static final String CONSUMER_SECRET = "yv57uIvC8CMNo6NPyebwyDwbbw306xuXew4U5x81Ljw";
+	
+	/**
+	 * 
+	 */
+	private Credential credential1;
+	
+	/**
+	 * 
+	 */
+	private Credential credential2;
+
+	/**
+	 * 
+	 */
+	private Credential credential3;
+
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr1;
+	
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr2;
+
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr3;
 	
 	/**
 	 * 
 	 */
 	public UserAccountManagerTest() {
 		super("UserAccountManagerTest");
+	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 */
+	public void setUp() throws Throwable {
+		String conKey = UserAccountManagerTest.CONSUMER_KEY;
+		String conSec = UserAccountManagerTest.CONSUMER_SECRET;
+		//
+		credential1 = new Credential("twiterapimetest", "f00bar", conKey, conSec);
+		credential2 = new Credential("twiterapimetst2", "f00bar", conKey, conSec);
+		credential3 = new Credential("username", "password", conKey, conSec);
+		//
+		userMngr1 = UserAccountManager.getInstance(credential1);
+		userMngr2 = UserAccountManager.getInstance(credential2);
+		userMngr3 = UserAccountManager.getInstance(credential3);
+		//
+		if (!(userMngr1.verifyCredential() && userMngr2.verifyCredential() && !userMngr3.verifyCredential())) {
+			throw new IllegalStateException("TweetERTest: Login failed!");
+		}
+	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 */
+	public void tearDown() throws Throwable {
+		userMngr1.signOut();
+		userMngr2.signOut();
+		//
+		try {
+			userMngr1.verifyCredential();
+			//
+			throw new IllegalStateException("UserAccountManagerTest: Sign out failed!");
+		} catch (IllegalStateException e) {
+		}
 	}
 
 	/**
@@ -30,60 +100,35 @@ public class UserAccountManagerTest extends TestCase {
 	public void testGetInstance() {
 		try {
 			UserAccountManager.getInstance(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
-		UserAccountManager uam = UserAccountManager.getInstance(c1);
-		assertNotNull(uam);
-		assertEquals(uam, UserAccountManager.getInstance(c1));
-		//
-		try {
-			uam.verifyCredential();
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		assertSame(uam, UserAccountManager.getInstance(c1));
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
+		assertEquals("test: 3", userMngr3, UserAccountManager.getInstance(credential3));
+		assertSame("test: 4", userMngr1, UserAccountManager.getInstance(credential1));
 	}
 
 	/**
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getRateLimitStatus()}.
 	 */
 	public void testGetRateLimitStatus() {
-		UserAccountManager uam = UserAccountManager.getInstance(c2);
-		//
 		try {
-			uam.getRateLimitStatus();
-			fail();
+			userMngr3.getRateLimitStatus();
+			fail("test: 1");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
-			uam = UserAccountManager.getInstance(c1);
+			RateLimitStatus rsl = userMngr1.getRateLimitStatus();
 			//
-			assertTrue(uam.verifyCredential());
-			//
-			assertNotNull(uam.getRateLimitStatus());
-			assertTrue(uam.getRateLimitStatus().size() > 0);
+			assertNotNull("test: 3", rsl);
+			assertTrue("test: 4", rsl.size() > 0);
 		} catch (Exception e) {
-			fail(e.toString());
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 5");
 		}
 	}
 
@@ -91,51 +136,26 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#isVerified()}.
 	 */
 	public void testIsVerified() {
-		UserAccountManager uam = UserAccountManager.getInstance(c2);
-		//
-		assertFalse(uam.isVerified());
-		//
-		try {
-			uam = UserAccountManager.getInstance(c1);
-			//
-			uam.verifyCredential();
-			//
-			assertTrue(uam.isVerified());
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
+		assertTrue("test: 1", userMngr1.isVerified());
+		assertTrue("test: 2", userMngr2.isVerified());
+		assertFalse("test: 3", userMngr3.isVerified());
 	}
 
 	/**
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#verifyCredential()}.
 	 */
 	public void testVerifyCredential() {
-		UserAccountManager uam = UserAccountManager.getInstance(c3);
-		//
 		try {
-			assertFalse(uam.verifyCredential());
+			assertFalse(userMngr3.verifyCredential());
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		uam = UserAccountManager.getInstance(c1);
-		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e) {
-			fail();
+			fail("test: 1");
 		}
 		//
 		try {
-			uam.signOut();
+			assertTrue("test: 2", userMngr1.verifyCredential());
+			assertTrue("test: 3", userMngr2.verifyCredential());
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 	}
 
@@ -143,32 +163,21 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getUserAccount()}.
 	 */
 	public void testGetUserAccount() {
-		UserAccountManager uam = UserAccountManager.getInstance(c1);
-		//
 		try {
-			uam.getUserAccount();
-			fail();
+			userMngr3.getUserAccount();
+			fail("test: 1");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
-			uam = UserAccountManager.getInstance(c1);
+			UserAccount ua = userMngr1.getUserAccount();
 			//
-			uam.verifyCredential();
-			//
-			assertNotNull(uam.getUserAccount());
-			assertTrue(uam.getUserAccount().size() > 0);
+			assertNotNull("test: 3", ua);
+			assertTrue("test: 4", ua.size() > 0);
 		} catch (Exception e) {
-			System.out.println(e);
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 5");
 		}
 	}
 
@@ -176,79 +185,70 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#getCredential()}.
 	 */
 	public void testGetCredential() {
-		UserAccountManager uam = UserAccountManager.getInstance(c2);
-		assertSame(c2, uam.getCredential());
+		assertSame("test: 1", credential1, userMngr1.getCredential());
+		assertSame("test: 2", credential2, userMngr2.getCredential());
+		assertSame("test: 3", credential3, userMngr3.getCredential());
 	}
 	
 	/**
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#follow(UserAccount)}.
 	 */
 	public void testFollow() {
-		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
-			u.follow(null);
-			fail();
+			userMngr1.follow(null);
+			fail("test: 1");
 		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
-			u.follow(new UserAccount());
-			fail();
+			userMngr1.follow(new UserAccount());
+			fail("test: 3");
 		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
 		try {
-			UserAccountManager.getInstance(c2).follow(ua);
-			fail();
+			userMngr3.follow(ua);
+			fail("test: 5");
 		} catch (SecurityException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
 		}
 		//
 		try {
-			//
-			assertTrue(u.verifyCredential());
-			//
-			if (u.isFollowing(ua)) {
-				u.unfollow(ua);
+			if (userMngr1.isFollowing(ua)) {
+				userMngr1.unfollow(ua);
 			}
 			//
-			ua = u.follow(ua);
+			ua = userMngr1.follow(ua);
 			//
-			assertNotNull(ua);
-			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			assertNotNull("test: 7", ua);
+			assertEquals("test: 8", "twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			//
-			assertTrue(u.isFollowing(ua));
+			assertTrue("test: 9", userMngr1.isFollowing(ua));
 		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 		//
 		try {
-			u.follow(ua);
-			fail();
+			userMngr1.follow(ua);
+			fail("test: 11");
 		} catch (InvalidQueryException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 12");
 		}
 		//
 		try {
-			u.follow(new UserAccount("jdahsjkdhadkja"));
-			fail();
+			userMngr1.follow(new UserAccount("jdahsjkdhadkja"));
+			fail("test: 13");
 		} catch (InvalidQueryException e) {
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			u.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 14");
 		}
 	}
 
@@ -256,66 +256,61 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#unfollow(UserAccount)}.
 	 */
 	public void testUnfollow() {
-		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
-			try {
-				u.unfollow(null);
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				u.unfollow(new UserAccount());
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				UserAccountManager.getInstance(c2).unfollow(ua);
-				fail();
-			} catch (SecurityException e1) {
-			}
-			//
-			assertTrue(u.verifyCredential());
-			//
-			if (!u.isFollowing(ua)) {
-				u.follow(ua);
-			}
-			//
-			ua = u.unfollow(ua);
-			//
-			assertNotNull(ua);
-			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
-			//
-			assertFalse(u.isFollowing(ua));
-			//
-			try {
-				u.unfollow(ua);
-				fail();
-			} catch (InvalidQueryException e) {
-			}
-			//
-			try {
-				u.unfollow(new UserAccount("jdahsjkdhadkja"));
-				fail();
-			} catch (InvalidQueryException e) {
-			}
+			userMngr1.unfollow(null);
+			fail("test: 1");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
-		} finally {
-			try {
-				u.follow(ua);
-			} catch (Exception e) {
-				fail();
-			}
+			fail("test: 2");
 		}
 		//
 		try {
-			u.signOut();
+			userMngr1.unfollow(new UserAccount());
+			fail("test: 3");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
+		}
+		//
+		try {
+			userMngr3.unfollow(ua);
+			fail("test: 5");
+		} catch (SecurityException e1) {
+		} catch (Exception e) {
+			fail("test: 6");
+		}
+		//
+		try {
+			if (!userMngr1.isFollowing(ua)) {
+				userMngr1.follow(ua);
+			}
+			//
+			ua = userMngr1.unfollow(ua);
+			//
+			assertNotNull("test: 7", ua);
+			assertEquals("test: 8", "twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			//
+			assertFalse("test: 9", userMngr1.isFollowing(ua));
+		} catch (Exception e) {
+			fail("test: 10");
+		}
+		//
+		try {
+			userMngr1.unfollow(ua);
+			fail("test: 11");
+		} catch (InvalidQueryException e) {
+		} catch (Exception e) {
+			fail("test: 12");
+		}
+		//
+		try {
+			userMngr1.unfollow(new UserAccount("jdahsjkdhadkja"));
+			fail("test: 13");
+		} catch (InvalidQueryException e) {
+		} catch (Exception e) {
+			fail("test: 14");
 		}
 	}
 	
@@ -323,60 +318,53 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#block(UserAccount)}.
 	 */
 	public void testBlock() {
-		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
-			try {
-				u.block(null);
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				u.block(new UserAccount());
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				UserAccountManager.getInstance(c2).block(ua);
-				fail();
-			} catch (SecurityException e1) {
-			}
-			//
-			assertTrue(u.verifyCredential());
-			//
-			if (u.isBlocking(ua)) {
-				u.unblock(ua);
-			}
-			//
-			ua = u.block(ua);
-			//
-			assertNotNull(ua);
-			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
-			//
-			assertTrue(u.isBlocking(ua));
-			//
-			try {
-				u.block(new UserAccount("jdahsjkdhadkja"));
-				fail();
-			} catch (InvalidQueryException e) {
-			}
+			userMngr1.block(null);
+			fail("test: 1");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
-		} finally {
-			try {
-				u.unblock(ua);
-			} catch (Exception e) {
-				fail();
-			}
+			fail("test: 2");
 		}
 		//
 		try {
-			u.signOut();
+			userMngr1.block(new UserAccount());
+			fail("test: 3");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
+		}
+		//
+		try {
+			userMngr3.block(ua);
+			fail("test: 5");
+		} catch (SecurityException e1) {
+		} catch (Exception e) {
+			fail("test: 6");
+		}
+		//
+		try {
+			if (userMngr1.isBlocking(ua)) {
+				userMngr1.unblock(ua);
+			}
+			//
+			ua = userMngr1.block(ua);
+			//
+			assertNotNull("test: 7", ua);
+			assertEquals("test: 8", "twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			//
+			assertTrue("test: 9", userMngr1.isBlocking(ua));
+		} catch (Exception e) {
+			fail("test: 10");
+		}
+		//
+		try {
+			userMngr1.block(new UserAccount("jdahsjkdhadkja"));
+			fail("test: 11");
+		} catch (InvalidQueryException e) {
+		} catch (Exception e) {
+			fail("test: 12");
 		}
 	}
 	
@@ -384,78 +372,53 @@ public class UserAccountManagerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.UserAccountManager#unblock(UserAccount)}.
 	 */
 	public void testUnblock() {
-		UserAccountManager u = UserAccountManager.getInstance(c1);
 		UserAccount ua = new UserAccount("twapime");
 		//
 		try {
-			try {
-				u.unblock(null);
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				u.unblock(new UserAccount());
-				fail();
-			} catch (IllegalArgumentException e1) {
-			}
-			//
-			try {
-				UserAccountManager.getInstance(c2).unblock(ua);
-				fail();
-			} catch (SecurityException e1) {
-			}
-			//
-			assertTrue(u.verifyCredential());
-			//
-			if (!u.isBlocking(ua)) {
-				u.block(ua);
-			}
-			//
-			ua = u.unblock(ua);
-			//
-			assertNotNull(ua);
-			assertEquals("twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
-			//
-			assertFalse(u.isBlocking(ua));
-			//
-			try {
-				u.unblock(new UserAccount("jdahsjkdhadkja"));
-				fail();
-			} catch (InvalidQueryException e) {
-			}
+			userMngr1.unblock(null);
+			fail("test: 1");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
-			u.signOut();
+			userMngr1.unblock(new UserAccount());
+			fail("test: 3");
+		} catch (IllegalArgumentException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
-	}
-	
-	/**
-	 * Test method for {@link com.twitterapime.rest.UserAccountManager#signOut()}.
-	 */
-	public void testSignOut() {
-		UserAccountManager u = UserAccountManager.getInstance(c1);
 		//
 		try {
-			assertTrue(u.verifyCredential());
-			assertTrue(u.isVerified());
-			//
-			u.signOut();
-			//
-			assertNotSame(u, UserAccountManager.getInstance(c1));
-			//
-			try {
-				u.verifyCredential();
-				fail();
-			} catch (IllegalStateException e) {
-			}
+			userMngr2.unblock(ua);
+			fail("test: 5");
+		} catch (SecurityException e1) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 6");
+		}
+		//
+		try {
+			if (!userMngr1.isBlocking(ua)) {
+				userMngr1.block(ua);
+			}
+			//
+			ua = userMngr1.unblock(ua);
+			//
+			assertNotNull("test: 7", ua);
+			assertEquals("test: 8", "twapime", ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+			//
+			assertFalse("test: 9", userMngr1.isBlocking(ua));
+		} catch (Exception e) {
+			fail("test: 10");
+		}
+		//
+		try {
+			userMngr1.unblock(new UserAccount("jdahsjkdhadkja"));
+			fail("test: 11");
+		} catch (InvalidQueryException e) {
+		} catch (Exception e) {
+			fail("test: 12");
 		}
 	}
 }
