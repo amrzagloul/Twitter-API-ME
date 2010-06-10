@@ -26,7 +26,12 @@ public class TweetERTest extends TestCase {
 	 * 
 	 */
 	private Credential credential2;
-	
+
+	/**
+	 * 
+	 */
+	private Credential credential3;
+
 	/**
 	 * 
 	 */
@@ -40,6 +45,11 @@ public class TweetERTest extends TestCase {
 	/**
 	 * 
 	 */
+	private UserAccountManager userMngr3;
+
+	/**
+	 * 
+	 */
 	public TweetERTest() {
 		super("TweetERTest");
 	}
@@ -48,13 +58,18 @@ public class TweetERTest extends TestCase {
 	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
 	 */
 	public void setUp() throws Throwable {
-		credential1 = new Credential("twiterapimetest", "f00bar");
-		credential2 = new Credential("twiterapimetst2", "f00bar");
+		String conKey = UserAccountManagerTest.CONSUMER_KEY;
+		String conSec = UserAccountManagerTest.CONSUMER_SECRET;
+		//
+		credential1 = new Credential("twiterapimetest", "f00bar", conKey, conSec);
+		credential2 = new Credential("twiterapimetst2", "f00bar", conKey, conSec);
+		credential3 = new Credential("username", "password", conKey, conSec);
 		//
 		userMngr1 = UserAccountManager.getInstance(credential1);
 		userMngr2 = UserAccountManager.getInstance(credential2);
+		userMngr3 = UserAccountManager.getInstance(credential3);
 		//
-		if (userMngr1.verifyCredential() && userMngr2.verifyCredential()) {
+		if (!(userMngr1.verifyCredential() && userMngr2.verifyCredential() && !userMngr3.verifyCredential())) {
 			throw new IllegalStateException("TweetERTest: Login failed!");
 		}
 	}
@@ -88,7 +103,7 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			TweetER.getInstance(userMngr1);
+			TweetER.getInstance(userMngr3);
 			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
