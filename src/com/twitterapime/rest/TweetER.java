@@ -54,6 +54,13 @@ import com.twitterapime.search.Tweet;
 public final class TweetER {
 	/**
 	 * <p>
+	 * Hold all Twitter API URL services.
+	 * </p>
+	 */
+	private static final Hashtable SERVICES_URL;
+	
+	/**
+	 * <p>
 	 * TweetER pool used to cache instanced associated to user accounts.
 	 * </p>
 	 */
@@ -61,42 +68,67 @@ public final class TweetER {
 
 	/**
 	 * <p>
-	 * Twitter REST API update status URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_UPDATE_STATUS =
-		"http://twitter.com/statuses/update.xml";
-
-	/**
-	 * <p>
-	 * Twitter REST API show status URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_SHOW_STATUS =
-		"http://twitter.com/statuses/show/";
-
-	/**
-	 * <p>
-	 * Twitter REST API send Direct Message URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_SEND_DIRECT_MESSAGE =
-		"http://api.twitter.com/1/direct_messages/new.xml";
-	
-	/**
-	 * <p>
-	 * Twitter REST API repost status URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_REPOST_STATUS =
-		"http://api.twitter.com/1/statuses/retweet/";
-
-	/**
-	 * <p>
 	 * Single instance of this class.
 	 * </p>
 	 */
 	private static TweetER singleInstance;
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses update.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#post(Tweet)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_UPDATE =
+		"TWITTER_API_URL_SERVICE_STATUSES_UPDATE";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses show.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#findByID(String)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_SHOW =
+		"TWITTER_API_URL_SERVICE_STATUSES_SHOW";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses retweet.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#repost(Tweet)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEET =
+		"TWITTER_API_URL_SERVICE_STATUSES_RETWEET";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service direct messages new.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#send(Tweet)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW =
+		"TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW";
+
+	static {
+		SERVICES_URL = new Hashtable(4);
+		//
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_UPDATE,
+			"http://api.twitter.com/1/statuses/update.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_SHOW,
+			"http://api.twitter.com/1/statuses/show.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_RETWEET,
+			"http://api.twitter.com/1/statuses/retweet/");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW,
+			"http://api.twitter.com/1/direct_messages/new.xml");
+	}
 	
 	/**
 	 * <p>
@@ -118,6 +150,27 @@ public final class TweetER {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Set a new URL to a given Twitter API service. This method is very useful
+	 * in case Twitter API decides to change a service's URL. So there is no
+	 * need to wait for a new version of this API to get it working back.
+	 * </p>
+	 * <p>
+	 * <b>Be careful about using this method, since it can cause unexpected
+	 * results, case you enter an invalid URL.</b>
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @param url New URL.
+	 * @see TweetER#TWITTER_API_URL_SERVICE_STATUSES_UPDATE
+	 * @see TweetER#TWITTER_API_URL_SERVICE_STATUSES_SHOW
+	 * @see TweetER#TWITTER_API_URL_SERVICE_STATUSES_RETWEET
+	 * @see TweetER#TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW
+	 */
+	public void setServiceURL(String serviceKey, String url) {
+		SERVICES_URL.put(serviceKey, url);
 	}
 	
 	/**
@@ -219,7 +272,9 @@ public final class TweetER {
 			throw new IllegalArgumentException("ID must not be empty/null.");
 		}
 		//
-		final String url = TWITTER_URL_SHOW_STATUS + id + ".xml";
+		String url =
+			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_SHOW);
+		url += "?id=" + id;
 		HttpRequest req;
 		//
 		if (userAccountMngr != null) {
@@ -273,8 +328,9 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpRequest req =
-			userAccountMngr.createRequest(TWITTER_URL_UPDATE_STATUS);
+		String url =
+			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_UPDATE);
+		HttpRequest req = userAccountMngr.createRequest(url);
 		req.setMethod(HttpConnection.POST);
 		req.setBodyParameter(
 			"status", tweet.getString(MetadataSet.TWEET_CONTENT));
@@ -322,8 +378,10 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpRequest req =
-			userAccountMngr.createRequest(TWITTER_URL_REPOST_STATUS+id+".xml");
+		String url =
+			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_RETWEET);
+		url += id + ".xml";
+		HttpRequest req = userAccountMngr.createRequest(url);
 		req.setMethod(HttpConnection.POST);
 		//
 		try {
@@ -369,8 +427,10 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		HttpRequest req =
-			userAccountMngr.createRequest(TWITTER_URL_SEND_DIRECT_MESSAGE);
+		String url =
+			(String)SERVICES_URL.get(
+				TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW);
+		HttpRequest req = userAccountMngr.createRequest(url);
 		req.setMethod(HttpConnection.POST);
 		//
 		String recipient = dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);
