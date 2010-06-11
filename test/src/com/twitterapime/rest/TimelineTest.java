@@ -468,7 +468,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * @see com.twitterapime.search.SearchDeviceListener#searchFailed(java.lang.Throwable)
 	 */
 	public void searchFailed(Throwable cause) {
-		fail();
+		fail("test searchFailed: " + cause.getClass().getName());
 	}
 
 	/**

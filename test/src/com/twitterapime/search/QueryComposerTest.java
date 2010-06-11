@@ -186,7 +186,7 @@ public class QueryComposerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.search.QueryComposer#resultCount(int)}.
 	 */
 	public void testResultCount() {
-		assertEquals(new Query(QueryComposer.PM_RPP), QueryComposer.resultCount(6));
+		assertEquals(new Query(QueryComposer.PM_RPP + "6"), QueryComposer.resultCount(6));
 		assertEquals(new Query(QueryComposer.PM_RPP + "7"), QueryComposer.resultCount(7));
 	}
 
@@ -194,7 +194,7 @@ public class QueryComposerTest extends TestCase {
 	 * Test method for {@link com.twitterapime.search.QueryComposer#page(int)}.
 	 */
 	public void testPage() {
-		assertEquals(new Query(QueryComposer.PM_PAGE), QueryComposer.page(6));
+		assertEquals(new Query(QueryComposer.PM_PAGE + "6"), QueryComposer.page(6));
 		assertEquals(new Query(QueryComposer.PM_PAGE + "7"), QueryComposer.page(7));
 	}
 

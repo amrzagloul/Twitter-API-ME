@@ -98,7 +98,7 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		Query q = QueryComposer.from("ernandesmjr");
 		//
 		try {
-			Tweet[] ts = s.searchTweets("q=" + q.toString());
+			Tweet[] ts = s.searchTweets("q=&" + q.toString());
 			//
 			assertNotNull(ts);
 			assertTrue(ts.length > 0);
