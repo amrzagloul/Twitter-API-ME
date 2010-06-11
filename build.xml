@@ -88,11 +88,14 @@
 	<target name="-lib_javame" if="tapime.building.javame">
 		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}">
 			<zipfileset src="${tapime.path.lib.kxml2}"/>
+			<zipfileset src="${tapime.path.lib.xauth-encoders}"/>
 		</jar>
 	</target>
 	
 	<target name="-lib_android" if="tapime.building.android">
-		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
+		<jar basedir="${tapime.path.build.bin}" destfile="${tapime.version.path.dist}/${tapime.version.jar}">
+			<zipfileset src="${tapime.path.lib.xauth-encoders}"/>
+		</jar>
 	</target>
 
 	<target name="-classpath_javame" if="tapime.building.javame">
@@ -103,6 +106,7 @@
 			<path path="${tapime.path.lib.junit}"/>
 			<path path="${tapime.path.lib.mobilejunit}"/>
 			<path path="${tapime.path.lib.mobilejunit-framework}"/>
+			<path path="${tapime.path.lib.xauth-encoders}"/>
 		</path>
 	</target>
 
@@ -110,6 +114,7 @@
 		<path id="tapime.classpath">
 			<pathelement path="${tapime.path.lib.android11}"/>
 			<path path="${tapime.path.lib.junit}"/>
+			<path path="${tapime.path.lib.xauth-encoders}"/>
 		</path>
 	</target>
 
