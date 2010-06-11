@@ -17,6 +17,36 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */
+	private Credential credential1;
+	
+	/**
+	 * 
+	 */
+	private Credential credential2;
+	
+	/**
+	 * 
+	 */
+	private Credential credential3;
+
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr1;
+	
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr2;
+	
+	/**
+	 * 
+	 */
+	private UserAccountManager userMngr3;
+
+	/**
+	 * 
+	 */
 	private int count;
 	
 	/**
@@ -55,25 +85,48 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
 	 */
 	public void setUp() throws Throwable {
-		UserAccountManager uam1 = UserAccountManager.getInstance(new Credential("twiterapimetst2", "f00bar"));
-		UserAccountManager uam2 = UserAccountManager.getInstance(new Credential("twiterapimetest", "f00bar"));
+		String conKey = UserAccountManagerTest.CONSUMER_KEY;
+		String conSec = UserAccountManagerTest.CONSUMER_SECRET;
 		//
-		if (uam1.verifyCredential() && uam2.verifyCredential()) {
-			TweetER t1 = TweetER.getInstance(uam1);
-			t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
-			t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
-			t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
-			t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
-			//
-			TweetER t2 = TweetER.getInstance(uam2);
-			t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
-			t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
-			t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
-			t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
+		credential1 = new Credential("twiterapimetest", "f00bar", conKey, conSec);
+		credential2 = new Credential("twiterapimetst2", "f00bar", conKey, conSec);
+		credential3 = new Credential("username", "password", conKey, conSec);
+		//
+		userMngr1 = UserAccountManager.getInstance(credential1);
+		userMngr2 = UserAccountManager.getInstance(credential2);
+		userMngr3 = UserAccountManager.getInstance(credential3);
+		//
+		if (!(userMngr1.verifyCredential() && userMngr2.verifyCredential() && !userMngr3.verifyCredential())) {
+			throw new IllegalStateException("TweetERTest: Login failed!");
 		}
 		//
-		uam1.signOut();
-		uam2.signOut();
+		TweetER t1 = TweetER.getInstance(userMngr1);
+		t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
+		t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
+		t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
+		t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
+		//
+		TweetER t2 = TweetER.getInstance(userMngr2);
+		t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
+		t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
+		t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
+		t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
+	}
+	
+	/**
+	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 */
+	public void tearDown() throws Throwable {
+		userMngr1.signOut();
+		userMngr2.signOut();
+		//
+		try {
+			Timeline tl = Timeline.getInstance(userMngr1);
+			tl.startGetHomeTweets(null, this);
+			//
+			throw new IllegalStateException("TimelineTest: Sign out failed!");
+		} catch (IllegalStateException e) {
+		}
 	}
 
 	/**
@@ -82,38 +135,23 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	public void testGetInstanceUserAccountManager() {
 		try {
 			Timeline.getInstance(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
 		try {
-			Timeline.getInstance(uam);
-			fail();
+			Timeline.getInstance(userMngr3);
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		Timeline t = Timeline.getInstance(uam);
-		assertNotNull(t);
-		assertSame(t, Timeline.getInstance(uam));
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
+		Timeline t = Timeline.getInstance(userMngr1);
+		assertNotNull("test: 5", t);
+		assertSame("test: 6", t, Timeline.getInstance(userMngr1));
 	}
 	
 	/**
@@ -121,8 +159,8 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 */
 	public void testGetInstance() {
 		Timeline t = Timeline.getInstance();
-		assertNotNull(t);
-		assertSame(t, Timeline.getInstance());
+		assertNotNull("test: 1", t);
+		assertSame("test: 2", t, Timeline.getInstance());
 	}
 
 	/**
@@ -133,10 +171,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		//
 		try {
 			t.startGetPublicTweets(null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
@@ -146,9 +184,9 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(count > 0);
+			assertTrue("test: 3", count > 0);
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 	}
 	
@@ -156,34 +194,25 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * Test method for {@link com.twitterapime.rest.Timeline#startGetHomeTweets(com.twitterapime.search.Query, com.twitterapime.search.SearchDeviceListener)}.
 	 */
 	public void testStartGetHomeTweets() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e1) {
-			fail();
-		}
-		//
 		Timeline t = Timeline.getInstance();
 		//
 		try {
 			t.startGetHomeTweets(null, null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.startGetHomeTweets(null, this);
-			fail();
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(uam);
+		t = Timeline.getInstance(userMngr1);
 		//
 		try {
 			tweetsFromUserCount = 0;
@@ -193,10 +222,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(tweetsFromUserCount > 0);
-			assertTrue(tweetsFromFollowerCount > 0);
+			assertTrue("test: 5", tweetsFromUserCount > 0);
+			assertTrue("test: 6", tweetsFromFollowerCount > 0);
 		} catch (Exception e) {
-			fail();
+			fail("test: 7");
 		}
 		//
 		try {
@@ -206,13 +235,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertEquals(1, count);
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
+			assertEquals("test: 8", 1, count);
 		} catch (Exception e) {
 			fail();
 		}
@@ -222,34 +245,25 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * Test method for {@link com.twitterapime.rest.Timeline#startGetUserTweets(com.twitterapime.search.Query, com.twitterapime.search.SearchDeviceListener)}.
 	 */
 	public void testStartGetUserTweets() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e1) {
-			fail();
-		}
-		//
 		Timeline t = Timeline.getInstance();
 		//
 		try {
 			t.startGetUserTweets(null, null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.startGetUserTweets(null, this);
-			fail();
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(uam);
+		t = Timeline.getInstance(userMngr1);
 		//
 		try {
 			tweetsFromUserCount = 0;
@@ -259,10 +273,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(tweetsFromUserCount > 0);
-			assertEquals(count, tweetsFromUserCount);
+			assertTrue("test: 5", tweetsFromUserCount > 0);
+			assertEquals("test: 6", count, tweetsFromUserCount);
 		} catch (Exception e) {
-			fail();
+			fail("test: 7");
 		}
 		//
 		try {
@@ -273,16 +287,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertEquals(1, tweetsFromUserCount);
-			assertEquals(count, tweetsFromUserCount);
+			assertEquals("test: 8", 1, tweetsFromUserCount);
+			assertEquals("test: 9", count, tweetsFromUserCount);
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 	}
 
@@ -290,34 +298,25 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * Test method for {@link com.twitterapime.rest.Timeline#startGetMentions(com.twitterapime.search.Query, com.twitterapime.search.SearchDeviceListener)}.
 	 */
 	public void testStartGetMentions() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e1) {
-			fail();
-		}
-		//
 		Timeline t = Timeline.getInstance();
 		//
 		try {
 			t.startGetMentions(null, null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.startGetMentions(null, this);
-			fail();
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(uam);
+		t = Timeline.getInstance(userMngr1);
 		//
 		try {
 			tweetsReferencesUserCount = 0;
@@ -327,10 +326,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(tweetsReferencesUserCount > 0);
-			assertEquals(count, tweetsReferencesUserCount);
+			assertTrue("test: 5", tweetsReferencesUserCount > 0);
+			assertEquals("test: 6", count, tweetsReferencesUserCount);
 		} catch (Exception e) {
-			fail();
+			fail("test: 7");
 		}
 		//
 		try {
@@ -341,16 +340,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertEquals(1, tweetsReferencesUserCount);
-			assertEquals(count, tweetsReferencesUserCount);
+			assertEquals("test: 8", 1, tweetsReferencesUserCount);
+			assertEquals("test: 9", count, tweetsReferencesUserCount);
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 10");
 		}
 	}
 
@@ -358,34 +351,25 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * Test method for {@link com.twitterapime.rest.Timeline#startGetDirectMessages(com.twitterapime.search.Query, boolean, com.twitterapime.search.SearchDeviceListener)}.
 	 */
 	public void testStartGetDirectMessages() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(uam.verifyCredential());
-		} catch (Exception e1) {
-			fail();
-		}
-		//
 		Timeline t = Timeline.getInstance();
 		//
 		try {
 			t.startGetDirectMessages(null, true, null);
-			fail();
+			fail("test: 1");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 2");
 		}
 		//
 		try {
 			t.startGetDirectMessages(null, true, this);
-			fail();
+			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail();
+			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(uam);
+		t = Timeline.getInstance(userMngr1);
 		//
 		try {
 			count = 0;
@@ -395,10 +379,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(tweetsFromRecipientUserCount > 0);
-			assertEquals(count, tweetsFromRecipientUserCount);
+			assertTrue("test: 5", tweetsFromRecipientUserCount > 0);
+			assertEquals("test: 6", count, tweetsFromRecipientUserCount);
 		} catch (Exception e) {
-			fail();
+			fail("test: 7");
 		}
 		//
 		try {
@@ -409,10 +393,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertTrue(tweetsFromUserCount > 0);
+			assertTrue("test: 8", tweetsFromUserCount > 0);
 			assertEquals(count, tweetsFromUserCount);
 		} catch (Exception e) {
-			fail();
+			fail("test: 9");
 		}
 		//
 		try {
@@ -423,49 +407,10 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			//
 			waitFor(10000);
 			//
-			assertEquals(1, tweetsFromRecipientUserCount);
-			assertEquals(count, tweetsFromRecipientUserCount);
+			assertEquals("test: 10", 1, tweetsFromRecipientUserCount);
+			assertEquals("test: 11", count, tweetsFromRecipientUserCount);
 		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			uam.signOut();
-		} catch (Exception e) {
-			fail();
-		}
-	}
-	
-	/**
-	 * Test method related to {@link com.twitterapime.rest.UserAccountManager#signOut()}.
-	 */
-	public void testSignOut() {
-		Credential c = new Credential("twiterapimetest", "f00bar");
-		UserAccountManager u = UserAccountManager.getInstance(c);
-		//
-		try {
-			assertTrue(u.verifyCredential());
-			assertTrue(u.isVerified());
-			//
-			Timeline tr = Timeline.getInstance(u);
-			//
-			u.signOut();
-			//
-			u = UserAccountManager.getInstance(c);
-			assertTrue(u.verifyCredential());
-			assertTrue(u.isVerified());
-			//
-			assertNotSame(tr, Timeline.getInstance(u));
-			//
-			try {
-				tr.startGetHomeTweets(null, this);
-				fail();
-			} catch (IllegalStateException e) {
-			}
-			//
-			u.signOut();
-		} catch (Exception e) {
-			fail();
+			fail("test: 12");
 		}
 	}
 
