@@ -324,7 +324,7 @@ public final class SearchDevice {
 		//
 		if (!queryStr.startsWith("?")) {
 			if (!queryStr.startsWith(TWITTER_QUERY_STRING_PREFIX)) {
-				queryStr = '?' + TWITTER_QUERY_STRING_PREFIX + queryStr;
+				queryStr = '?' + TWITTER_QUERY_STRING_PREFIX + '&' + queryStr;
 			} else {
 				queryStr = '?' + queryStr;
 			}
