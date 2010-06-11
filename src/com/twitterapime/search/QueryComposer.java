@@ -20,7 +20,7 @@ import com.twitterapime.rest.Timeline;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -32,154 +32,154 @@ public final class QueryComposer {
 	 * Constant that represents the "filter links" parameter.
 	 * </p>
 	 */
-	private static final String PM_FILTER_LINKS = "&filter=links";
+	static final String PM_FILTER_LINKS = "filter=links";
 
 	/**
 	 * <p>
 	 * Constant that represents the "from" parameter.
 	 * </p>
 	 */
-	private static final String PM_FROM = "&from=";
+	static final String PM_FROM = "from=";
 
 	/**
 	 * <p>
 	 * Constant that represents a "positive attitude" parameter.
 	 * </p>
 	 */
-	private static final String PM_POSITIVE_ATTITUDE = "&tude[]=:)";
+	static final String PM_POSITIVE_ATTITUDE = "tude[]=:)";
 
 	/**
 	 * <p>
 	 * Constant that represents a "negative attitude" parameter.
 	 * </p>
 	 */
-	private static final String PM_NEGATIVE_ATTITUDE = "&tude[]=:(";
+	static final String PM_NEGATIVE_ATTITUDE = "tude[]=:(";
 
 	/**
 	 * <p>
 	 * Constant that represents a "asking a question" parameter.
 	 * </p>
 	 */
-	private static final String PM_ASKING_QUESTION = "&tude[]=?";
+	static final String PM_ASKING_QUESTION = "tude[]=?";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain all" parameter.
 	 * </p>
 	 */
-	private static final String PM_CONTAIN_ALL = "&ands=";
+	static final String PM_CONTAIN_ALL = "ands=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain exact" parameter.
 	 * </p>
 	 */
-	private static final String PM_CONTAIN_EXACT = "&phrase=";
+	static final String PM_CONTAIN_EXACT = "phrase=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain any" parameter.
 	 * </p>
 	 */
-	private static final String PM_CONTAIN_ANY = "&ors=";
+	static final String PM_CONTAIN_ANY = "ors=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "contain none" parameter.
 	 * </p>
 	 */
-	private static final String PM_CONTAIN_NONE = "&nots=";
+	static final String PM_CONTAIN_NONE = "nots=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "hashtag" parameter.
 	 * </p>
 	 */
-	private static final String PM_CONTAIN_HASHTAG = "&tag=";
+	static final String PM_CONTAIN_HASHTAG = "tag=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "reference" parameter.
 	 * </p>
 	 */
-	private static final String PM_REFERENCE = "&ref=";
+	static final String PM_REFERENCE = "ref=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "since" parameter.
 	 * </p>
 	 */
-	private static final String PM_SINCE = "&since=";
+	static final String PM_SINCE = "since=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "source" parameter.
 	 * </p>
 	 */
-	private static final String PM_SOURCE = "&source=";
+	static final String PM_SOURCE = "source=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "to" parameter.
 	 * </p>
 	 */
-	private static final String PM_TO = "&to=";
+	static final String PM_TO = "to=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "until" parameter.
 	 * </p>
 	 */
-	private static final String PM_UNTIL = "&until=";
+	static final String PM_UNTIL = "until=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "lang" parameter.
 	 * </p>
 	 */
-	private static final String PM_LANG = "&lang=";
+	static final String PM_LANG = "lang=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "rpp" parameter.
 	 * </p>
 	 */
-	private static final String PM_RPP = "&rpp=";
+	static final String PM_RPP = "rpp=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "page" parameter.
 	 * </p>
 	 */
-	private static final String PM_PAGE = "&page=";
+	static final String PM_PAGE = "page=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "since_id" parameter.
 	 * </p>
 	 */
-	private static final String PM_SINCE_ID = "&since_id=";
+	static final String PM_SINCE_ID = "since_id=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "geocode" parameter.
 	 * </p>
 	 */
-	private static final String PM_GEOCODE = "&geocode=";
+	static final String PM_GEOCODE = "geocode=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "count" parameter.
 	 * </p>
 	 */
-	private static final String PM_COUNT = "&count=";
+	static final String PM_COUNT = "count=";
 
 	/**
 	 * <p>
 	 * Constant that represents the "max_id" parameter.
 	 * </p>
 	 */
-	private static final String PM_MAX_ID = "&max_id=";
+	static final String PM_MAX_ID = "max_id=";
 	
 	/**
 	 * <p>
@@ -196,7 +196,7 @@ public final class QueryComposer {
 			throw new IllegalArgumentException("Q1/Q2 must not be null.");
 		}
 		//
-		return new Query(q1.toString() + q2.toString());
+		return new Query(q1.toString() + '&' + q2.toString());
 	}
 	
 	/**
