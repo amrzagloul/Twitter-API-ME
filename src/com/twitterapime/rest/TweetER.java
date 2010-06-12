@@ -32,7 +32,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password");
+ * Credential c = new Credential("username", "password", "consKey", "consSec");
  * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
  * if (uam.verifyCredential()) {
@@ -128,6 +128,17 @@ public final class TweetER {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW,
 			"http://api.twitter.com/1/direct_messages/new.xml");
+	}
+	
+	/**
+	 * <p>
+	 * Get an URL related to the given service key.
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @return URL.
+	 */
+	private String getURL(String serviceKey) {
+		return (String)SERVICES_URL.get(serviceKey);
 	}
 	
 	/**
@@ -272,11 +283,9 @@ public final class TweetER {
 			throw new IllegalArgumentException("ID must not be empty/null.");
 		}
 		//
-		String url =
-			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_SHOW);
-		url += "?id=" + id;
-		HttpRequest req;
+		String url = getURL(TWITTER_API_URL_SERVICE_STATUSES_SHOW) + "?id=" +id;
 		//
+		HttpRequest req;
 		if (userAccountMngr != null) {
 			checkUserAuth();
 			req = userAccountMngr.createRequest(url);
@@ -328,9 +337,8 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		String url =
-			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_UPDATE);
-		HttpRequest req = userAccountMngr.createRequest(url);
+		HttpRequest req = userAccountMngr.createRequest(
+			getURL(TWITTER_API_URL_SERVICE_STATUSES_UPDATE));
 		req.setMethod(HttpConnection.POST);
 		req.setBodyParameter(
 			"status", tweet.getString(MetadataSet.TWEET_CONTENT));
@@ -378,9 +386,8 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		String url =
-			(String)SERVICES_URL.get(TWITTER_API_URL_SERVICE_STATUSES_RETWEET);
-		url += id + ".xml";
+		String url = getURL(TWITTER_API_URL_SERVICE_STATUSES_RETWEET)+id+".xml";
+		//
 		HttpRequest req = userAccountMngr.createRequest(url);
 		req.setMethod(HttpConnection.POST);
 		//
@@ -427,10 +434,8 @@ public final class TweetER {
 		//
 		checkUserAuth();
 		//
-		String url =
-			(String)SERVICES_URL.get(
-				TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW);
-		HttpRequest req = userAccountMngr.createRequest(url);
+		HttpRequest req = userAccountMngr.createRequest(
+			getURL(TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW));
 		req.setMethod(HttpConnection.POST);
 		//
 		String recipient = dm.getString(MetadataSet.TWEET_AUTHOR_USERNAME);

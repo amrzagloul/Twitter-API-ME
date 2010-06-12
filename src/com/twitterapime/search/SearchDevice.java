@@ -8,6 +8,7 @@
 package com.twitterapime.search;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpConnector;
@@ -48,19 +49,10 @@ import com.twitterapime.search.handler.SearchResultHandler;
 public final class SearchDevice {
 	/**
 	 * <p>
-	 * Twitter Search API URI.
+	 * Hold all Twitter API URL services.
 	 * </p>
 	 */
-	private static final String TWITTER_URL_ATOM =
-		"http://search.twitter.com/search.atom";
-	
-	/**
-	 * <p>
-	 * Twitter REST API rate status limit URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_RATE_STATUS_LIMIT =
-		"http://twitter.com/account/rate_limit_status.xml";
+	private static final Hashtable SERVICES_URL;
 
 	/**
 	 * <p>
@@ -89,6 +81,70 @@ public final class SearchDevice {
 	 * </p>
 	 */
 	private static int apiCallsCount;
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service search.
+	 * </p>
+	 * @see SearchDevice#setServiceURL(String, String)
+	 * @see SearchDevice#searchTweets(Query)
+	 * @see SearchDevice#searchTweets(String)
+	 * @see SearchDevice#startSearchTweets(Query, SearchDeviceListener)
+	 * @see SearchDevice#startSearchTweets(String, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_SEARCH =
+		"TWITTER_API_URL_SERVICE_SEARCH";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service account rate limit status.
+	 * </p>
+	 * @see SearchDevice#setServiceURL(String, String)
+	 * @see SearchDevice#getRateLimitStatus()
+	 */
+	public static final String TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS =
+		"TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS";
+
+	static {
+		SERVICES_URL = new Hashtable(2);
+		//
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_SEARCH,
+			"http://search.twitter.com/search.atom");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS,
+			"http://api.twitter.com/1/account/rate_limit_status.xml");
+	}
+	
+	/**
+	 * <p>
+	 * Get an URL related to the given service key.
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @return URL.
+	 */
+	private String getURL(String serviceKey) {
+		return (String)SERVICES_URL.get(serviceKey);
+	}
+	
+	/**
+	 * <p>
+	 * Set a new URL to a given Twitter API service. This method is very useful
+	 * in case Twitter API decides to change a service's URL. So there is no
+	 * need to wait for a new version of this API to get it working back.
+	 * </p>
+	 * <p>
+	 * <b>Be careful about using this method, since it can cause unexpected
+	 * results, case you enter an invalid URL.</b>
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @param url New URL.
+	 * @see SearchDevice#TWITTER_API_URL_SERVICE_SEARCH
+	 * @see SearchDevice#TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS
+	 */
+	public void setServiceURL(String serviceKey, String url) {
+		SERVICES_URL.put(serviceKey, url);
+	}
 
 	/**
 	 * <p>
@@ -225,7 +281,8 @@ public final class SearchDevice {
 	 */
 	public RateLimitStatus getRateLimitStatus() throws IOException,
 		LimitExceededException {
-		HttpRequest req = new HttpRequest(TWITTER_URL_RATE_STATUS_LIMIT);
+		HttpRequest req = new HttpRequest(
+			getURL(TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS));
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -331,7 +388,8 @@ public final class SearchDevice {
 		}
 		//
 		return new HttpRequest(
-			TWITTER_URL_ATOM + HttpConnector.encodeURL(queryStr, false));
+			getURL(TWITTER_API_URL_SERVICE_SEARCH) +
+			HttpConnector.encodeURL(queryStr, false));
 	}
 	
 	/**

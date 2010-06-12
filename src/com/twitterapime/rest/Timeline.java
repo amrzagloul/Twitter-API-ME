@@ -30,7 +30,7 @@ import com.twitterapime.search.SearchDeviceListener;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password");
+ * Credential c = new Credential("username", "password", "consKey", "consSec");
  * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
  * if (uam.verifyCredential()) {
@@ -59,52 +59,11 @@ import com.twitterapime.search.SearchDeviceListener;
 public final class Timeline {
 	/**
 	 * <p>
-	 * Twitter REST API public timeline URI.
+	 * Hold all Twitter API URL services.
 	 * </p>
 	 */
-	private static final String TWITTER_URL_PUBLIC_TIMELINE =
-		"http://api.twitter.com/1/statuses/public_timeline.xml";
+	private static final Hashtable SERVICES_URL;
 	
-	/**
-	 * <p>
-	 * Twitter REST API home timeline URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_HOME_TIMELINE =
-		"http://api.twitter.com/1/statuses/home_timeline.xml";
-
-	/**
-	 * <p>
-	 * Twitter REST API user timeline URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_USER_TIMELINE =
-		"http://api.twitter.com/1/statuses/user_timeline.xml";
-
-	/**
-	 * <p>
-	 * Twitter REST API mentions URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_MENTIONS =
-		"http://api.twitter.com/1/statuses/mentions.xml";
-	
-	/**
-	 * <p>
-	 * Twitter REST API received Direct Messages URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_RECEIVED_DIRECT_MESSAGE =
-		"http://api.twitter.com/1/direct_messages.xml";
-	
-	/**
-	 * <p>
-	 * Twitter REST API sent Direct Messages URI.
-	 * </p>
-	 */
-	private static final String TWITTER_URL_SENT_DIRECT_MESSAGE =
-		"http://api.twitter.com/1/direct_messages/sent.xml";
-
 	/**
 	 * <p>
 	 * Timeline pool used to cache instanced associated to user accounts.
@@ -119,6 +78,100 @@ public final class Timeline {
 	 */
 	private static Timeline singleInstance;
 	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses public timeline.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetPublicTweets(SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE =
+		"TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses home timeline.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetHomeTweets(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_HOME_TIMELINE =
+		"TWITTER_API_URL_SERVICE_STATUSES_HOME_TIMELINE";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses user timeline.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetUserTweets(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE =
+		"TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses mentions.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetMentions(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_MENTIONS =
+		"TWITTER_API_URL_SERVICE_STATUSES_MENTIONS";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service direct messages.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetDirectMessages(Query, boolean, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_DIRECT_MESSAGES =
+		"TWITTER_API_URL_SERVICE_DIRECT_MESSAGES";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service direct messages sent.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetDirectMessages(Query, boolean, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT =
+		"TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT";
+
+	static {
+		SERVICES_URL = new Hashtable(6);
+		//
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE,
+			"http://api.twitter.com/1/statuses/public_timeline.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_HOME_TIMELINE,
+			"http://api.twitter.com/1/statuses/home_timeline.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE,
+			"http://api.twitter.com/1/statuses/user_timeline.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_MENTIONS,
+			"http://api.twitter.com/1/statuses/mentions.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES,
+			"http://api.twitter.com/1/direct_messages.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT,
+			"http://api.twitter.com/1/direct_messages/sent.xml");
+	}
+	
+	/**
+	 * <p>
+	 * Get an URL related to the given service key.
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @return URL.
+	 */
+	private String getURL(String serviceKey) {
+		return (String)SERVICES_URL.get(serviceKey);
+	}
+
 	/**
 	 * <p>
 	 * Release the objects which account is no longer authenticated.
@@ -139,6 +192,29 @@ public final class Timeline {
 				}
 			}			
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Set a new URL to a given Twitter API service. This method is very useful
+	 * in case Twitter API decides to change a service's URL. So there is no
+	 * need to wait for a new version of this API to get it working back.
+	 * </p>
+	 * <p>
+	 * <b>Be careful about using this method, since it can cause unexpected
+	 * results, case you enter an invalid URL.</b>
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @param url New URL.
+	 * @see Timeline#TWITTER_API_URL_SERVICE_DIRECT_MESSAGES
+	 * @see Timeline#TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_HOME_TIMELINE
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_MENTIONS
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE
+	 */
+	public void setServiceURL(String serviceKey, String url) {
+		SERVICES_URL.put(serviceKey, url);
 	}
 	
 	/**
@@ -237,7 +313,12 @@ public final class Timeline {
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(TWITTER_URL_PUBLIC_TIMELINE, null, l, h, false);
+		startGet(
+			TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE,
+			null,
+			l,
+			h,
+			false);
 	}
 	
 	/**
@@ -270,7 +351,7 @@ public final class Timeline {
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(TWITTER_URL_HOME_TIMELINE, q, l, h, true);
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_HOME_TIMELINE, q, l, h, true);
 	}
 	
 	/**
@@ -303,7 +384,7 @@ public final class Timeline {
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(TWITTER_URL_USER_TIMELINE, q, l, h, true);
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE, q, l, h, true);
 	}
 	
 	/**
@@ -335,7 +416,7 @@ public final class Timeline {
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(TWITTER_URL_MENTIONS, q, l, h, true);
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_MENTIONS, q, l, h, true);
 	}
 	
 	/**
@@ -366,21 +447,21 @@ public final class Timeline {
 	 */
 	public void startGetDirectMessages(Query q, boolean received, 
 		SearchDeviceListener l) {
-		final String url = 
+		final String urlKey = 
 			received
-				? TWITTER_URL_RECEIVED_DIRECT_MESSAGE
-				: TWITTER_URL_SENT_DIRECT_MESSAGE;
+				? TWITTER_API_URL_SERVICE_DIRECT_MESSAGES
+				: TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT;
 		DirectMessageHandler h = new DirectMessageHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(url, q, l, h, true);
+		startGet(urlKey, q, l, h, true);
 	}
 		
 	/**
 	 * <p>
 	 * Start a retrieval of a given URL's response according to a filter.
 	 * </p>
-	 * @param url The URL.
+	 * @param servURLKey The service URL key.
 	 * @param q The filter query.
 	 * @param l Listener object to be notified about the search's result.
 	 * @param h Content handler.
@@ -388,9 +469,9 @@ public final class Timeline {
 	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException Invalid parameters.
 	 */
-	private void startGet(final String url, final Query q,
+	private void startGet(final String servURLKey, final Query q,
 		final SearchDeviceListener l, final Handler h, final boolean checkAuth){
-		if (url == null || url.trim().length() == 0) {
+		if (servURLKey == null || servURLKey.trim().length() == 0) {
 			throw new IllegalArgumentException("Url must not be empty/null.");
 		}
 		if (l == null) {
@@ -407,11 +488,13 @@ public final class Timeline {
 		Runnable r = new Runnable() {
 			public void run() {
 				HttpRequest req;
-				String nurl = q != null ? url + '?' + q.toString() : url;
+				String url = getURL(servURLKey);
+				url = q != null ? url + '?' + q.toString() : url;
+				//
 				if (userAccountMngr != null) {
-					req = userAccountMngr.createRequest(nurl);
+					req = userAccountMngr.createRequest(url);
 				} else {
-					req = new HttpRequest(nurl);
+					req = new HttpRequest(url);
 				}
 				//
 				try {

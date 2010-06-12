@@ -32,7 +32,7 @@ import com.twitterapime.xauth.XAuthSigner;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password");
+ * Credential c = new Credential("username", "password", "consKey", "consSec");
  * UserAccountManager uam = UserAccountManager.getInstance(c)
  * if (uam.verifyCredential()) {
  *   System.out.println("User logged in...");
@@ -53,87 +53,149 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private static Hashtable userAccountMngrPoll;
+	
+	/**
+	 * <p>
+	 * Hold all Twitter API URL services.
+	 * </p>
+	 */
+	private static final Hashtable SERVICES_URL;
 
 	/**
 	 * <p>
-	 * Twitter REST API verify credentials URI.
+	 * Key for Twitter API URL service account verify credentials.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#verifyCredential()
 	 */
-	private static final String TWITTER_URL_VERIFY_CREDENTIALS =
-		"http://twitter.com/account/verify_credentials.xml";
+	public static final String TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS =
+		"TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS";
 
 	/**
 	 * <p>
-	 * Twitter REST API verify XAuth credentials URI.
+	 * Key for Twitter API URL service OAuth access token.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#verifyCredential()
 	 */
-	private static final String TWITTER_URL_VERIFY_XAUTH_CREDENTIALS =
-		"https://api.twitter.com/oauth/access_token";
+	public static final String TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN =
+		"TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN";
 	
 	/**
 	 * <p>
-	 * Twitter REST API rate status limit URI.
+	 * Key for Twitter API URL service account rate limit status.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#getRateLimitStatus()
 	 */
-	private static final String TWITTER_URL_RATE_STATUS_LIMIT =
-		"http://twitter.com/account/rate_limit_status.xml";
+	public static final String TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS =
+		"TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS";
 	
 	/**
 	 * <p>
-	 * Twitter REST API follow user URI.
+	 * Key for Twitter API URL service friendships create.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#follow(UserAccount)
 	 */
-	private static final String TWITTER_URL_FOLLOW_USER =
-		"http://api.twitter.com/1/friendships/create.xml";
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE";
 	
 	/**
 	 * <p>
-	 * Twitter REST API unfollow user URI.
+	 * Key for Twitter API URL service friendships destroy.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#unfollow(UserAccount)
 	 */
-	private static final String TWITTER_URL_UNFOLLOW_USER =
-		"http://api.twitter.com/1/friendships/destroy.xml";
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY";
 	
 	/**
 	 * <p>
-	 * Twitter REST API users friendship checking URI.
+	 * Key for Twitter API URL service friendships exists.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#isFollowing(UserAccount)
 	 */
-	private static final String TWITTER_URL_IS_FOLLOWING_USER =
-		"http://api.twitter.com/1/friendships/exists.json";
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS";
 	
 	/**
 	 * <p>
-	 * Twitter REST API block user URI.
+	 * Key for Twitter API URL service blocks create.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#block(UserAccount)
 	 */
-	private static final String TWITTER_URL_BLOCK_USER =
-		"http://api.twitter.com/1/blocks/create.xml";
+	public static final String TWITTER_API_URL_SERVICE_BLOCKS_CREATE =
+		"TWITTER_API_URL_SERVICE_BLOCKS_CREATE";
 	
 	/**
 	 * <p>
-	 * Twitter REST API unblock user URI.
+	 * Key for Twitter API URL service blocks destroy.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#unblock(UserAccount)
 	 */
-	private static final String TWITTER_URL_UNBLOCK_USER =
-		"http://api.twitter.com/1/blocks/destroy.xml";
+	public static final String TWITTER_API_URL_SERVICE_BLOCKS_DESTROY =
+		"TWITTER_API_URL_SERVICE_BLOCKS_DESTROY";
 	
 	/**
 	 * <p>
-	 * Twitter REST API users blocking checking URI.
+	 * Key for Twitter API URL service friendships exists.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#isBlocking(UserAccount)
 	 */
-	private static final String TWITTER_URL_IS_BLOCKING_USER =
-		"http://api.twitter.com/1/blocks/exists/";
+	public static final String TWITTER_API_URL_SERVICE_BLOCKS_EXISTS =
+		"TWITTER_API_URL_SERVICE_BLOCKS_EXISTS";
 	
 	/**
 	 * <p>
-	 * Twitter REST API show user account.
+	 * Key for Twitter API URL service users show.
 	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#getUserAccount()
 	 */
-	private static final String TWITTER_URL_SHOW_USER_ACCOUNT =
-		"http://api.twitter.com/1/users/show.xml";
+	public static final String TWITTER_API_URL_SERVICE_USERS_SHOW =
+		"TWITTER_API_URL_SERVICE_USERS_SHOW";
 	
+	static {
+		SERVICES_URL = new Hashtable(10);
+		//
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS,
+			"http://api.twitter.com/1/account/verify_credentials.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN,
+			"https://api.twitter.com/oauth/access_token");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS,
+			"http://api.twitter.com/1/account/rate_limit_status.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE,
+			"http://api.twitter.com/1/friendships/create.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY,
+			"http://api.twitter.com/1/friendships/destroy.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS,
+			"http://api.twitter.com/1/friendships/exists.json");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_BLOCKS_CREATE,
+			"http://api.twitter.com/1/blocks/create.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_BLOCKS_DESTROY,
+			"http://api.twitter.com/1/blocks/destroy.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_BLOCKS_EXISTS,
+			"http://api.twitter.com/1/blocks/exists/");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USERS_SHOW,
+			"http://api.twitter.com/1/users/show.xml");
+	}
+
 	/**
 	 * <p>
 	 * User's credentials.
@@ -168,6 +230,44 @@ public final class UserAccountManager {
 	 * </p>
 	 */
 	private XAuthSigner signer;
+	
+	/**
+	 * <p>
+	 * Get an URL related to the given service key.
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @return URL.
+	 */
+	private String getURL(String serviceKey) {
+		return (String)SERVICES_URL.get(serviceKey);
+	}
+	
+	/**
+	 * <p>
+	 * Set a new URL to a given Twitter API service. This method is very useful
+	 * in case Twitter API decides to change a service's URL. So there is no
+	 * need to wait for a new version of this API to get it working back.
+	 * </p>
+	 * <p>
+	 * <b>Be careful about using this method, since it can cause unexpected
+	 * results, case you enter an invalid URL.</b>
+	 * </p>
+	 * @param serviceKey Service key.
+	 * @param url New URL.
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_CREATE
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_DESTROY
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_EXISTS
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SHOW
+	 */
+	public void setServiceURL(String serviceKey, String url) {
+		SERVICES_URL.put(serviceKey, url);
+	}
 	
 	/**
 	 * <p>
@@ -236,7 +336,8 @@ public final class UserAccountManager {
 		checkValid();
 		checkVerified();
 		//
-		HttpRequest req = createRequest(TWITTER_URL_RATE_STATUS_LIMIT);
+		HttpRequest req = createRequest(
+			getURL(TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS));
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -289,12 +390,14 @@ public final class UserAccountManager {
 			String user = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
 			String pass = credential.getString(MetadataSet.CREDENTIAL_PASSWORD);
 			//
-			req = createRequest(TWITTER_URL_VERIFY_XAUTH_CREDENTIALS);
+			req = createRequest(
+				getURL(TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN));
 			req.setMethod(HttpConnection.POST);
 			//
 			signer.signForAccessToken(req, user, pass);
 		} else {
-			req = createRequest(TWITTER_URL_VERIFY_CREDENTIALS);
+			req = createRequest(
+				getURL(TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS));
 		}
 		//
 		try {
@@ -363,7 +466,7 @@ public final class UserAccountManager {
 		//
 		String username = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
 		HttpRequest req = createRequest(
-			TWITTER_URL_SHOW_USER_ACCOUNT + "?id=" + username);
+			getURL(TWITTER_API_URL_SERVICE_USERS_SHOW) + "?id=" + username);
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -396,7 +499,7 @@ public final class UserAccountManager {
 	 */
 	public UserAccount follow(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_URL_FOLLOW_USER, ua);
+		return manageFriendship(TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE, ua);
 	}
 	
 	/**
@@ -413,7 +516,7 @@ public final class UserAccountManager {
 	 */
 	public UserAccount unfollow(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_URL_UNFOLLOW_USER, ua);
+		return manageFriendship(TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY, ua);
 	}
 	
 	/**
@@ -451,7 +554,8 @@ public final class UserAccountManager {
 			"?user_a=" + credential.getString(MetadataSet.CREDENTIAL_USERNAME) +
 			"&user_b=" + id;
 		//
-		HttpRequest req = createRequest(TWITTER_URL_IS_FOLLOWING_USER + qryStr);
+		HttpRequest req = createRequest(
+			getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS) + qryStr);
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -478,7 +582,7 @@ public final class UserAccountManager {
 	 */
 	public UserAccount block(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_URL_BLOCK_USER, ua);
+		return manageFriendship(TWITTER_API_URL_SERVICE_BLOCKS_CREATE, ua);
 	}
 	
 	/**
@@ -495,7 +599,7 @@ public final class UserAccountManager {
 	 */
 	public UserAccount unblock(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_URL_UNBLOCK_USER, ua);
+		return manageFriendship(TWITTER_API_URL_SERVICE_BLOCKS_DESTROY, ua);
 	}
 	
 	/**
@@ -529,8 +633,8 @@ public final class UserAccountManager {
 		//
 		checkVerified();
 		//
-		HttpRequest req =
-			createRequest(TWITTER_URL_IS_BLOCKING_USER + id + ".xml");
+		HttpRequest req = createRequest(
+			getURL(TWITTER_API_URL_SERVICE_BLOCKS_EXISTS) + id + ".xml");
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -618,7 +722,7 @@ public final class UserAccountManager {
 	 * Perform an operation on authenticating user regarding the friendship
 	 * management, e.g., follow, unfollow, block or unblock users.
 	 * </p>
-	 * @param actionUrl Action's URL to be performed.
+	 * @param servURLKey Service URL Key.
 	 * @param ua UserAccount object containing the user name or ID.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws InvalidQueryException User already affected by the action or does
@@ -626,7 +730,7 @@ public final class UserAccountManager {
 	 * @throws SecurityException If the user is not authenticated.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
-	private UserAccount manageFriendship(String actionUrl, UserAccount ua)
+	private UserAccount manageFriendship(String servURLKey, UserAccount ua)
 		throws IOException, LimitExceededException {
 		checkValid();
 		//
@@ -645,7 +749,7 @@ public final class UserAccountManager {
 		//
 		checkVerified();
 		//
-		HttpRequest req = createRequest(actionUrl);
+		HttpRequest req = createRequest(getURL(servURLKey));
 		req.setMethod(HttpConnection.POST);
 		try {
 			Long.parseLong(id); // is only numbers?
