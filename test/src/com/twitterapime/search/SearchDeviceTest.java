@@ -105,14 +105,6 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 		} catch (Exception e) {
 			fail();
 		}
-		//
-		try {
-			s.searchTweets("?blablabla");
-			fail();
-		} catch (InvalidQueryException e) {
-		} catch (Exception e) {
-			fail();
-		}
 	}
 
 	/**
@@ -180,18 +172,6 @@ public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
 			//
 			assertTrue(tweetsFoundCount > 0);
 			assertEquals(tweetsFoundCount, tweetsFromUserCount);
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		try {
-			tweetsFoundCount = 0;
-			//
-			s.startSearchTweets("?", this);
-			//
-			waitFor(10000);
-			//
-			assertEquals(-1, tweetsFoundCount);
 		} catch (Exception e) {
 			fail();
 		}
