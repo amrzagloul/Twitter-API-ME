@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
-import com.twitterapime.io.HttpConnector;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
@@ -21,6 +20,7 @@ import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.RateLimitStatus;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.handler.SearchResultHandler;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -389,7 +389,7 @@ public final class SearchDevice {
 		//
 		return new HttpRequest(
 			getURL(TWITTER_API_URL_SERVICE_SEARCH) +
-			HttpConnector.encodeURL(queryStr, false));
+			StringUtil.encode(queryStr, "UTF-8"));
 	}
 	
 	/**

@@ -299,7 +299,7 @@ public final class HttpRequest {
 			"Content-Type", "application/x-www-form-urlencoded");
 		//
 		if (bodyParams.size() > 0) {
-			byte[] content = queryString(bodyParams).getBytes();
+			byte[] content = queryString(bodyParams).getBytes("UTF-8");
 			//
 			conn.setRequestProperty(
 				"Content-Length", String.valueOf(content.length));
@@ -326,9 +326,9 @@ public final class HttpRequest {
 		while (keys.hasMoreElements()) {
 			key = (String)keys.nextElement();
 			//
-			queryStr.append(key);
+			queryStr.append(StringUtil.encode(key, "UTF-8"));
 			queryStr.append('=');
-			queryStr.append((String)p.get(key));
+			queryStr.append(StringUtil.encode((String)p.get(key), "UTF-8"));
 			
 			if (keys.hasMoreElements()) {
 				queryStr.append('&');

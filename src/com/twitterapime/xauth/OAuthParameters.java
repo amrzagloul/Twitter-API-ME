@@ -10,8 +10,8 @@ package com.twitterapime.xauth;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.twitterapime.io.HttpConnector;
 import com.twitterapime.util.QSort;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -63,10 +63,10 @@ final class OAuthParameters {
 		String[] sKeys = sortedKeys();
 		//
 		for (int i = 0; i < sKeys.length; i++) {
-			buffer.append(HttpConnector.encodeURL(sKeys[i], true));
+			buffer.append(StringUtil.encode(sKeys[i], "UTF-8"));
 			buffer.append('=');
 			buffer.append(
-				HttpConnector.encodeURL((String)params.get(sKeys[i]), true));
+				StringUtil.encode((String)params.get(sKeys[i]), "UTF-8"));
 			//
 			if (i +1 < sKeys.length) {
 				buffer.append('&');
@@ -93,8 +93,7 @@ final class OAuthParameters {
 				buffer.append('=');
 				buffer.append('"');
 				buffer.append(
-					HttpConnector.encodeURL(
-						(String)params.get(sKeys[i]), true));
+					StringUtil.encode((String)params.get(sKeys[i]), "UTF-8"));
 				buffer.append("\", ");
 			}
 		}

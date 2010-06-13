@@ -10,8 +10,8 @@ package com.twitterapime.xauth;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.twitterapime.io.HttpConnector;
 import com.twitterapime.io.HttpRequest;
+import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.encoders.Base64Encoder;
 import com.twitterapime.xauth.encoders.HMAC;
 
@@ -97,7 +97,8 @@ public final class XAuthSigner {
 		//
 		String str = getSignatureBaseString(req, params);
 		//
-		str = getSignature(str, consumerSecret, XAuthConstants.EMPTY_TOKEN_SECRET);
+		str = getSignature(
+			str, consumerSecret, XAuthConstants.EMPTY_TOKEN_SECRET);
 		params.put(XAuthConstants.SIGNATURE, str);
 		//
 		str = params.getAuthorizationHeaderValue();
@@ -134,15 +135,15 @@ public final class XAuthSigner {
 	 */
 	private String getSignatureBaseString(HttpRequest req,
 		OAuthParameters params) {
-		String method = HttpConnector.encodeURL(req.getMethod(), true);
-		String url = HttpConnector.encodeURL(req.getSanitizedURL(), true);
+		String method = StringUtil.encode(req.getMethod(), "UTF-8");
+		String url = StringUtil.encode(req.getSanitizedURL(), "UTF-8");
 		//
 		addParams(params, req.getQueryStringParams());
 		addParams(params, req.getBodyParameters());
 		//
 		String sortedParams =
-			HttpConnector.encodeURL(
-				params.getSortedEncodedParamsAsString(), true);
+			StringUtil.encode(
+				params.getSortedEncodedParamsAsString(), "UTF-8");
 		//
 		return method + '&' + url + '&' + sortedParams;
 	}

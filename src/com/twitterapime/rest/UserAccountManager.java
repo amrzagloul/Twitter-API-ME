@@ -8,10 +8,10 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
-import com.twitterapime.io.HttpConnector;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
@@ -25,6 +25,7 @@ import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
+import com.twitterapime.xauth.encoders.Base64Encoder;
 
 /**
  * <p>
@@ -696,9 +697,14 @@ public final class UserAccountManager {
 				req.setSigner(signer, token);
 			}
 		} else {
-			String crdntls = credential.getBasicHttpAuthCredential();
-			crdntls = HttpConnector.encodeBase64(crdntls);
-			req.setHeaderField("Authorization", "Basic " + crdntls);
+			try {
+				String crdntls = credential.getBasicHttpAuthCredential();
+				crdntls = Base64Encoder.encode(crdntls.getBytes("UTF-8"));
+				req.setHeaderField("Authorization", "Basic " + crdntls);
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalArgumentException(
+					"Invalid UTF-8 credentials.");
+			}
 		}
 		//
 		return req;
