@@ -15,12 +15,12 @@ public class UserAccountManagerTest extends TestCase {
 	/**
 	 * 
 	 */
-	public static final String CONSUMER_KEY = "KQlYF5kzKrBHm6s9gOyAVQ";
+	public static final String CONSUMER_KEY = "";
 	
 	/**
 	 * 
 	 */
-	public static final String CONSUMER_SECRET = "yv57uIvC8CMNo6NPyebwyDwbbw306xuXew4U5x81Ljw";
+	public static final String CONSUMER_SECRET = "";
 	
 	/**
 	 * 
