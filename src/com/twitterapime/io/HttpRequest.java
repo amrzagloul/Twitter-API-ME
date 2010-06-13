@@ -103,7 +103,12 @@ public final class HttpRequest {
 	public HttpResponse send() throws IOException {
 		close();
 		//
-		conn = HttpConnector.open(url);
+		String nurl = getSanitizedURL();
+		if (getQueryString() != null) {
+			nurl += '?' + queryString(getQueryStringParams());
+		}
+		//
+		conn = HttpConnector.open(nurl);
 		conn.setRequestMethod(method);
 		//
 		if (signer != null && token != null) {
