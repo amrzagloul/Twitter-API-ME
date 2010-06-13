@@ -30,6 +30,7 @@ public final class Credential extends DefaultEntity {
 	 * @param username Username.
 	 * @param password Password.
 	 * @throws IllegalArgumentException If username/password is empty or null.
+	 * @deprecated
 	 */
 	public Credential(String username, String password) {
 		this(username, password, null, null);
