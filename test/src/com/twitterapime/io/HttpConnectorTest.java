@@ -50,40 +50,4 @@ public class HttpConnectorTest extends TestCase {
 		} catch (IOException e) {
 		}
 	}
-
-	/**
-	 * Test method for {@link com.twitterapime.io.HttpConnector#encodeURL(java.lang.String, boolean)}.
-	 */
-	public void testEncodeURL() {
-		try {
-			HttpConnector.encodeURL(null, false);
-			fail();
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		assertEquals("", HttpConnector.encodeURL("", false));
-		assertEquals("http://www.twitterapime.com", HttpConnector.encodeURL("http://www.twitterapime.com", false));
-		assertEquals("http://www.twitterapime.com?q=%21%2A%22%27%28%29%3B%40%2B%24%2C%25%23%5B%5D%20", HttpConnector.encodeURL("http://www.twitterapime.com?q=!*\"\'();@+$,%#[] ", false));
-		assertEquals("http://www.twitterapime.com?q=twitter%20api%20me", HttpConnector.encodeURL("http://www.twitterapime.com?q=twitter api me", false));
-		assertEquals("http://www.twitterapime.com?q=twitter&param1=twitter%20api&param2=me", HttpConnector.encodeURL("http://www.twitterapime.com?q=twitter&param1=twitter api&param2=me", false));
-	}
-
-	/**
-	 * Test method for {@link com.twitterapime.io.HttpConnector#encodeBase64(java.lang.String)}.
-	 */
-	public void testEncodeBase64() {
-		try {
-			HttpConnector.encodeBase64(null);
-			fail();
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		assertEquals("", HttpConnector.encodeBase64(""));
-		assertEquals("dHdpdHRlcmFwaW1lOnR3aXR0ZXJhcGltZQ==", HttpConnector.encodeBase64("twitterapime:twitterapime"));
-		assertEquals("amF2YW1pY3JvZWRpdGlvbjphbmRyb2lk", HttpConnector.encodeBase64("javamicroedition:android"));
-	}
 }
