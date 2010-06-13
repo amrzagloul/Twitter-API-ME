@@ -7,6 +7,11 @@
  */
 package com.twitterapime.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -218,6 +223,69 @@ public final class StringUtil {
     	//
         return s;
     }
+    
+    /**
+	 * <p>
+	 * Encode a given string. If encode type is not informed, UTF-8 is
+	 * considered.
+	 * </p>
+	 * @param s String to encode.
+	 * @param enc Encode.
+	 * @return Encoded string.
+	 * @throws IllegalArgumentException If string is empty or null.
+	 */
+	public static String encode(String s, String enc) {
+		if (s == null) {
+			throw new IllegalArgumentException("String must not be null");
+		}
+		if (enc == null) {
+			enc = "UTF-8";
+		}
+		//
+		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+		DataOutputStream dOut = new DataOutputStream(bOut);
+		StringBuffer ret = new StringBuffer();
+		//
+		try {
+			try {
+				dOut.write(s.getBytes(enc));
+			} catch (UnsupportedEncodingException e) {
+				dOut.write(s.getBytes());
+			}
+		} catch (IOException e) {}
+		//
+		ByteArrayInputStream bIn = new ByteArrayInputStream(bOut.toByteArray());
+		int c = bIn.read();
+		//
+		while (c >= 0) {
+			if ((c >= 'a' && c <= 'z')
+					|| (c >= 'A' && c <= 'Z')
+					|| (c >= '0' && c <= '9')
+					|| c == '.'
+					|| c == '-'
+					|| c == '*'
+					|| c == '_') {
+				ret.append((char) c);
+			} else if (c == ' ') {
+				ret.append("%20");
+			} else {
+				if (c < 128) {
+					ret.append(getHexChar(c));
+				} else if (c < 224) {
+					ret.append(getHexChar(c));
+					ret.append(getHexChar(bIn.read()));
+				} else if (c < 240) {
+					ret.append(getHexChar(c));
+					ret.append(getHexChar(bIn.read()));
+					ret.append(getHexChar(bIn.read()));
+				}
+			}
+			//
+			c = bIn.read();
+		}
+		//
+		return ret.toString();
+	}
 	
 	/**
 	 * <p>
@@ -264,5 +332,15 @@ public final class StringUtil {
 		}
 		//
 		throw new IllegalArgumentException("Invalid date format: " + date);
+	}
+
+	/**
+	 * <p>
+	 * Get a hex value of a char.
+	 * </p>
+	 * @param c Char.
+	 */
+	private static String getHexChar(int c) {
+		return (c < 16 ? "%0" : "%") + Integer.toHexString(c).toUpperCase();
 	}
 }
