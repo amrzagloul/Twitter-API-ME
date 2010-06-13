@@ -53,15 +53,16 @@ for the developers to port their applications to other platforms.
   Twitter API's name.
   
 - From this version 1.3 TwAPIme binaries will be under GNU Lesser General Public
-  License 3.0 (LGPL). It means you can develop proprietary applications with
-  TwAPIme, since you merely link to our binaries without any modification.
-  However, the source code is still under GPL 2.0.
+  License 3.0 (LGPL). It means you can develop either free or proprietary
+  applications with TwAPIme, since you merely link to our binaries without any
+  modification, such as stated by LGPL. However, the source code is still under
+  GPL 2.0.
 
 - This new version comes with full support to xAuth to perform authentication
   with Twitter API, since Twitter will shut down Basic Http authentication
   support in June 30th, 2010. However, TwAPIme will continue supporting both
-  methods. In order to work with xAuth, go to Twitter API website and get more
-  details on that: http://dev.twitter.com/pages/auth
+  auth methods. In order to work with xAuth, go to Twitter API website and get
+  more details on that: http://dev.twitter.com/pages/auth
 
 - In this version 1.3 we had to make a change in the method
   UserAccountManager.getUserAccount() signature that now throws IOException.
