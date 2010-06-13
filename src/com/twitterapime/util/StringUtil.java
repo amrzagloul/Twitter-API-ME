@@ -8,9 +8,6 @@
 package com.twitterapime.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Vector;
@@ -242,20 +239,16 @@ public final class StringUtil {
 			enc = "UTF-8";
 		}
 		//
-		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-		DataOutputStream dOut = new DataOutputStream(bOut);
-		StringBuffer ret = new StringBuffer();
+		ByteArrayInputStream bIn;
 		//
 		try {
-			try {
-				dOut.write(s.getBytes(enc));
-			} catch (UnsupportedEncodingException e) {
-				dOut.write(s.getBytes());
-			}
-		} catch (IOException e) {}
+			bIn = new ByteArrayInputStream(s.getBytes(enc));
+		} catch (UnsupportedEncodingException e) {
+			bIn = new ByteArrayInputStream(s.getBytes());
+		}
 		//
-		ByteArrayInputStream bIn = new ByteArrayInputStream(bOut.toByteArray());
 		int c = bIn.read();
+		StringBuffer ret = new StringBuffer();
 		//
 		while (c >= 0) {
 			if ((c >= 'a' && c <= 'z')
