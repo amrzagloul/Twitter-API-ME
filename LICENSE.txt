@@ -1,5 +1,5 @@
 ********************************************************************************
-*                          TWITTER API ME - LICENSE                            *
+*                  TWITTER API ME - LICENSE FOR SOURCE CODE                    *
 *------------------------------------------------------------------------------*
 *             Text extracted from Open Source Initiative's website:            *
 *                http://www.opensource.org/licenses/gpl-2.0.php                *
