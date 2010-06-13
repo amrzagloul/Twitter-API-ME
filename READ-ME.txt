@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.2 - READ ME                         *
+*                         TWITTER API ME 1.3 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -36,11 +36,9 @@ for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- Retweet.
-- Direct message posting and retrieval.
-- Friendship management, i.e., follow/unfollow and block/unblock.
-- Access to Public, Home, User and Mentions timelines.
-- Rate limit status access for Search API.
+- xAuth support.
+- UTF-8 characters support.
+- Possibility to change service URLs used by API.
 - Some bug fixes and optimizations.
 
  KNOWN BUGS IN THIS VERSION:
@@ -49,26 +47,31 @@ for the developers to port their applications to other platforms.
 
  REMARKS:
 ********************************************************************************
-- In this version 1.2 we had to make a change in some methods signatures that
-  will cause incompatibility with some codes written with the previous versions
-  of this API. However, we advance those incompatibilities are easy and quick to
-  fix.
+- From this version 1.3 on, Twitter API ME will be also known as TwAPIme. It is
+  just an abbreviation to our original name. The reason for this name is just
+  to make easier to refer to this API, besides avoiding any confusing with
+  Twitter API's name.
   
-  This change consists that every method that directly access Twitter API has to
-  throw a LimitExceededException exception, even if Twitter says the opposite.
-  Our objective is to be prepared just in case, in the future, Twitter API
-  decides to change regarding rating or not a given service.
-  
-  The methods affected by this change are TweetER.post(),
-  AccountManager.verifyCredential() and AccountManager.getRateStatusLimit(). In
-  order to fix this incompatibility, you just need to catch the
-  LimitExceededException exception. That's it!
+- From this version 1.3 TwAPIme binaries will be under GNU Lesser General Public
+  License 3.0 (LGPL). It means you can develop proprietary applications with
+  TwAPIme, since you merely link to our binaries without any modification.
+  However, the source code is still under GPL 2.0.
+
+- This new version comes with full support to xAuth to perform authentication
+  with Twitter API, since Twitter will shut down Basic Http authentication
+  support in June 30th, 2010. However, TwAPIme will continue supporting both
+  methods. In order to work with xAuth, go to Twitter API website and get more
+  details on that: http://dev.twitter.com/pages/auth
+
+- In this version 1.3 we had to make a change in the method
+  UserAccountManager.getUserAccount() signature that now throws IOException.
+  This is why this call now has to access Twitter API to get the result. In
+  version 1.2. it was done during the login.
   
   We apologize for this inconvenience and appreciate your comprehension.
 
- COMING NEXT VERSION: 1.3
+ COMING NEXT VERSION: 1.4
 ********************************************************************************
-- Authentication via OAuth.
 - Trends.
 - Followers list.
 - Find people.
