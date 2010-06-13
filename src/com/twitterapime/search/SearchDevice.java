@@ -20,7 +20,6 @@ import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.RateLimitStatus;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.handler.SearchResultHandler;
-import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -388,8 +387,7 @@ public final class SearchDevice {
 		}
 		//
 		return new HttpRequest(
-			getURL(TWITTER_API_URL_SERVICE_SEARCH) +
-			StringUtil.encode(queryStr, "UTF-8"));
+			getURL(TWITTER_API_URL_SERVICE_SEARCH) + queryStr);
 	}
 	
 	/**
