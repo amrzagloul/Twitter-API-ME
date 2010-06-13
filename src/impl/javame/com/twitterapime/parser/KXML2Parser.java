@@ -26,7 +26,7 @@ import com.twitterapime.parser.XMLHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public final class KXML2Parser extends Parser {
@@ -50,7 +50,7 @@ public final class KXML2Parser extends Parser {
 		KXML2Attributes attrs = new KXML2Attributes();
 		//
 		try {
-			parser.setInput(new InputStreamReader(stream));
+			parser.setInput(new InputStreamReader(stream, "UTF-8"));
 			int etype;
 			//
 			while (true) {
