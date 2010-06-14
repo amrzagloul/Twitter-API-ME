@@ -23,7 +23,7 @@ public class CredentialTest extends TestCase {
 	 */
 	public void testCredential() {
 		try {
-			new Credential(null, null);
+			new Credential(null, null, null, null);
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public class CredentialTest extends TestCase {
 		}
 		//
 		try {
-			new Credential("", "");
+			new Credential("", "", "", "");
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -39,7 +39,7 @@ public class CredentialTest extends TestCase {
 		}
 		//
 		try {
-			new Credential(null, "");
+			new Credential(null, "", "", "");
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -47,7 +47,7 @@ public class CredentialTest extends TestCase {
 		}
 		//
 		try {
-			new Credential("", null);
+			new Credential("", null, "", "");
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -55,7 +55,7 @@ public class CredentialTest extends TestCase {
 		}
 		//
 		try {
-			Credential c = new Credential("twitterapime", "password");
+			Credential c = new Credential("twitterapime", "password", null, null);
 			assertEquals("twitterapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
 			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
 			assertFalse(c.hasXAuthCredentials());
@@ -84,7 +84,7 @@ public class CredentialTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.Credential#getBasicHttpAuthCredential()}.
 	 */
 	public void testGetBasicHttpAuthCredential() {
-		Credential c = new Credential("twitterapime", "password");
+		Credential c = new Credential("twitterapime", "password", null, null);
 		assertEquals("twitterapime:password", c.getBasicHttpAuthCredential());
 	}
 }
