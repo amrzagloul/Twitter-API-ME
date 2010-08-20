@@ -11,6 +11,7 @@ import java.util.Hashtable;
 
 import com.twitterapime.model.DefaultEntity;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.TweetER;
 import com.twitterapime.rest.UserAccount;
 
@@ -21,7 +22,7 @@ import com.twitterapime.rest.UserAccount;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see SearchDevice
  * @see TweetER
@@ -71,6 +72,26 @@ public final class Tweet extends DefaultEntity {
 		validateContent();
 	}
 	
+	/**
+	 * <p>
+	 * Create an instance of Tweet class.
+	 * </p>
+	 * <p>
+	 * To set this tweet's location, enable Tweet Location settings of current
+	 * authenticated user account on Twitter website. 
+	 * </p>
+	 * @param content Content (status).
+	 * @param location Tweet's location.
+	 * @throws IllegalArgumentException If content is invalid.
+	 */
+	public Tweet(String content, GeoLocation location) {
+		this(content);
+		//
+		if (location != null) {
+			data.put(MetadataSet.TWEET_LOCATION, location);
+		}
+	}
+
 	/**
 	 * <p>
 	 * Create an instance of Tweet class.<br/>
@@ -178,5 +199,15 @@ public final class Tweet extends DefaultEntity {
 	 */
 	public Tweet getRepostedTweet() {
 		return (Tweet)data.get(MetadataSet.TWEET_REPOSTED_TWEET);
+	}
+	
+	/**
+	 * <p>
+	 * Get the tweet's location object.
+	 * </p>
+	 * @return Location object.
+	 */
+	public GeoLocation getLocation() {
+		return (GeoLocation)data.get(MetadataSet.TWEET_LOCATION);
 	}
 }
