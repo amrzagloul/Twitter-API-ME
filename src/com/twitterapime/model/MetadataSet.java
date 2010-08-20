@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  */
 public final class MetadataSet {
@@ -128,6 +128,13 @@ public final class MetadataSet {
 	
 	/**
 	 * <p>
+	 * Report the tweet's location object, e.g., GeoLocation class.
+	 * </p>
+	 */
+	public static final String TWEET_LOCATION = "TWEET_LOCATION";
+
+	/**
+	 * <p>
 	 * Report the credential's username, e.g., "johnsmith".
 	 * </p>
 	 */
@@ -155,6 +162,15 @@ public final class MetadataSet {
 	 */
 	public static final String CREDENTIAL_CONSUMER_SECRET =
 		"CREDENTIAL_CONSUMER_SECRET";
+
+	/**
+	 * <p>
+	 * Report the credential's access token, e.g.,
+	 * "oauth_token=fduye8fd&oauth_token_secret=897fdjhf7d7h".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_ACCESS_TOKEN =
+		"CREDENTIAL_ACCESS_TOKEN";
 
 	/**
 	 * <p>
@@ -349,12 +365,88 @@ public final class MetadataSet {
 	
 	/**
 	 * <p>
+	 * Report whether tweet location is enabled in user profile, e.g., "true" or
+	 * "false".
+	 * </p>
+	 */
+	public static final String USERACCOUNT_GEO_ENABLED =
+		"USERACCOUNT_GEO_ENABLED";
+
+	/**
+	 * <p>
 	 * Report the user account's last tweet object, e.g., Tweet class.
 	 * </p>
 	 */
 	public static final String USERACCOUNT_LAST_TWEET =
 		"USERACCOUNT_LAST_TWEET";
+
+	/**
+	 * <p>
+	 * Reports the geo location latitude, e.g., "+50".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_LATITUDE = "GEOLOCATION_LATITUDE";
+
+	/**
+	 * <p>
+	 * Reports the geo location longitude, e.g., "-10".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_LONGITUDE = "GEOLOCATION_LONGITUDE";
+
+	/**
+	 * <p>
+	 * Reports the geo location place id, e.g., "87d6s767dsd".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_PLACE_ID = "GEOLOCATION_PLACE_ID";
+
+	/**
+	 * <p>
+	 * Reports the geo location place name, e.g., "San Francisco".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_PLACE_NAME =
+		"GEOLOCATION_PLACE_NAME";
+
+	/**
+	 * <p>
+	 * Reports the geo location full name, e.g., "San Francisco, CA".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_PLACE_FULL_NAME =
+		"GEOLOCATION_PLACE_FULL_NAME";
+
+	/**
+	 * <p>
+	 * Reports the geo location place type, e.g., "city".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_PLACE_TYPE =
+		"GEOLOCATION_PLACE_TYPE";
 	
+	/**
+	 * <p>
+	 * Reports the geo location url, e.g.,
+	 * "http://api.twitter.com/1/geo/id/3c9e627dd6b55d9e.json".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_PLACE_URL = "GEOLOCATION_PLACE_URL";
+
+	/**
+	 * <p>
+	 * Reports the geo location country, e.g., "United States".
+	 * </p>
+	 */
+	public static final String GEOLOCATION_COUNTRY = "GEOLOCATION_COUNTRY";
+
+	/**
+	 * <p>
+	 * Reports the geo location polygon, e.g., {"123", "456", "789", "0"}.
+	 * </p>
+	 */
+	public static final String GEOLOCATION_POLYGON = "GEOLOCATION_POLYGON";
+
 	/**
 	 * <p>
 	 * Private constructor to avoid object instantiation.
