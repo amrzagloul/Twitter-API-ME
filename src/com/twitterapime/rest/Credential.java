@@ -11,6 +11,7 @@ import java.util.Hashtable;
 
 import com.twitterapime.model.DefaultEntity;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.xauth.Token;
 
 /**
  * <p>
@@ -18,7 +19,7 @@ import com.twitterapime.model.MetadataSet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  * @see UserAccountManager
  */
@@ -75,6 +76,26 @@ public final class Credential extends DefaultEntity {
 	
 	/**
 	 * <p>
+	 * Create an instance of Credential class.
+	 * </p>
+	 * @param consumerKey Consumer key.
+	 * @param consumerSecret Consumer secret.
+	 * @param accessToken OAuth access token.
+	 * @throws IllegalArgumentException If accessToken is null.
+	 */
+	public Credential(String consumerKey, String consumerSecret,
+		Token accessToken) {
+		this("ignored", "ignored", consumerKey, consumerSecret);
+		//
+		if (accessToken == null) {
+			throw new IllegalArgumentException("accessToken must not be null.");
+		}
+		//
+		data.put(MetadataSet.CREDENTIAL_ACCESS_TOKEN, accessToken);
+	}
+	
+	/**
+	 * <p>
 	 * Get the credential in HttpAuth format (e.g. username:password).
 	 * </p>
 	 * @return Credential.
@@ -103,5 +124,15 @@ public final class Credential extends DefaultEntity {
 		} else {
 			return true;
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Get entered OAuth access token.
+	 * <p>
+	 * @return Token.
+	 */
+	Token getAccessToken() {
+		return (Token)getObject(MetadataSet.CREDENTIAL_ACCESS_TOKEN);
 	}
 }
