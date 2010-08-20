@@ -69,6 +69,7 @@ public class AccountHandlerTest extends TestCase {
 		sample.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
 		sample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "-14400");
 		sample.put(MetadataSet.USERACCOUNT_VERIFIED, "false");
+		sample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "false");
 		Tweet tweet = new Tweet();
 		Hashtable tweetSample = new Hashtable();
 		tweetSample.put(MetadataSet.TWEET_ID, "6714723469");

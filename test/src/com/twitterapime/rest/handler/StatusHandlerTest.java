@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Tweet;
 import com.twitterapime.util.StringUtil;
@@ -59,6 +60,7 @@ public class StatusHandlerTest extends TestCase {
 		sample.put(MetadataSet.TWEET_ID, "1472669360");
 		sample.put(MetadataSet.TWEET_PUBLISH_DATE, Long.toString(StringUtil.convertTweetDateToLong("Tue Apr 07 22:52:51 +0000 2009")));
 		sample.put(MetadataSet.TWEET_SOURCE, "TweetDeck");
+		//
 		Hashtable userSample = new Hashtable();
 		userSample.put(MetadataSet.USERACCOUNT_CREATE_DATE, Long.toString(StringUtil.convertTweetDateToLong("Sun Mar 18 06:42:26 +0000 2007")));
 		userSample.put(MetadataSet.USERACCOUNT_DESCRIPTION, "Twitter API for mobile devices.");
@@ -81,8 +83,22 @@ public class StatusHandlerTest extends TestCase {
 		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "-18000");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "true");
+		userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "true");
 		UserAccount ua = new UserAccount(userSample);
 		sample.put(MetadataSet.TWEET_USER_ACCOUNT, ua);
+		//
+		Hashtable locSample = new Hashtable();
+		locSample.put(MetadataSet.GEOLOCATION_COUNTRY, "The United States of America");
+		locSample.put(MetadataSet.GEOLOCATION_LATITUDE, "37");
+		locSample.put(MetadataSet.GEOLOCATION_LONGITUDE, "-122");
+		locSample.put(MetadataSet.GEOLOCATION_PLACE_FULL_NAME, "Santa Cruz, CA");
+		locSample.put(MetadataSet.GEOLOCATION_PLACE_ID, "3c9e627dd6b55d9e");
+		locSample.put(MetadataSet.GEOLOCATION_PLACE_NAME, "Santa Cruz");
+		locSample.put(MetadataSet.GEOLOCATION_PLACE_TYPE, "city");
+		locSample.put(MetadataSet.GEOLOCATION_PLACE_URL, "http://api.twitter.com/1/geo/id/3c9e627dd6b55d9e.json");
+		locSample.put(MetadataSet.GEOLOCATION_POLYGON, new String[] {"123", "456", "789", "0"});
+		GeoLocation loc = new GeoLocation(locSample);
+		sample.put(MetadataSet.TWEET_LOCATION, loc);
 		//
 		assertEquals(new Tweet(sample), handler.getParsedTweet());
 		assertEquals(0, new StatusHandler().getParsedTweet().size());

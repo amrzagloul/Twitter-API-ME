@@ -93,6 +93,7 @@ public class TimelineHandlerTest extends TestCase implements SearchDeviceListene
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "false");
+			userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "false");
 			//
 			sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 			//

@@ -94,6 +94,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "sender_screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "sender_utc_offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "sender_verified_" + id);
+			userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "sender_geo_enabled_" + id);
 			//
 			sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 			//
@@ -119,6 +120,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 			userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "recipient_screen_name_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "recipient_utc_offset_" + id);
 			userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "recipient_verified_" + id);
+			userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "recipient_geo_enabled_" + id);
 			//
 			sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, new UserAccount(userSample));
 			//
@@ -180,6 +182,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "sender_screen_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "sender_utc_offset_1");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "sender_verified_1");
+		userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "sender_geo_enabled_1");
 		//
 		sample.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userSample));
 		//
@@ -205,6 +208,7 @@ public class DirectMessageHandlerTest extends TestCase implements SearchDeviceLi
 		userSample.put(MetadataSet.USERACCOUNT_USER_NAME, "recipient_screen_name_1");
 		userSample.put(MetadataSet.USERACCOUNT_UTC_OFFSET, "recipient_utc_offset_1");
 		userSample.put(MetadataSet.USERACCOUNT_VERIFIED, "recipient_verified_1");
+		userSample.put(MetadataSet.USERACCOUNT_GEO_ENABLED, "recipient_geo_enabled_1");
 		//
 		sample.put(MetadataSet.TWEET_RECIPIENT_ACCOUNT, new UserAccount(userSample));
 		//

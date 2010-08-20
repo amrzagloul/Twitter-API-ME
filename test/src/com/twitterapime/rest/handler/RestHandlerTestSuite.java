@@ -21,5 +21,6 @@ public class RestHandlerTestSuite extends TestSuite {
 		addTest(new TimelineHandlerTest());
 		addTest(new TweetHandlerTest());
 		addTest(new UserAccountHandlerTest());
+		addTest(new GeoLocationHandlerTest());
 	}
 }
