@@ -19,7 +19,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public final class UserAccountHandler extends DefaultXMLHandler {
@@ -76,6 +76,8 @@ public final class UserAccountHandler extends DefaultXMLHandler {
 			data.put(MetadataSet.USERACCOUNT_NOTIFICATIONS, text);
 		} else if (path.endsWith("/verified")) {
 			data.put(MetadataSet.USERACCOUNT_VERIFIED, text);
+		} else if (path.endsWith("/geo_enabled")) {
+			data.put(MetadataSet.USERACCOUNT_GEO_ENABLED, text);
 		}
 	}
 }
