@@ -14,6 +14,7 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Attributes;
 import com.twitterapime.parser.DefaultXMLHandler;
 import com.twitterapime.parser.ParserException;
+import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
@@ -41,6 +42,13 @@ public final class TimelineHandler extends DefaultXMLHandler {
 	 * </p>
 	 */
 	private TweetHandler tHandler = new TweetHandler();
+	
+	/**
+	 * <p>
+	 * GeoLocation XML handler object.
+	 * </p>
+	 */
+	private GeoLocationHandler lHandler = new GeoLocationHandler();
 	
 	/**
 	 * <p>
@@ -79,6 +87,13 @@ public final class TimelineHandler extends DefaultXMLHandler {
 	
 	/**
 	 * <p>
+	 * Hash with tweet's location values.
+	 * </p>
+	 */
+	private Hashtable locationValues;
+	
+	/**
+	 * <p>
 	 * Search device listener object.
 	 * </p> 
 	 */
@@ -96,6 +111,7 @@ public final class TimelineHandler extends DefaultXMLHandler {
 			userValues = new Hashtable(25);
 			retweetValues = new Hashtable(5);
 			reuserValues = new Hashtable(25);
+			locationValues = new Hashtable(10);
 			//
 			tweetValues.put(
 				MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userValues));
@@ -116,6 +132,10 @@ public final class TimelineHandler extends DefaultXMLHandler {
 			tHandler.populate(retweetValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/statuses/status/user/")) {
 			uaHandler.populate(userValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/statuses/status/geo/")) {
+			lHandler.populate(locationValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/statuses/status/place/")) {
+			lHandler.populate(locationValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/statuses/status/")) {
 			tHandler.populate(tweetValues, xmlPath, text);
 		}
@@ -135,6 +155,12 @@ public final class TimelineHandler extends DefaultXMLHandler {
 					new UserAccount(reuserValues));
 				tweetValues.put(
 					MetadataSet.TWEET_REPOSTED_TWEET, retweetValues);
+			}
+			//
+			if (locationValues.size() > 0) {
+				tweetValues.put(
+					MetadataSet.TWEET_LOCATION,
+					new GeoLocation(locationValues));
 			}
 			//
 			fireTweetParsed((Tweet) tweetList.lastElement());
