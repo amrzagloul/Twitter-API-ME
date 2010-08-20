@@ -176,4 +176,14 @@ public class StringUtilTest extends TestCase {
 		assertEquals("%22twitter%20api%20me%22", StringUtil.encode("\"twitter api me\"", null));
 		assertEquals("twitter%26param1%3Dtwitter%20api%26param2%3Dme", StringUtil.encode("twitter&param1=twitter api&param2=me", null));
 	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.util.StringUtil#isEmpty(String).
+	 */
+	public void testIsEmpty() {
+		assertTrue(StringUtil.isEmpty(null));
+		assertTrue(StringUtil.isEmpty(""));
+		assertFalse(StringUtil.isEmpty("a"));
+		assertFalse(StringUtil.isEmpty("dajsdhkajd"));
+	}
 }
