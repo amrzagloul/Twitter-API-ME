@@ -46,7 +46,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  * @see Tweet
  * @see UserAccountManager
@@ -342,6 +342,23 @@ public final class TweetER {
 		req.setMethod(HttpConnection.POST);
 		req.setBodyParameter(
 			"status", tweet.getString(MetadataSet.TWEET_CONTENT));
+		//
+		GeoLocation location = tweet.getLocation();
+		//
+		if (location != null) {
+			String lat = location.getString(MetadataSet.GEOLOCATION_LATITUDE);
+			String lon = location.getString(MetadataSet.GEOLOCATION_LONGITUDE);
+			String pid = location.getString(MetadataSet.GEOLOCATION_PLACE_ID);
+			//
+			if (lat != null && lon != null) {
+				req.setBodyParameter("lat", lat);
+				req.setBodyParameter("long", lon);
+				req.setBodyParameter("display_coordinates", "true");
+			} else if (pid != null) {
+				req.setBodyParameter("place_id", "pid");
+				req.setBodyParameter("display_coordinates", "true");
+			}
+		}
 		//
 		try {
 			HttpResponse resp = req.send();
