@@ -23,6 +23,7 @@ import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
 import com.twitterapime.xauth.encoders.Base64Encoder;
@@ -388,6 +389,14 @@ public final class UserAccountManager {
 		//
 		HttpRequest req;
 		if (credential.hasXAuthCredentials()) {
+			token = credential.getAccessToken();
+			//
+			if (token != null) {
+				verified = true;
+				//
+				return true;
+			}
+			//
 			String user = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
 			String pass = credential.getString(MetadataSet.CREDENTIAL_PASSWORD);
 			//
@@ -453,7 +462,7 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
-	 * Get the user account.
+	 * Get the logged user's account.
 	 * </p>
 	 * @return User account object.
 	 * @throws SecurityException If it is not properly logged in.
@@ -462,12 +471,42 @@ public final class UserAccountManager {
 	 */
 	public UserAccount getUserAccount() throws IOException,
 		LimitExceededException {
+		return getUserAccount(
+			new UserAccount(
+				credential.getString(MetadataSet.CREDENTIAL_USERNAME)));
+	}
+	
+	/**
+	 * <p>
+	 * Get the account of a given user.
+	 * </p>
+	 * @param user User.
+	 * @return Username/id.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If user/id/username is null/empty.
+	 */
+	public UserAccount getUserAccount(UserAccount user)
+		throws IOException, LimitExceededException {
 		checkValid();
 		checkVerified();
 		//
-		String username = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		//
+		String id = user.getString(MetadataSet.USERACCOUNT_ID);
+		if (StringUtil.isEmpty(id)) {
+			id = user.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			if (StringUtil.isEmpty(id)) {
+				throw new IllegalArgumentException(
+					"User id/username must not be null/empty.");
+			}
+		}
+		//
 		HttpRequest req = createRequest(
-			getURL(TWITTER_API_URL_SERVICE_USERS_SHOW) + "?id=" + username);
+			getURL(TWITTER_API_URL_SERVICE_USERS_SHOW) + "?id=" + id);
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -478,7 +517,9 @@ public final class UserAccountManager {
 			AccountHandler handler = new AccountHandler();
 			parser.parse(resp.getStream(), handler);
 			//
-			return handler.getParsedUserAccount();
+			handler.loadParsedUserAccount(user);
+			//
+			return user;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {
