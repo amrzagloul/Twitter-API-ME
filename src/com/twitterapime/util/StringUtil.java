@@ -18,7 +18,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public final class StringUtil {
@@ -278,6 +278,17 @@ public final class StringUtil {
 		}
 		//
 		return ret.toString();
+	}
+	
+	/**
+	 * <p>
+	 * Verify whether the given string is null or empty.
+	 * </p>
+	 * @param str The string.
+	 * @return true null/empty.
+	 */
+	public static final boolean isEmpty(String str) {
+		return str == null || str.trim().length() == 0;
 	}
 	
 	/**
