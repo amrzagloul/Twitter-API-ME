@@ -75,7 +75,7 @@ public class TweetTest extends TestCase {
 	 */
 	public void testTweetStringString() {
 		try {
-			new Tweet(null, null);
+			new Tweet((String)null, (String)null);
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
