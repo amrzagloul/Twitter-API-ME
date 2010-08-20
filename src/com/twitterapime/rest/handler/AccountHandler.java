@@ -21,7 +21,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.2
  */
 public final class AccountHandler extends DefaultXMLHandler {
@@ -82,5 +82,15 @@ public final class AccountHandler extends DefaultXMLHandler {
 	 */
 	public UserAccount getParsedUserAccount() {
 		return new UserAccount(userAccountValues);
+	}
+	
+	/**
+	 * <p>
+	 * Load the parsed values into the given UserAccount.
+	 * </p>
+	 * @param user UserAccount to be loaded.
+	 */
+	public void loadParsedUserAccount(UserAccount user) {
+		user.setData(userAccountValues);
 	}
 }
