@@ -19,5 +19,6 @@ public class RestTestSuite extends TestSuite {
 		addTest(new TweetERTest());
 		addTest(new UserAccountManagerTest());
 		addTest(new UserAccountTest());
+		addTest(new GeoLocationTest());
 	}
 }

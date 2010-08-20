@@ -313,7 +313,7 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			t.send(new Tweet("1234567890", null));
+			t.send(new Tweet("1234567890", (String)null));
 			fail("test: 7");
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
