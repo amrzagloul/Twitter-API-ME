@@ -3,22 +3,39 @@
 	<created_at>Tue Apr 07 22:52:51 +0000 2009</created_at>
 	<id>1472669360</id>
 	<text>Hello, everybody!!! How are you guys doing?</text>
-	<source>&lt;a href=&quot;http://www.tweetdeck.com/&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;</source>
+	<source>&lt;a href=&quot;http://www.tweetdeck.com/&quot;
+		rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;</source>
 	<truncated>false</truncated>
 	<in_reply_to_status_id>1472669230</in_reply_to_status_id>
 	<in_reply_to_user_id>10759032</in_reply_to_user_id>
 	<favorited>false</favorited>
 	<in_reply_to_screen_name></in_reply_to_screen_name>
 	<geo xmlns:georss="http://www.georss.org/georss">
-		<georss:point>37.78029 -122.39697</georss:point>
+		<georss:point>37 -122</georss:point>
 	</geo>
+	<coordinates xmlns:georss="http://www.georss.org/georss">
+		<georss:point>37 -122</georss:point>
+	</coordinates>
+	<place xmlns:georss="http://www.georss.org/georss">
+		<id>3c9e627dd6b55d9e</id>
+		<name>Santa Cruz</name>
+		<full_name>Santa Cruz, CA</full_name>
+		<place_type>city</place_type>
+		<url>http://api.twitter.com/1/geo/id/3c9e627dd6b55d9e.json</url>
+		<attributes />
+		<bounding_box>
+			<georss:polygon>123 456 789 0</georss:polygon>
+		</bounding_box>
+		<country code="US">The United States of America</country>
+	</place>
 	<user>
 		<id>1401881</id>
 		<name>Twitter API ME</name>
 		<screen_name>twapime</screen_name>
 		<location>San Francisco, CA</location>
 		<description>Twitter API for mobile devices.</description>
-		<profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/59648642/avatar_normal.png</profile_image_url>
+		<profile_image_url>http://s3.amazonaws.com/twitter_production/profile_images/59648642/avatar_normal.png
+		</profile_image_url>
 		<url>http://www.twitterapime.com</url>
 		<protected>false</protected>
 		<followers_count>1027</followers_count>
@@ -32,7 +49,8 @@
 		<favourites_count>0</favourites_count>
 		<utc_offset>-18000</utc_offset>
 		<time_zone>Eastern Time (US and Canada)</time_zone>
-		<profile_background_image_url>http://s3.amazonaws.com/twitter_production/profile_background_images/2752608/twitter_bg_grass.jpg</profile_background_image_url>
+		<profile_background_image_url>http://s3.amazonaws.com/twitter_production/profile_background_images/2752608/twitter_bg_grass.jpg
+		</profile_background_image_url>
 		<profile_background_tile>false</profile_background_tile>
 		<statuses_count>3390</statuses_count>
 		<notifications>false</notifications>
