@@ -22,7 +22,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * @see Tweet
  * @see Credential
@@ -186,11 +186,29 @@ public class DefaultEntity implements Entity {
 		//
 		Enumeration keys = h1.keys();
 		Object key;
+		Object val1;
+		Object val2;
 		//
 		while (keys.hasMoreElements()) {
 			key = keys.nextElement();
 			//
-			if (!h1.get(key).equals(h2.get(key))) {
+			val1 = h1.get(key);
+			val2 = h2.get(key);
+			//
+			if (val1 instanceof Object[] && val2 instanceof Object[]) {
+				Object[] aval1 = (Object[])val1;
+				Object[] aval2 = (Object[])val2;
+				//
+				if (aval1.length != aval2.length) {
+					return false;
+				} else {
+					for (int i = 0; i < aval1.length; i++) {
+						if (!aval1[i].equals(aval2[i])) {
+							return false;
+						}
+					}
+				}
+			} else if (!h1.get(key).equals(h2.get(key))) {
 				return false;
 			}
 		}
