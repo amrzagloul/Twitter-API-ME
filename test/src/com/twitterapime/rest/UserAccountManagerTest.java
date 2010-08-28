@@ -3,6 +3,8 @@
  */
 package com.twitterapime.rest;
 
+import java.util.Hashtable;
+
 import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.InvalidQueryException;
@@ -419,6 +421,52 @@ public class UserAccountManagerTest extends TestCase {
 		} catch (InvalidQueryException e) {
 		} catch (Exception e) {
 			fail("test: 12");
+		}
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.rest.UserAccountManager#updateProfile(UserAccount)}.
+	 */
+	public void testUpdateProfile() {
+		try {
+			userMngr3.updateProfile(null);
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			userMngr3.updateProfile(new UserAccount());
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Hashtable d1 = new Hashtable();
+			d1.put(MetadataSet.USERACCOUNT_DESCRIPTION, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			userMngr3.updateProfile(new UserAccount(d1));
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		Hashtable d = new Hashtable();
+		d.put(MetadataSet.USERACCOUNT_NAME, "Twiter API ME Test 2 " + System.currentTimeMillis());
+		d.put(MetadataSet.USERACCOUNT_DESCRIPTION, "Description " + System.currentTimeMillis());
+		d.put(MetadataSet.USERACCOUNT_URL, "http://www.twapime.com " + System.currentTimeMillis());
+		d.put(MetadataSet.USERACCOUNT_LOCATION, "Fortaleza " + System.currentTimeMillis());
+		UserAccount u = new UserAccount(d);
+		//
+		try {
+			UserAccount nu = userMngr3.updateProfile(u);
+			//
+			assertEquals(u.getString(MetadataSet.USERACCOUNT_NAME), nu.getString(MetadataSet.USERACCOUNT_NAME));
+			assertEquals(u.getString(MetadataSet.USERACCOUNT_DESCRIPTION), nu.getString(MetadataSet.USERACCOUNT_DESCRIPTION));
+			assertEquals(u.getString(MetadataSet.USERACCOUNT_URL), nu.getString(MetadataSet.USERACCOUNT_URL));
+			assertEquals(u.getString(MetadataSet.USERACCOUNT_LOCATION), nu.getString(MetadataSet.USERACCOUNT_LOCATION));
+		} catch (Exception e) {
+			fail();
 		}
 	}
 }
