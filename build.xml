@@ -247,7 +247,7 @@
 		</zip>
 	</target>
 	
-	<target name="-run_unit_tests_javame" if="tapime.building.javame" depends="-compile_unit_tests">
+	<target name="-run_unit_tests_javame" if="tapime.unittest" depends="-compile_unit_tests">
 		<java classname="com.sonyericsson.sdkme.junit.OnDeviceTest"	fork="true" failonerror="true">
 			<classpath refid="tapime.classpath"/>
 
