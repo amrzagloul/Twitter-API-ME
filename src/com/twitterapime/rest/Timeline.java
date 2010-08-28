@@ -30,7 +30,7 @@ import com.twitterapime.search.SearchDeviceListener;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password", "consKey", "consSec");
+ * Credential c = new Credential(...);
  * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
  * if (uam.verifyCredential()) {

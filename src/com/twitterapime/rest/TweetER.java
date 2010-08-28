@@ -32,7 +32,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password", "consKey", "consSec");
+ * Credential c = new Credential(...);
  * UserAccountManager uam = UserAccountManager.getInstance(c);
  * 
  * if (uam.verifyCredential()) {
@@ -355,7 +355,7 @@ public final class TweetER {
 				req.setBodyParameter("long", lon);
 				req.setBodyParameter("display_coordinates", "true");
 			} else if (pid != null) {
-				req.setBodyParameter("place_id", "pid");
+				req.setBodyParameter("place_id", pid);
 				req.setBodyParameter("display_coordinates", "true");
 			}
 		}

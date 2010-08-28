@@ -21,8 +21,8 @@ import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
-import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.search.Query;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
@@ -34,7 +34,7 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
  * </p>
  * <p>
  * <pre>
- * Credential c = new Credential("username", "password", "consKey", "consSec");
+ * Credential c = new Credential(...);
  * UserAccountManager uam = UserAccountManager.getInstance(c)
  * if (uam.verifyCredential()) {
  *   System.out.println("User logged in...");
@@ -95,66 +95,6 @@ public final class UserAccountManager {
 	
 	/**
 	 * <p>
-	 * Key for Twitter API URL service friendships create.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#follow(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE =
-		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE";
-	
-	/**
-	 * <p>
-	 * Key for Twitter API URL service friendships destroy.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#unfollow(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY =
-		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY";
-	
-	/**
-	 * <p>
-	 * Key for Twitter API URL service friendships exists.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#isFollowing(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS =
-		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS";
-	
-	/**
-	 * <p>
-	 * Key for Twitter API URL service blocks create.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#block(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_BLOCKS_CREATE =
-		"TWITTER_API_URL_SERVICE_BLOCKS_CREATE";
-	
-	/**
-	 * <p>
-	 * Key for Twitter API URL service blocks destroy.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#unblock(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_BLOCKS_DESTROY =
-		"TWITTER_API_URL_SERVICE_BLOCKS_DESTROY";
-	
-	/**
-	 * <p>
-	 * Key for Twitter API URL service friendships exists.
-	 * </p>
-	 * @see UserAccountManager#setServiceURL(String, String)
-	 * @see UserAccountManager#isBlocking(UserAccount)
-	 */
-	public static final String TWITTER_API_URL_SERVICE_BLOCKS_EXISTS =
-		"TWITTER_API_URL_SERVICE_BLOCKS_EXISTS";
-	
-	/**
-	 * <p>
 	 * Key for Twitter API URL service users show.
 	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
@@ -163,6 +103,16 @@ public final class UserAccountManager {
 	public static final String TWITTER_API_URL_SERVICE_USERS_SHOW =
 		"TWITTER_API_URL_SERVICE_USERS_SHOW";
 	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service account update profile.
+	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#getUserAccount()
+	 */
+	public static final String TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE =
+		"TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE";
+
 	static {
 		SERVICES_URL = new Hashtable(10);
 		//
@@ -176,26 +126,11 @@ public final class UserAccountManager {
 			TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS,
 			"http://api.twitter.com/1/account/rate_limit_status.xml");
 		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE,
-			"http://api.twitter.com/1/friendships/create.xml");
-		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY,
-			"http://api.twitter.com/1/friendships/destroy.xml");
-		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS,
-			"http://api.twitter.com/1/friendships/exists.json");
-		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_BLOCKS_CREATE,
-			"http://api.twitter.com/1/blocks/create.xml");
-		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_BLOCKS_DESTROY,
-			"http://api.twitter.com/1/blocks/destroy.xml");
-		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_BLOCKS_EXISTS,
-			"http://api.twitter.com/1/blocks/exists/");
-		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_USERS_SHOW,
 			"http://api.twitter.com/1/users/show.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE,
+			"http://api.twitter.com/1/account/update_profile.xml");
 	}
 
 	/**
@@ -258,12 +193,6 @@ public final class UserAccountManager {
 	 * @param url New URL.
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_RATE_LIMIT_STATUS
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_CREATE
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_DESTROY
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_BLOCKS_EXISTS
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY
-	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SHOW
 	 */
@@ -379,7 +308,7 @@ public final class UserAccountManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 */
-	public boolean verifyCredential() throws IOException,
+	public synchronized boolean verifyCredential() throws IOException,
 		LimitExceededException {
 		checkValid();
 		//
@@ -455,6 +384,7 @@ public final class UserAccountManager {
 			userAccountMngrPoll.remove(credential);
 			Timeline.cleanPool();
 			TweetER.cleanPool();
+			FriendshipManager.cleanPool();
 			//
 			invalidated = true;
 		}
@@ -495,18 +425,13 @@ public final class UserAccountManager {
 		if (user == null) {
 			throw new IllegalArgumentException("User must not be null.");
 		}
+		user.validateUserNameOrID();
 		//
-		String id = user.getString(MetadataSet.USERACCOUNT_ID);
-		if (StringUtil.isEmpty(id)) {
-			id = user.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			if (StringUtil.isEmpty(id)) {
-				throw new IllegalArgumentException(
-					"User id/username must not be null/empty.");
-			}
-		}
+		String[] pv = user.getUserNameOrIDParamValue();
+		String param = "?" + pv[0] + "=" + pv[1];
 		//
 		HttpRequest req = createRequest(
-			getURL(TWITTER_API_URL_SERVICE_USERS_SHOW) + "?id=" + id);
+			getURL(TWITTER_API_URL_SERVICE_USERS_SHOW) + param);
 		//
 		try {
 			HttpResponse resp = req.send();
@@ -528,168 +453,164 @@ public final class UserAccountManager {
 	}
 	
 	/**
-	 * <p>
-	 * Allows the authenticating user to follow the user specified in the given
-	 * UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Info from followed user.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User already followed or does not exist.
-	 * @throws SecurityException If it is not authenticated.
-	 * @throws LimitExceededException If limit has been hit.
+	 * {@link FriendshipManager#follow(UserAccount)}
 	 */
 	public UserAccount follow(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_API_URL_SERVICE_FRIENDSHIPS_CREATE, ua);
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).follow(ua);
 	}
 	
 	/**
-	 * <p>
-	 * Allows the authenticating user to unfollow the user specified in the
-	 * given UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Info from unfollowed user.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User already unfollowed or does not exist.
-	 * @throws SecurityException If it is not authenticated.
-	 * @throws LimitExceededException If limit has been hit.
+	 * {@link FriendshipManager#unfollow(UserAccount)}
 	 */
 	public UserAccount unfollow(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_API_URL_SERVICE_FRIENDSHIPS_DESTROY, ua);
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).unfollow(ua);
 	}
 	
 	/**
-	 * <p>
-	 * Verify whether the authenticating user is following the user specified in
-	 * the given UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Following (true).
-	 * @throws IOException If an I/O error occurs.
-	 * @throws LimitExceededException If limit has been hit.
-	 * @throws InvalidQueryException If user does not exist or is protected.
-	 * @throws SecurityException If it is not authenticated.
+	 * {@link FriendshipManager#isFollowing(UserAccount)}
 	 */
 	public boolean isFollowing(UserAccount ua) throws IOException,
 		LimitExceededException {
 		checkValid();
 		//
-		if (ua == null) {
-			throw new IllegalArgumentException(
-				"UserAccount object must not me null.");
-		}
-		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
-		if (id == null || (id = id.trim()).length() == 0) {
-			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			if (id == null || (id = id.trim()).length() == 0) {
-				throw new IllegalArgumentException(
-					"Username or ID must not be empty/null.");
-			}
-		}
-		//
-		checkVerified();
-		//
-		final String qryStr =
-			"?user_a=" + credential.getString(MetadataSet.CREDENTIAL_USERNAME) +
-			"&user_b=" + id;
-		//
-		HttpRequest req = createRequest(
-			getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS) + qryStr);
-		//
-		try {
-			HttpResponse resp = req.send();
-			//
-			HttpResponseCodeInterpreter.perform(resp);
-			//
-			return resp.getBodyContent().toLowerCase().equals("true");
-		} finally {
-			req.close();
-		}
+		return FriendshipManager.getInstance(this).isFollowing(ua);
 	}
 
 	/**
-	 * <p>
-	 * Allows the authenticating user to block the user specified in the given
-	 * UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Info from blocked user.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User does not exist.
-	 * @throws SecurityException If it is not authenticated.
-	 * @throws LimitExceededException If limit has been hit.
+	 * {@link FriendshipManager#block(UserAccount)}
 	 */
 	public UserAccount block(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_API_URL_SERVICE_BLOCKS_CREATE, ua);
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).block(ua);
 	}
 	
 	/**
-	 * <p>
-	 * Allows the authenticating user to unblock the user specified in the
-	 * given UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Info from unblocked user.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User does not exist.
-	 * @throws SecurityException If it is not authenticated.
-	 * @throws LimitExceededException If limit has been hit.
+	 * {@link FriendshipManager#unblock(UserAccount)}
 	 */
 	public UserAccount unblock(UserAccount ua) throws IOException,
 		LimitExceededException {
-		return manageFriendship(TWITTER_API_URL_SERVICE_BLOCKS_DESTROY, ua);
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).unblock(ua);
 	}
 	
 	/**
-	 * <p>
-	 * Verify whether the authenticating user is blocking the user specified in
-	 * the given UserAccount object.
-	 * </p>
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @return Blocking (true).
-	 * @throws IOException If an I/O error occurs.
-	 * @throws LimitExceededException If limit has been hit.
-	 * @throws InvalidQueryException If user does not exist or is protected.
-	 * @throws SecurityException If it is not authenticated.
+	 * {@link FriendshipManager#isBlocking(UserAccount)}
 	 */
 	public boolean isBlocking(UserAccount ua) throws IOException,
 		LimitExceededException {
 		checkValid();
 		//
-		if (ua == null) {
-			throw new IllegalArgumentException(
-				"UserAccount object must not me null.");
-		}
-		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
-		if (id == null || (id = id.trim()).length() == 0) {
-			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			if (id == null || (id = id.trim()).length() == 0) {
-				throw new IllegalArgumentException(
-					"Username or ID must not be empty/null.");
-			}
-		}
+		return FriendshipManager.getInstance(this).isBlocking(ua);
+	}
+	
+	/**
+	 * {@link FriendshipManager#getFriendsID(Query)}
+	 */
+	public String[] getFriendsID(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
 		//
+		return FriendshipManager.getInstance(this).getFriendsID(query);
+	}
+	
+	/**
+	 * {@link FriendshipManager#getFollowersID(Query)}
+	 */
+	public String[] getFollowersID(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).getFollowersID(query);
+	}
+	
+	/**
+	 * <p>
+	 * Update account information of authenticated user. Only name, description,
+	 * URL and location can be changed.
+	 * </p>
+	 * @param newUserInfo
+	 * @return New user account info.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If user info is null/empty.
+	 * @see MetadataSet#USERACCOUNT_USER_NAME
+	 * @see MetadataSet#USERACCOUNT_DESCRIPTION
+	 * @see MetadataSet#USERACCOUNT_URL
+	 * @see MetadataSet#USERACCOUNT_LOCATION
+	 */
+	public UserAccount updateProfile(UserAccount newUserInfo)
+		throws IOException, LimitExceededException {
+		checkValid();
 		checkVerified();
 		//
-		HttpRequest req = createRequest(
-			getURL(TWITTER_API_URL_SERVICE_BLOCKS_EXISTS) + id + ".xml");
+		if (newUserInfo == null) {
+			throw new IllegalArgumentException(
+				"New user info must not be null.");
+		}
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE));
+		req.setMethod(HttpConnection.POST);
+		//
+		String info = newUserInfo.getString(MetadataSet.USERACCOUNT_NAME);
+		if (!StringUtil.isEmpty(info)) {
+			req.setBodyParameter("name", info);
+		}
+		info = newUserInfo.getString(MetadataSet.USERACCOUNT_DESCRIPTION);
+		if (!StringUtil.isEmpty(info)) {
+			final int MAX_LEN = 156;
+			//
+			if (info.trim().length() > MAX_LEN) {
+				throw new IllegalArgumentException(
+					"Description must not be longer than " +
+					MAX_LEN +
+					" characters.");
+			}
+			//
+			req.setBodyParameter("description", info);
+		}
+		info = newUserInfo.getString(MetadataSet.USERACCOUNT_URL);
+		if (!StringUtil.isEmpty(info)) {
+			req.setBodyParameter("url", info);
+		}
+		info = newUserInfo.getString(MetadataSet.USERACCOUNT_LOCATION);
+		if (!StringUtil.isEmpty(info)) {
+			req.setBodyParameter("location", info);
+		}
+		//
+		if (req.getBodyParameters().size() == 0) {
+			throw new IllegalArgumentException(
+				"New user info must not be empty.");
+		}
 		//
 		try {
 			HttpResponse resp = req.send();
-			if (resp.getCode() == HttpConnection.HTTP_NOT_FOUND) {
-				return false; //not blocked!
-			}
 			//
 			HttpResponseCodeInterpreter.perform(resp);
 			//
-			return true;
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			handler.loadParsedUserAccount(newUserInfo);
+			//
+			return newUserInfo;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
 		} finally {
 			req.close();
-		}
+		}		
 	}
 
 	/**
@@ -761,70 +682,6 @@ public final class UserAccountManager {
 		if (invalidated) {
 			throw new IllegalStateException(
 				"This instance is no longer valid. Get a new one!");
-		}
-	}
-
-	/**
-	 * <p>
-	 * Perform an operation on authenticating user regarding the friendship
-	 * management, e.g., follow, unfollow, block or unblock users.
-	 * </p>
-	 * @param servURLKey Service URL Key.
-	 * @param ua UserAccount object containing the user name or ID.
-	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidQueryException User already affected by the action or does
-	 *         not exist.
-	 * @throws SecurityException If the user is not authenticated.
-	 * @throws LimitExceededException If limit has been hit.
-	 */
-	private UserAccount manageFriendship(String servURLKey, UserAccount ua)
-		throws IOException, LimitExceededException {
-		checkValid();
-		//
-		if (ua == null) {
-			throw new IllegalArgumentException(
-				"UserAccount object must not me null.");
-		}
-		String id = ua.getString(MetadataSet.USERACCOUNT_ID);
-		if (id == null || (id = id.trim()).length() == 0) {
-			id = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			if (id == null || (id = id.trim()).length() == 0) {
-				throw new IllegalArgumentException(
-					"Username or ID must not be empty/null.");
-			}
-		}
-		//
-		checkVerified();
-		//
-		HttpRequest req = createRequest(getURL(servURLKey));
-		req.setMethod(HttpConnection.POST);
-		try {
-			Long.parseLong(id); // is only numbers?
-			req.setBodyParameter("user_id", id);
-		} catch (NumberFormatException e) {
-			req.setBodyParameter("screen_name", id); //user name.
-		}
-		//
-		try {
-			HttpResponse resp = req.send();
-			//
-			if (resp.getCode() == HttpConnection.HTTP_FORBIDDEN) {
-				//already following/blocking.
-				throw new InvalidQueryException(
-					HttpResponseCodeInterpreter.getErrorMessage(resp));
-			}
-			//
-			HttpResponseCodeInterpreter.perform(resp);
-			//
-			Parser parser = ParserFactory.getDefaultParser();
-			AccountHandler handler = new AccountHandler();
-			parser.parse(resp.getStream(), handler);
-			//
-			return handler.getParsedUserAccount();
-		} catch (ParserException e) {
-			throw new IOException(e.getMessage());
-		} finally {
-			req.close();
 		}
 	}
 

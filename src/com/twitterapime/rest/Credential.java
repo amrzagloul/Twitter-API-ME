@@ -34,7 +34,7 @@ public final class Credential extends DefaultEntity {
 	 * @deprecated
 	 */
 	public Credential(String username, String password) {
-		this(username, password, null, null);
+		this(username, password, (String)null, (String)null);
 	}
 	
 	/**
@@ -78,14 +78,15 @@ public final class Credential extends DefaultEntity {
 	 * <p>
 	 * Create an instance of Credential class.
 	 * </p>
+	 * @param username Username.
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.
 	 * @param accessToken OAuth access token.
-	 * @throws IllegalArgumentException If accessToken is null.
+	 * @throws IllegalArgumentException If username/accessToken is null.
 	 */
-	public Credential(String consumerKey, String consumerSecret,
-		Token accessToken) {
-		this("ignored", "ignored", consumerKey, consumerSecret);
+	public Credential(String username, String consumerKey,
+		String consumerSecret, Token accessToken) {
+		this(username, "ignored", consumerKey, consumerSecret);
 		//
 		if (accessToken == null) {
 			throw new IllegalArgumentException("accessToken must not be null.");
