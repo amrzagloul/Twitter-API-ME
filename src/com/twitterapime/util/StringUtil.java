@@ -18,7 +18,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  */
 public final class StringUtil {
@@ -74,10 +74,7 @@ public final class StringUtil {
 		c.set(Calendar.SECOND, Integer.parseInt(tparts[2]));
 		c.set(Calendar.MILLISECOND, 0);
 		//
-		String dim = Long.toString(c.getTime().getTime());
-		dim = dim.substring(0, dim.length() -3);
-		//
-		return Long.parseLong(dim); 
+		return c.getTime().getTime(); 
 	}
 	
 	/**
