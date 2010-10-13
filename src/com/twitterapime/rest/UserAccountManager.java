@@ -44,7 +44,7 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -359,6 +359,20 @@ public final class UserAccountManager {
 		}
 		//
 		return verified;
+	}
+	
+	/**
+	 * <p>
+	 * Returns the xAuth access token. This token is available only when xAuth
+	 * authentication is performed. You can store this token for further use.
+	 * Reusing this token allows you no longer request a given user credentials
+	 * for a next log in operation. Just be aware that this token can expire or
+	 * the user may revoke it.
+	 * </p>
+	 * @return Token.
+	 */
+	public Token getAccessToken() {
+		return token;
 	}
 	
 	/**
