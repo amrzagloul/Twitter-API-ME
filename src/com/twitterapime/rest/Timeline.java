@@ -50,7 +50,7 @@ import com.twitterapime.search.SearchDeviceListener;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.2
  * @see UserAccountManager
  * @see SearchDeviceListener
@@ -120,6 +120,16 @@ public final class Timeline {
 
 	/**
 	 * <p>
+	 * Key for Twitter API URL service statuses retweets of me.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME =
+		"TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME";
+
+	/**
+	 * <p>
 	 * Key for Twitter API URL service direct messages.
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
@@ -159,6 +169,9 @@ public final class Timeline {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT,
 			"http://api.twitter.com/1/direct_messages/sent.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME,
+			"http://api.twitter.com/1/statuses/retweets_of_me.xml");
 	}
 	
 	/**
@@ -212,6 +225,7 @@ public final class Timeline {
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_MENTIONS
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -315,7 +329,7 @@ public final class Timeline {
 		//
 		startGet(
 			TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE,
-			null,
+			QueryComposer.includeEntities(),
 			l,
 			h,
 			false);
@@ -340,6 +354,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
@@ -373,6 +388,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
@@ -405,6 +421,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
@@ -437,6 +454,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all DMs are returned.
@@ -455,6 +473,39 @@ public final class Timeline {
 		h.setSearchDeviceListener(l);
 		//
 		startGet(urlKey, q, l, h, true);
+	}
+	
+	/**
+	 * <p>
+	 * Get most recent tweets by authenticating user that were reposted by
+	 * other users, according to given filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered. 
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
+	 * <li>{@link QueryComposer#maxID(String)}</li>
+	 * <li>{@link QueryComposer#count(int)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If listener is null.
+	 */
+	public void startGetRetweetsOfMe(Query q, SearchDeviceListener l) {
+		TimelineHandler h = new TimelineHandler();
+		h.setSearchDeviceListener(l);
+		//
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME, q, l, h,true);
 	}
 		
 	/**

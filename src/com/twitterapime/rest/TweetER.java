@@ -46,7 +46,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.1
  * @see Tweet
  * @see UserAccountManager
@@ -283,7 +283,8 @@ public final class TweetER {
 			throw new IllegalArgumentException("ID must not be empty/null.");
 		}
 		//
-		String url = getURL(TWITTER_API_URL_SERVICE_STATUSES_SHOW) + "?id=" +id;
+		String queryStr = "?id=" +id + "&include_entities=true";
+		String url = getURL(TWITTER_API_URL_SERVICE_STATUSES_SHOW) + queryStr;
 		//
 		HttpRequest req;
 		if (userAccountMngr != null) {
@@ -342,6 +343,7 @@ public final class TweetER {
 		req.setMethod(HttpConnection.POST);
 		req.setBodyParameter(
 			"status", tweet.getString(MetadataSet.TWEET_CONTENT));
+		req.setBodyParameter("include_entities", "true");
 		//
 		GeoLocation location = tweet.getLocation();
 		//
@@ -408,6 +410,8 @@ public final class TweetER {
 		HttpRequest req = userAccountMngr.createRequest(url);
 		req.setMethod(HttpConnection.POST);
 		//
+		req.setBodyParameter("include_entities", "true");
+		//
 		try {
 			HttpResponse resp = req.send();
 			//
@@ -465,6 +469,7 @@ public final class TweetER {
 		}
 		req.setBodyParameter("user", recipient);
 		req.setBodyParameter("text", dm.getString(MetadataSet.TWEET_CONTENT));
+		req.setBodyParameter("include_entities", "true");
 		//
 		try {
 			HttpResponse resp = req.send();

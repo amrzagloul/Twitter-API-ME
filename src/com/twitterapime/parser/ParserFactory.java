@@ -21,10 +21,24 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 public final class ParserFactory {
+	/**
+	 * <p>
+	 * Constant for XML parser type.
+	 * </p>
+	 */
+	public static final int XML = 1;
+	
+	/**
+	 * <p>
+	 * Constant for JSON parser type.
+	 * </p>
+	 */
+	public static final int JSON = 2;
+	
 	/**
 	 * <p>
 	 * Create the default parser instance according to the underlying platform.
@@ -32,18 +46,44 @@ public final class ParserFactory {
 	 * @return Parser instance.
 	 */
 	public static Parser getDefaultParser() {
-		final String JAVA_ME_PARSER_IMPL_CLASS =
+		return getParser(XML);
+	}
+	
+	/**
+	 * <p>
+	 * Create a parser instance of a given type.
+	 * </p>
+	 * @param type Parser type.
+	 * @return Parser instance.
+	 * @see ParserFactory#XML
+	 * @see ParserFactory#JSON
+	 */
+	public static Parser getParser(int type) {
+		final String JAVA_ME_XML_PARSER_IMPL_CLASS =
 			"impl.javame.com.twitterapime.parser.KXML2Parser";
-		final String ANDROID_PARSER_IMPL_CLASS =
+		final String ANDROID_XML_PARSER_IMPL_CLASS =
 			"impl.android.com.twitterapime.parser.SAXParser";
+		final String JAVA_ME_JSON_PARSER_IMPL_CLASS =
+			"impl.javame.com.twitterapime.parser.JSONOrgParser";
+		final String ANDROID_JSON_PARSER_IMPL_CLASS =
+			"impl.javame.com.twitterapime.parser.JSONOrgParser";
 		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//
 		//if JAVA ME PLATFORM
 		if (PPID == PlatformProvider.PPID_JAVA_ME) {
-			return newInstance(JAVA_ME_PARSER_IMPL_CLASS);
+			if (type == JSON) {
+				return newInstance(JAVA_ME_JSON_PARSER_IMPL_CLASS);
+			} else {
+				return newInstance(JAVA_ME_XML_PARSER_IMPL_CLASS);
+			}
+		//if ANDROID PLATFORM
 		} else if (PPID == PlatformProvider.PPID_ANDROID) {
-			return newInstance(ANDROID_PARSER_IMPL_CLASS);
+			if (type == JSON) {
+				return newInstance(ANDROID_JSON_PARSER_IMPL_CLASS);				
+			} else {
+				return newInstance(ANDROID_XML_PARSER_IMPL_CLASS);				
+			}
 		} else {
 			throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 		}

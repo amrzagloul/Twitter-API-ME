@@ -51,7 +51,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.4
  */
 public final class FriendshipManager {
@@ -129,6 +129,26 @@ public final class FriendshipManager {
 	
 	/**
 	 * <p>
+	 * Key for Twitter API URL service friendships incoming.
+	 * </p>
+	 * @see FriendshipManager#setServiceURL(String, String)
+	 * @see FriendshipManager#getIncomingFollowersID(Query)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_INCOMING =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_INCOMING";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service friendships outgoing.
+	 * </p>
+	 * @see FriendshipManager#setServiceURL(String, String)
+	 * @see FriendshipManager#getOutgoingFriendsID(Query)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_OUTGOING =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_OUTGOING";
+
+	/**
+	 * <p>
 	 * Key for Twitter API URL service blocks create.
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
@@ -175,6 +195,12 @@ public final class FriendshipManager {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS,
 			"http://api.twitter.com/1/friendships/exists.json");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_INCOMING,
+			"http://api.twitter.com/1/friendships/incoming.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_OUTGOING,
+			"http://api.twitter.com/1/friendships/outgoing.xml");
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_BLOCKS_CREATE,
 			"http://api.twitter.com/1/blocks/create.xml");
@@ -579,6 +605,62 @@ public final class FriendshipManager {
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Get the IDs for every user who has a pending request to follow the
+	 * authenticating user.
+	 * </p>
+	 * <p>
+	 * As the number of requests of a given user can be very large, you have to
+	 * specify a max count. Passing <code>null</code> will return all of them.
+	 * But be aware it may take a little awhile and consume a lot of memory.
+	 * </p>
+	 * @param query Max count of IDs to be returned. Use
+	 *              {@link QueryComposer#count(int)} only.
+	 * @return Pending followers id.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException If user account manager is not informed.
+	 * @see UserAccountManager#getIncomingFollowersID(Query)
+	 */
+	public String[] getIncomingFollowersID(Query query) throws IOException,
+		LimitExceededException {
+		checkUserAuth();
+		//
+		return retrieveIDs(
+			getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_INCOMING),
+			userAccountMngr.getUserAccount(),
+			query);
+	}
+	
+	/**
+	 * <p>
+	 * Get the IDs for every protected user for whom the authenticating user has
+	 * a pending follow request.
+	 * </p>
+	 * <p>
+	 * As the number of requests of a given user can be very large, you have to
+	 * specify a max count. Passing <code>null</code> will return all of them.
+	 * But be aware it may take a little awhile and consume a lot of memory.
+	 * </p>
+	 * @param query Max count of IDs to be returned. Use
+	 *              {@link QueryComposer#count(int)} only.
+	 * @return Pending friends id.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException If user account manager is not informed.
+	 * @see UserAccountManager#getOutgoingFriendsID(Query)
+	 */
+	public String[] getOutgoingFriendsID(Query query) throws IOException,
+		LimitExceededException {
+		checkUserAuth();
+		//
+		return retrieveIDs(
+			getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_OUTGOING),
+			userAccountMngr.getUserAccount(),
+			query);
+	}
+
 	/**
 	 * <p>
 	 * Perform an operation on authenticating user regarding the friendship

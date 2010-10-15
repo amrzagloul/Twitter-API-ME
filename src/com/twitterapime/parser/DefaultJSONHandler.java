@@ -1,0 +1,99 @@
+/*
+ * DefaultJSONHandler.java
+ * 15/10/2010
+ * Twitter API Micro Edition
+ * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
+ * All rights reserved
+ */
+package com.twitterapime.parser;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+/**
+ * <p>
+ * This class defines a default JSON document handler.
+ * </p>
+ * 
+ * @author Ernandes Mourao Junior (ernandes@gmail.com)
+ * @version 1.0
+ * @since 1.5
+ */
+public class DefaultJSONHandler implements JSONHandler {
+	/**
+	 * <p>
+	 * Hold the parsed values.
+	 * </p>
+	 */
+	private Hashtable content;
+	
+	/**
+	 * @see com.twitterapime.parser.JSONHandler#handle(com.twitterapime.parser.JSONObject)
+	 */
+	public void handle(JSONObject jsonObj) throws ParserException {
+		content = readJSON(jsonObj.getJSONObject("venue"), new Hashtable());
+	}
+
+	/**
+	 * <p>
+	 * Get the parsed content from JSON data.
+	 * </p>
+	 * @return Parsed content.
+	 */
+	public Hashtable getParsedContent() {
+		return content;
+	}
+	
+	/**
+	 * @see com.twitterapime.parser.JSONHandler#isMember(com.twitterapime.parser.JSONObject, java.lang.String)
+	 */
+	public boolean isMember(JSONObject jsonObj, String key)
+		throws ParserException {
+		return jsonObj.getString(key).startsWith("{");
+	}
+	
+	/**
+	 * @see com.twitterapime.parser.JSONHandler#isArray(com.twitterapime.parser.JSONObject, java.lang.String)
+	 */
+	public boolean isArray(JSONObject jsonObj, String key)
+		throws ParserException {
+		return jsonObj.getString(key).startsWith("[");
+	}
+
+	/**
+	 * <p>
+	 * Read recursively the JSON object in order to parse the content.
+	 * </p>
+	 * @param jsonObj JSON object.
+	 * @param data Holds the parsed data.
+	 * @return Parsed data.
+	 * @throws ParserException If there is an error in the document format.
+	 */
+	protected Hashtable readJSON(JSONObject jsonObj, Hashtable data)
+		throws ParserException {
+		Enumeration keys = jsonObj.keys();
+		//
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement().toString();
+			//
+			if (isMember(jsonObj, key)) {
+				data.put(
+					key, readJSON(jsonObj.getJSONObject(key), new Hashtable()));
+			} else if (isArray(jsonObj, key)) {
+				JSONArray array = jsonObj.getJSONArray(key);
+				Hashtable[] arrayObj = new Hashtable[array.length()];
+				//
+				for (int i = 0; i < arrayObj.length; i++) {
+					arrayObj[i] =
+						readJSON(array.getJSONObject(i), new Hashtable());
+				}
+				//
+				data.put(key, arrayObj);
+			} else {
+				data.put(key, jsonObj.getString(key));
+			}
+		}
+		//
+		return data;
+	}
+}

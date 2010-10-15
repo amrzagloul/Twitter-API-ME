@@ -15,6 +15,8 @@ import com.twitterapime.parser.ParserException;
 import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.search.TweetEntity;
+import com.twitterapime.search.handler.TweetEntityHandler;
 
 /**
  * <p>
@@ -22,7 +24,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.2
  */
 public final class StatusHandler extends DefaultXMLHandler {
@@ -47,6 +49,13 @@ public final class StatusHandler extends DefaultXMLHandler {
 	 */
 	private GeoLocationHandler lHandler = new GeoLocationHandler();
 	
+	/**
+	 * <p>
+	 * TweetEntity XML handler object.
+	 * </p>
+	 */
+	private TweetEntityHandler teHandler = new TweetEntityHandler();
+
 	/**
 	 * <p>
 	 * Hash with user account values.
@@ -83,6 +92,13 @@ public final class StatusHandler extends DefaultXMLHandler {
 	private Hashtable locationValues = new Hashtable(10);
 
 	/**
+	 * <p>
+	 * Hash with tweet's entity values.
+	 * </p>
+	 */
+	private Hashtable tweetEntityValues = new Hashtable();
+
+	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#text(java.lang.String)
 	 */
 	public void text(String text) throws ParserException {
@@ -98,6 +114,8 @@ public final class StatusHandler extends DefaultXMLHandler {
 			lHandler.populate(locationValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/place/")) {
 			lHandler.populate(locationValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/status/entities/")) {
+			teHandler.populate(tweetEntityValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/")) {
 			tHandler.populate(tweetValues, xmlPath, text);
 		}
@@ -122,6 +140,12 @@ public final class StatusHandler extends DefaultXMLHandler {
 			tweetValues.put(
 				MetadataSet.TWEET_LOCATION,
 				new GeoLocation(locationValues));
+		}
+		//
+		if (tweetEntityValues.size() > 0) {
+			tweetValues.put(
+				MetadataSet.TWEET_ENTITY,
+				new TweetEntity(tweetEntityValues));
 		}
 	}
 	

@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see QueryComposer
  * @see SearchDevice
@@ -38,7 +38,7 @@ public final class Query {
 	 * @throws InvalidQueryException If query is not a valid UTF-8 string.
 	 * @throws IllegalArgumentException If query is null.
 	 */
-	Query(String query) {
+	public Query(String query) {
 		if (query == null) {
 			throw new IllegalArgumentException("Query must not be null.");
 		}

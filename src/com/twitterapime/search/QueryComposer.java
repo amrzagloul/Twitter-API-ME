@@ -20,7 +20,7 @@ import com.twitterapime.rest.Timeline;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -181,6 +181,27 @@ public final class QueryComposer {
 	 */
 	static final String PM_MAX_ID = "max_id=";
 	
+	/**
+	 * <p>
+	 * Constant that represents the "date" parameter.
+	 * </p>
+	 */
+	static final String PM_DATE = "date=";
+	
+	/**
+	 * <p>
+	 * Constant that represents the "exclude=hashtags" parameter.
+	 * </p>
+	 */
+	static final String PM_EXCLUDE_HASHTAGS = "exclude=hashtags";
+
+	/**
+	 * <p>
+	 * Constant that represents the "include_entities=true" parameter.
+	 * </p>
+	 */
+	static final String PM_INCLUDE_ENTITIES = "include_entities=true";
+
 	/**
 	 * <p>
 	 * Append a query to another one.
@@ -521,6 +542,44 @@ public final class QueryComposer {
 	 */
 	public static Query containQuestion() {
 		return new Query(PM_ASKING_QUESTION);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to search for trend topics from a given date, e.g., 
+	 * "01/01/2009".
+	 * </p>
+	 * @param date The date.
+	 * @return A new query.
+	 * @throws IllegalArgumentException If date is null.
+	 */
+	public static Query date(Date date) {
+		if (date == null) {
+			throw new IllegalArgumentException("Date must not be null.");
+		}
+		//
+		return new Query(PM_DATE + convertDate(date));
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to flag a trend topics search to remove any occurrence of 
+	 * hashtags from the result.
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query excludeHashtags() {
+		return new Query(PM_EXCLUDE_HASHTAGS);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to flag a timeline to return tweet entities data.
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query includeEntities() {
+		return new Query(PM_INCLUDE_ENTITIES);
 	}
 
 	/**

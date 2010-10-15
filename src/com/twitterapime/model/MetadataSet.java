@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  */
 public final class MetadataSet {
@@ -132,6 +132,13 @@ public final class MetadataSet {
 	 * </p>
 	 */
 	public static final String TWEET_LOCATION = "TWEET_LOCATION";
+
+	/**
+	 * <p>
+	 * Report the tweet's entity object, e.g., TweetEntity class.
+	 * </p>
+	 */
+	public static final String TWEET_ENTITY = "TWEET_ENTITY";
 
 	/**
 	 * <p>
@@ -446,6 +453,79 @@ public final class MetadataSet {
 	 * </p>
 	 */
 	public static final String GEOLOCATION_POLYGON = "GEOLOCATION_POLYGON";
+	
+	/**
+	 * <p>
+	 * Reports the tweet's entity hashtags, e.g., Array of TweetEntity.
+	 * </p>
+	 */
+	public static final String TWEETENTITY_HASHTAGS = "TWEETENTITY_HASHTAGS";
+	
+	/**
+	 * <p>
+	 * Reports the tweet's entity URLs, e.g., Array of TweetEntity.
+	 * </p>
+	 */
+	public static final String TWEETENTITY_URLS = "TWEETENTITY_URLS";
+	
+	/**
+	 * <p>
+	 * Reports the tweet's entity mentions, e.g., Array of TweetEntity.
+	 * </p>
+	 */
+	public static final String TWEETENTITY_MENTIONS = "TWEETENTITY_MENTIONS";
+
+	/**
+	 * <p>
+	 * Reports a tweet's entity url, e.g., "http://www.twapime.com".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_URL = "TWEETENTITY_URL";
+	
+	/**
+	 * <p>
+	 * Reports a tweet's entity hashtag, e.g., "#twapime".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_HASHTAG = "TWEETENTITY_HASHTAG";
+	
+	/**
+	 * <p>
+	 * Reports a tweet's entity user id, e.g., "876547484".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_USERACCOUNT_ID =
+		"TWEETENTITY_USERACCOUNT_ID";
+	
+	/**
+	 * <p>
+	 * Reports a tweet's entity user's name, e.g., "John Smith".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_USERACCOUNT_NAME =
+		"TWEETENTITY_USERACCOUNT_NAME";
+	
+	/**
+	 * <p>
+	 * Reports a tweet's entity username, e.g., "johnsmith".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_USERACCOUNT_USER_NAME =
+		"TWEETENTITY_USERACCOUNT_USER_NAME";
+
+	/**
+	 * <p>
+	 * Reports a topic's name, e.g., "#nowplaying".
+	 * </p>
+	 */
+	public static final String TOPIC_NAME =	"TOPIC_NAME";
+	
+	/**
+	 * <p>
+	 * Reports a topic's date, e.g., "14649876532156".
+	 * </p>
+	 */
+	public static final String TOPIC_DATE =	"TOPIC_DATE";
 
 	/**
 	 * <p>

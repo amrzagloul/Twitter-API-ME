@@ -44,7 +44,7 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -112,6 +112,16 @@ public final class UserAccountManager {
 	 */
 	public static final String TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE =
 		"TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service report spam.
+	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#reportSpam(UserAccount)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_REPORT_SPAM =
+		"TWITTER_API_URL_SERVICE_REPORT_SPAM";
 
 	static {
 		SERVICES_URL = new Hashtable(10);
@@ -131,6 +141,9 @@ public final class UserAccountManager {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE,
 			"http://api.twitter.com/1/account/update_profile.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_REPORT_SPAM,
+			"http://api.twitter.com/i/report_spam.xml");
 	}
 
 	/**
@@ -195,6 +208,8 @@ public final class UserAccountManager {
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SHOW
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_REPORT_SPAM
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -547,11 +562,32 @@ public final class UserAccountManager {
 	}
 	
 	/**
+	 * {@link FriendshipManager#getIncomingFollowersID(Query)}
+	 */
+	public String[] getIncomingFollowersID(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return
+			FriendshipManager.getInstance(this).getIncomingFollowersID(query);
+	}
+	
+	/**
+	 * {@link FriendshipManager#getOutgoingFriendsID(Query)}
+	 */
+	public String[] getOutgoingFriendsID(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).getOutgoingFriendsID(query);
+	}
+	
+	/**
 	 * <p>
 	 * Update account information of authenticated user. Only name, description,
 	 * URL and location can be changed.
 	 * </p>
-	 * @param newUserInfo
+	 * @param newUserInfo New user info.
 	 * @return New user account info.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
@@ -620,6 +656,51 @@ public final class UserAccountManager {
 			handler.loadParsedUserAccount(newUserInfo);
 			//
 			return newUserInfo;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}		
+	}
+	
+	/**
+	 * <p>
+	 * Report a given user as spammer.
+	 * </p>
+	 * @param user User.
+	 * @return User account object.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 */
+	public UserAccount reportSpam(UserAccount user) throws IOException,
+		LimitExceededException {
+		checkValid();
+		checkVerified();
+		//
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		user.validateUserNameOrID();
+		//
+		String[] pv = user.getUserNameOrIDParamValue();
+		String param = "?" + pv[0] + "=" + pv[1];
+		//
+		HttpRequest req = createRequest(
+			getURL(TWITTER_API_URL_SERVICE_REPORT_SPAM) + param);
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			handler.loadParsedUserAccount(user);
+			//
+			return user;
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {

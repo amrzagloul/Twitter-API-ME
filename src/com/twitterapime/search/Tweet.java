@@ -22,7 +22,7 @@ import com.twitterapime.rest.UserAccount;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  * @see SearchDevice
  * @see TweetER
@@ -209,5 +209,15 @@ public final class Tweet extends DefaultEntity {
 	 */
 	public GeoLocation getLocation() {
 		return (GeoLocation)data.get(MetadataSet.TWEET_LOCATION);
+	}
+	
+	/**
+	 * <p>
+	 * Get the tweet's entity object.
+	 * </p>
+	 * @return Entity object.
+	 */
+	public TweetEntity getEntity() {
+		return (TweetEntity)data.get(MetadataSet.TWEET_ENTITY);
 	}
 }

@@ -12,9 +12,12 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.rest.Credential;
+import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.RateLimitStatus;
 import com.twitterapime.rest.UserAccount;
+import com.twitterapime.search.Topic;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.search.TweetEntity;
 
 /**
  * <p>
@@ -28,6 +31,9 @@ import com.twitterapime.search.Tweet;
  * @see Credential
  * @see RateLimitStatus
  * @see UserAccount
+ * @see GeoLocation
+ * @see Topic
+ * @see TweetEntity
  */
 public class DefaultEntity implements Entity {
 	/**
