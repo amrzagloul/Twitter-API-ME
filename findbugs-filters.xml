@@ -6,6 +6,9 @@
  	    <Package name="~org\.xmlpull\..*" />
  	</Match>
     <Match>
+ 	    <Package name="~org\.json\..*" />
+ 	</Match>
+    <Match>
  	    <Package name="~com\.twitterapime\.xauth\.encoders\..*" />
  	</Match>
 </FindBugsFilter>
