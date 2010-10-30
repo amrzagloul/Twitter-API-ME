@@ -25,13 +25,30 @@ public class DefaultJSONHandler implements JSONHandler {
 	 * Hold the parsed values.
 	 * </p>
 	 */
-	private Hashtable content;
+	protected Hashtable content;
+	
+	/**
+	 * <p>
+	 * Element's key where the parsers will start reading.
+	 * </p>
+	 */
+	protected String startKey;
+	
+	/**
+	 * <p>
+	 * Create an instance of DefaultJSONHandler class.
+	 * </p> 
+	 * @param startKey Start key reading.
+	 */
+	public DefaultJSONHandler(String startKey) {
+		this.startKey = startKey;
+	}
 	
 	/**
 	 * @see com.twitterapime.parser.JSONHandler#handle(com.twitterapime.parser.JSONObject)
 	 */
 	public void handle(JSONObject jsonObj) throws ParserException {
-		content = readJSON(jsonObj.getJSONObject("venue"), new Hashtable());
+		content = readJSON(jsonObj.getJSONObject(startKey), new Hashtable());
 	}
 
 	/**

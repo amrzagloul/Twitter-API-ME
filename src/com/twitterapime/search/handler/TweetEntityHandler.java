@@ -47,7 +47,7 @@ public final class TweetEntityHandler extends DefaultXMLHandler {
 			userAccountData = new Hashtable();
 			userAccountData.put(MetadataSet.TWEETENTITY_USERACCOUNT_ID, text);
 			//
-			v.add(new TweetEntity(userAccountData));
+			v.addElement(new TweetEntity(userAccountData));
 		} else if (path.endsWith("/user_mentions/user_mention/screen_name")) {
 			if (userAccountData != null) {
 				userAccountData.put(
@@ -65,7 +65,7 @@ public final class TweetEntityHandler extends DefaultXMLHandler {
 			Hashtable t = new Hashtable();
 			t.put(MetadataSet.TWEETENTITY_URL, text);
 			//
-			v.add(new TweetEntity(t));
+			v.addElement(new TweetEntity(t));
 		} else if (path.endsWith("/hashtags/hashtag/text")) {
 			Vector v =
 				getOrCreateIfNecessary(data, MetadataSet.TWEETENTITY_HASHTAGS);
@@ -73,7 +73,7 @@ public final class TweetEntityHandler extends DefaultXMLHandler {
 			Hashtable t = new Hashtable();
 			t.put(MetadataSet.TWEETENTITY_HASHTAG, text);
 			//
-			v.add(new TweetEntity(t));
+			v.addElement(new TweetEntity(t));
 		}
 	}
 	

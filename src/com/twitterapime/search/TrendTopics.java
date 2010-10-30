@@ -28,7 +28,7 @@ import com.twitterapime.search.handler.TrendTopicsHandler;
  * Query q1 = QueryComposer.date(new Date());
  * Topic[] ts = tt.searchDailyTopics(q);
  * for (int i = 0; i < ts.length; i++) {
- *   list.append(ts[i].getString(MetadataSet.TOPIC_NAME), null);
+ *   list.append(ts[i].getString(MetadataSet.TOPIC_TEXT), null);
  * }
  * </pre>
  * </p>

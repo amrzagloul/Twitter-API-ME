@@ -421,7 +421,6 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
-	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all tweets are returned.

@@ -143,7 +143,7 @@ public final class UserAccountManager {
 			"http://api.twitter.com/1/account/update_profile.xml");
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_REPORT_SPAM,
-			"http://api.twitter.com/i/report_spam.xml");
+			"http://api.twitter.com/1/report_spam.xml");
 	}
 
 	/**
@@ -684,10 +684,11 @@ public final class UserAccountManager {
 		user.validateUserNameOrID();
 		//
 		String[] pv = user.getUserNameOrIDParamValue();
-		String param = "?" + pv[0] + "=" + pv[1];
+		String param = "?" + pv[0] + "=" + pv[1] + "&include_entities=true";
 		//
 		HttpRequest req = createRequest(
 			getURL(TWITTER_API_URL_SERVICE_REPORT_SPAM) + param);
+		req.setMethod(HttpConnection.POST);
 		//
 		try {
 			HttpResponse resp = req.send();

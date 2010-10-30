@@ -80,7 +80,7 @@ public final class TweetEntity extends DefaultEntity {
 	 */
 	private TweetEntity[] toArray(Vector v) {
 		if (v == null) {
-			return null;
+			return new TweetEntity[0];
 		}
 		//
 		TweetEntity[] tes = new TweetEntity[v.size()];

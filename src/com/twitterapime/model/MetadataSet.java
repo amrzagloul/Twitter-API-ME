@@ -515,11 +515,18 @@ public final class MetadataSet {
 
 	/**
 	 * <p>
-	 * Reports a topic's name, e.g., "#nowplaying".
+	 * Reports a topic's text, e.g., "#nowplaying".
 	 * </p>
 	 */
-	public static final String TOPIC_NAME =	"TOPIC_NAME";
+	public static final String TOPIC_TEXT =	"TOPIC_TEXT";
 	
+	/**
+	 * <p>
+	 * Reports a topic's query, e.g., "#nowplaying".
+	 * </p>
+	 */
+	public static final String TOPIC_QUERY = "TOPIC_QUERY";
+
 	/**
 	 * <p>
 	 * Reports a topic's date, e.g., "14649876532156".

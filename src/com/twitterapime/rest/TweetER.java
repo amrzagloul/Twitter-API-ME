@@ -469,7 +469,6 @@ public final class TweetER {
 		}
 		req.setBodyParameter("user", recipient);
 		req.setBodyParameter("text", dm.getString(MetadataSet.TWEET_CONTENT));
-		req.setBodyParameter("include_entities", "true");
 		//
 		try {
 			HttpResponse resp = req.send();
