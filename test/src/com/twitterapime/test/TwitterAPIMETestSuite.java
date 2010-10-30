@@ -7,6 +7,7 @@ import com.sonyericsson.junit.framework.TestSuite;
 import com.twitterapime.io.IOTestSuite;
 import com.twitterapime.io.handler.IOHandlerTestSuite;
 import com.twitterapime.model.ModelTestSuite;
+import com.twitterapime.parser.ParserTestSuite;
 import com.twitterapime.platform.PlatformTestSuite;
 import com.twitterapime.rest.RestTestSuite;
 import com.twitterapime.rest.handler.RestHandlerTestSuite;
@@ -26,6 +27,7 @@ public class TwitterAPIMETestSuite extends TestSuite {
 		addTestSuite(new IOTestSuite().getClass());
 		addTestSuite(new IOHandlerTestSuite().getClass());
 		addTestSuite(new ModelTestSuite().getClass());
+		addTestSuite(new ParserTestSuite().getClass());
 		addTestSuite(new PlatformTestSuite().getClass());
 		addTestSuite(new RestTestSuite().getClass());
 		addTestSuite(new RestHandlerTestSuite().getClass());

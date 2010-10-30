@@ -18,5 +18,6 @@ public class SearchTestSuite extends TestSuite {
 		addTest(new QueryTest());
 		addTest(new SearchDeviceTest());
 		addTest(new TweetTest());
+		addTest(new TrendTopicsTest());
 	}
 }

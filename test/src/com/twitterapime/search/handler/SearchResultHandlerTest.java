@@ -64,7 +64,7 @@ public class SearchResultHandlerTest extends TestCase implements SearchDeviceLis
 		sample.put(MetadataSet.TWEET_LANG, "en");
 		sample.put(MetadataSet.TWEET_SOURCE, "TweetDeck");
 		sample.put(MetadataSet.TWEET_AUTHOR_PICTURE_URI, "http://a3.twimg.com/profile_images/45684621/pic_normal.JPG");
-		sample.put(MetadataSet.TWEET_PUBLISH_DATE, "1261183677");
+		sample.put(MetadataSet.TWEET_PUBLISH_DATE, "1259630700000");
 		//
 		for (int i = 0; i < ts.length; i++) {
 			sample.put(MetadataSet.TWEET_ID, Integer.toString(i +1));

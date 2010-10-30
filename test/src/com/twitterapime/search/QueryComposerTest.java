@@ -257,4 +257,37 @@ public class QueryComposerTest extends TestCase {
 		assertEquals(new Query(QueryComposer.PM_MAX_ID + "654321"), QueryComposer.maxID("654321"));
 		assertEquals(new Query(QueryComposer.PM_MAX_ID + "7890"), QueryComposer.maxID("7890"));
 	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#date(java.util.Date)}.
+	 */
+	public void testDate() {
+		try {
+			QueryComposer.date(null);
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, 2009);
+		c.set(Calendar.MONTH, 11);
+		c.set(Calendar.DAY_OF_MONTH, 23);
+		assertEquals(new Query(QueryComposer.PM_DATE + "2009-12-23"), QueryComposer.date(c.getTime()));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#excludeHashtags()}.
+	 */
+	public void testExcludeHashtags() {
+		assertEquals(new Query(QueryComposer.PM_EXCLUDE_HASHTAGS), QueryComposer.excludeHashtags());
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#includeEntities()}.
+	 */
+	public void testIncludeEntities() {
+		assertEquals(new Query(QueryComposer.PM_INCLUDE_ENTITIES), QueryComposer.includeEntities());
+	}
 }

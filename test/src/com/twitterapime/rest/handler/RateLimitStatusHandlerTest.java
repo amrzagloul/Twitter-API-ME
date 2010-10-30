@@ -49,7 +49,7 @@ public class RateLimitStatusHandlerTest extends TestCase {
 		assertEquals(3, rls.size());
 		assertEquals("150", rls.getString(MetadataSet.RATELIMITSTATUS_HOURLY_LIMIT));
 		assertEquals("150", rls.getString(MetadataSet.RATELIMITSTATUS_REMAINING_HITS));
-		assertEquals("1261758206", rls.getString(MetadataSet.RATELIMITSTATUS_RESET_TIME));
+		assertEquals("1259630700000", rls.getString(MetadataSet.RATELIMITSTATUS_RESET_TIME));
 		//
 		assertEquals(0, new RateLimitStatusHandler().getParsedRateLimitStatus().size());
 	}

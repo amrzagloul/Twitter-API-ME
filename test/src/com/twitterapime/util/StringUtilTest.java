@@ -37,11 +37,11 @@ public class StringUtilTest extends TestCase {
 			fail();
 		}
 		//
-		assertEquals(1259403912L, StringUtil.convertTweetDateToLong("2009-11-28 10:25:12"));
-		assertEquals(1259630700L, StringUtil.convertTweetDateToLong("2009-12-01T01:25:00+00:00"));
-		assertEquals(1257629403L, StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009"));
-		assertEquals(1245735000L, StringUtil.convertTweetDateToLong("2009-06-23X05:30:00"));
-		assertEquals(1243364400L, StringUtil.convertTweetDateToLong("Tue May 26 19:00:00 +0000 2009"));
+		assertEquals(1259403912000l, StringUtil.convertTweetDateToLong("2009-11-28 10:25:12"));
+		assertEquals(1259630700000l, StringUtil.convertTweetDateToLong("2009-12-01T01:25:00+00:00"));
+		assertEquals(1257629403000l, StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009"));
+		assertEquals(1245735000000l, StringUtil.convertTweetDateToLong("2009-06-23X05:30:00"));
+		assertEquals(1243364400000l, StringUtil.convertTweetDateToLong("Tue May 26 19:00:00 +0000 2009"));
 	}
 
 	/**
