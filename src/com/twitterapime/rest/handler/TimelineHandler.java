@@ -173,7 +173,7 @@ public final class TimelineHandler extends DefaultXMLHandler {
 					MetadataSet.TWEET_USER_ACCOUNT,
 					new UserAccount(reuserValues));
 				tweetValues.put(
-					MetadataSet.TWEET_REPOSTED_TWEET, retweetValues);
+					MetadataSet.TWEET_REPOSTED_TWEET, new Tweet(retweetValues));
 			}
 			//
 			if (locationValues.size() > 0) {

@@ -130,6 +130,26 @@ public final class Timeline {
 
 	/**
 	 * <p>
+	 * Key for Twitter API URL service statuses retweeted by me.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
+		= "TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service statuses retweeted to me.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
+		= "TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME";
+
+	/**
+	 * <p>
 	 * Key for Twitter API URL service direct messages.
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
@@ -172,6 +192,12 @@ public final class Timeline {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME,
 			"http://api.twitter.com/1/statuses/retweets_of_me.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME,
+			"http://api.twitter.com/1/statuses/retweeted_by_me.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME,
+			"http://api.twitter.com/1/statuses/retweeted_to_me.xml");
 	}
 	
 	/**
@@ -226,6 +252,8 @@ public final class Timeline {
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_USER_TIMELINE
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
+	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -476,6 +504,72 @@ public final class Timeline {
 	
 	/**
 	 * <p>
+	 * Get most recent tweets retweeted by authenticating user, according to 
+	 * given filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered. 
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
+	 * <li>{@link QueryComposer#maxID(String)}</li>
+	 * <li>{@link QueryComposer#count(int)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If listener is null.
+	 */
+	public void startGetRetweetsByMe(Query q, SearchDeviceListener l) {
+		TimelineHandler h = new TimelineHandler();
+		h.setSearchDeviceListener(l);
+		//
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME, q, l,h,true);
+	}
+		
+	/**
+	 * <p>
+	 * Get most recent tweets retweeted by users followed by authenticating 
+	 * user, according to given filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered. 
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
+	 * <li>{@link QueryComposer#maxID(String)}</li>
+	 * <li>{@link QueryComposer#count(int)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If listener is null.
+	 */
+	public void startGetRetweetsToMe(Query q, SearchDeviceListener l) {
+		TimelineHandler h = new TimelineHandler();
+		h.setSearchDeviceListener(l);
+		//
+		startGet(TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME, q, l,h,true);
+	}
+
+	/**
+	 * <p>
 	 * Get most recent tweets by authenticating user that were reposted by
 	 * other users, according to given filter.
 	 * </p>
@@ -506,7 +600,7 @@ public final class Timeline {
 		//
 		startGet(TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME, q, l, h,true);
 	}
-		
+
 	/**
 	 * <p>
 	 * Start a retrieval of a given URL's response according to a filter.
