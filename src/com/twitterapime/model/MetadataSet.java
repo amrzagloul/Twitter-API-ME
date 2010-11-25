@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.0
  */
 public final class MetadataSet {
@@ -533,6 +533,84 @@ public final class MetadataSet {
 	 * </p>
 	 */
 	public static final String TOPIC_DATE =	"TOPIC_DATE";
+	
+	/**
+	 * <p>
+	 * Report the user account object of a list, e.g., UserAccount
+	 * class.
+	 * </p>
+	 */
+	public static final String LIST_USER_ACCOUNT = "LIST_USER_ACCOUNT";
+	
+	/**
+	 * <p>
+	 * Report the list's ID, e.g., "9637830025".
+	 * </p>
+	 */
+	public static final String LIST_ID = "LIST_ID";
+	
+	/**
+	 * <p>
+	 * Report the list's name, e.g., "Java IT".
+	 * </p>
+	 */
+	public static final String LIST_NAME = "LIST_NAME";
+	
+	/**
+	 * <p>
+	 * Report the list's full name, e.g., "@username/javait".
+	 * </p>
+	 */
+	public static final String LIST_FULL_NAME = "LIST_FULL_NAME";
+	
+	/**
+	 * <p>
+	 * Report the list's slug, e.g., "javait".
+	 * </p>
+	 */
+	public static final String LIST_SLUG = "LIST_SLUG";
+	
+	/**
+	 * <p>
+	 * Report the list's description, e.g., "This lists is about...".
+	 * </p>
+	 */
+	public static final String LIST_DESCRIPTION = "LIST_DESCRIPTION";
+	
+	/**
+	 * <p>
+	 * Report the list's subscriber account, e.g., "10".
+	 * </p>
+	 */
+	public static final String LIST_SUBSCRIBER_COUNT = "LIST_SUBSCRIBER_COUNT";
+
+	/**
+	 * <p>
+	 * Report the list's member account, e.g., "7".
+	 * </p>
+	 */
+	public static final String LIST_MEMBER_COUNT = "LIST_MEMBER_COUNT";
+	
+	/**
+	 * <p>
+	 * Report the list's URI, e.g., "/username/javait".
+	 * </p>
+	 */
+	public static final String LIST_URI = "LIST_URI";
+	
+	/**
+	 * <p>
+	 * Report the list's following flag, e.g., "true" or "false".
+	 * </p>
+	 */
+	public static final String LIST_FOLLOWING = "LIST_FOLLOWING";
+	
+	/**
+	 * <p>
+	 * Report the list's mode flag, e.g., "public" or "private".
+	 * </p>
+	 */
+	public static final String LIST_MODE = "LIST_MODE";
 
 	/**
 	 * <p>

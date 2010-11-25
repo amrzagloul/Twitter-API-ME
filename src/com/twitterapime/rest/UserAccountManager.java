@@ -44,7 +44,7 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -414,6 +414,7 @@ public final class UserAccountManager {
 			Timeline.cleanPool();
 			TweetER.cleanPool();
 			FriendshipManager.cleanPool();
+			ListManager.cleanPool();
 			//
 			invalidated = true;
 		}

@@ -14,6 +14,7 @@ import java.util.Hashtable;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
+import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Handler;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserFactory;
@@ -22,6 +23,7 @@ import com.twitterapime.rest.handler.TimelineHandler;
 import com.twitterapime.search.Query;
 import com.twitterapime.search.QueryComposer;
 import com.twitterapime.search.SearchDeviceListener;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -50,7 +52,7 @@ import com.twitterapime.search.SearchDeviceListener;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.2
  * @see UserAccountManager
  * @see SearchDeviceListener
@@ -133,7 +135,7 @@ public final class Timeline {
 	 * Key for Twitter API URL service statuses retweeted by me.
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
-	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
+	 * @see Timeline#startGetRetweetsByMe(Query, SearchDeviceListener)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
 		= "TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME";
@@ -143,7 +145,7 @@ public final class Timeline {
 	 * Key for Twitter API URL service statuses retweeted to me.
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
-	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
+	 * @see Timeline#startGetRetweetsToMe(Query, SearchDeviceListener)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
 		= "TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME";
@@ -167,6 +169,16 @@ public final class Timeline {
 	 */
 	public static final String TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT =
 		"TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_SENT";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service user lists statuses.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetListTweets(List, Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES =
+		"TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES";
 
 	static {
 		SERVICES_URL = new Hashtable(6);
@@ -198,6 +210,9 @@ public final class Timeline {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME,
 			"http://api.twitter.com/1/statuses/retweeted_to_me.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES,
+			"http://api.twitter.com/1/:user/lists/:id/statuses.xml");
 	}
 	
 	/**
@@ -254,6 +269,7 @@ public final class Timeline {
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
+	 * @see Timeline#TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -600,6 +616,70 @@ public final class Timeline {
 		//
 		startGet(TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME, q, l, h,true);
 	}
+	
+	/**
+	 * <p>
+	 * Get tweets from users who belongs to a given list, according to given 
+	 * filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered. 
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
+	 * <li>{@link QueryComposer#maxID(String)}</li>
+	 * <li>{@link QueryComposer#count(int)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param list List object.
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If the list is private and the user is not
+	 *                           authenticated.
+	 * @throws IllegalArgumentException If List and/or listener is null.
+	 */
+	public void startGetListTweets(List list, Query q, SearchDeviceListener l) {
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		String id = list.getString(MetadataSet.LIST_ID);
+		//
+		if (StringUtil.isEmpty(id)) {
+			throw new IllegalArgumentException("List ID must not be null.");
+		}
+		//
+		UserAccount ua = list.getUserAccount();
+		//
+		if (ua == null) {
+			throw new IllegalArgumentException(
+				"List's user account must not be null.");
+		}
+		//
+		String username = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		if (StringUtil.isEmpty(username)) {
+			throw new IllegalArgumentException(
+				"List's user account name must not be null.");
+		}
+		//
+		TimelineHandler h = new TimelineHandler();
+		h.setSearchDeviceListener(l);
+		//
+		String url = getURL(TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES);
+		//
+		url = StringUtil.replace(url, ":user", username);
+		url = StringUtil.replace(url, ":id", id);
+		//
+		startGet(url, q, l, h, userAccountMngr != null);
+	}
 
 	/**
 	 * <p>
@@ -632,7 +712,11 @@ public final class Timeline {
 		Runnable r = new Runnable() {
 			public void run() {
 				HttpRequest req;
-				String url = getURL(servURLKey);
+				String url = servURLKey;
+				//
+				if (!servURLKey.startsWith("http")) {
+					url = getURL(servURLKey);
+				}
 				url = q != null ? url + '?' + q.toString() : url;
 				//
 				if (userAccountMngr != null) {

@@ -27,7 +27,7 @@ import com.twitterapime.search.handler.TweetEntityHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.2
  */
 public final class TimelineHandler extends DefaultXMLHandler {

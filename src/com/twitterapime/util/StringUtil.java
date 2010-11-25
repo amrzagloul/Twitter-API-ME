@@ -18,7 +18,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.1
  */
 public final class StringUtil {
@@ -286,6 +286,35 @@ public final class StringUtil {
 	 */
 	public static final boolean isEmpty(String str) {
 		return str == null || str.trim().length() == 0;
+	}
+	
+	/**
+	 * <p>
+	 * Replaces a given substring to another substring.
+	 * <p/>
+	 * @param text String.
+	 * @param searchStr Substring to be replaced.
+	 * @param replacementStr Replacement substring.
+	 * @return String replaced.
+	 */
+	public static final String replace(String text, String searchStr,
+		String replacementStr) {
+		StringBuffer sb = new StringBuffer();
+		int searchStringPos = text.indexOf(searchStr);
+		int startPos = 0;
+		int searchStringLength = searchStr.length();
+		//
+		while (searchStringPos != -1) {
+			sb.append(
+				text.substring(startPos, searchStringPos)).append(
+					replacementStr);
+			startPos = searchStringPos + searchStringLength;
+			searchStringPos = text.indexOf(searchStr, startPos);
+		}
+		//
+		sb.append(text.substring(startPos, text.length()));
+		//
+		return sb.toString();
 	}
 	
 	/**
