@@ -584,6 +584,22 @@ public final class UserAccountManager {
 	}
 	
 	/**
+	 * {@link ListManager#getLists()}
+	 */
+	public List[] getLists() throws IOException,
+		LimitExceededException {
+		return ListManager.getInstance(this).getLists();
+	}
+	
+	/**
+	 * {@link ListManager#getSubscriptions()}
+	 */
+	public List[] getListSubscriptions() throws IOException,
+		LimitExceededException {
+		return ListManager.getInstance(this).getSubscriptions();
+	}
+	
+	/**
 	 * <p>
 	 * Update account information of authenticated user. Only name, description,
 	 * URL and location can be changed.

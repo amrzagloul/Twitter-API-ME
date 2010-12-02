@@ -34,7 +34,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  * @see HttpConnection
  */
@@ -141,11 +141,11 @@ public final class HttpConnector {
 		final String JAVA_ME_HTTP_IMPL_CLASS =
 			"impl.javame.com.twitterapime.io.HttpConnectionImpl";
 		final String JAVA_ME_HTTP_USER_AGENT =
-			"Twitter API ME/1.5 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
+			"Twitter API ME/1.6 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
 		final String ANDROID_HTTP_IMPL_CLASS =
 			"impl.android.com.twitterapime.io.HttpConnectionImpl";
 		final String ANDROID_HTTP_USER_AGENT =
-			"Twitter API ME/1.5 (compatible; Android 1.1)";
+			"Twitter API ME/1.6 (compatible; Android 1.1)";
 		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//

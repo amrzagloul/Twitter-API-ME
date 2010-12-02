@@ -296,9 +296,26 @@ public final class StringUtil {
 	 * @param searchStr Substring to be replaced.
 	 * @param replacementStr Replacement substring.
 	 * @return String replaced.
+	 * @throws IllegalArgumentException If any parameter is null.
 	 */
 	public static final String replace(String text, String searchStr,
 		String replacementStr) {
+		if (text == null) {
+			throw new IllegalArgumentException("Text must not be null.");
+		}
+		if (searchStr == null) {
+			throw new IllegalArgumentException(
+				"Search string must not be null.");
+		}
+		if (replacementStr == null) {
+			throw new IllegalArgumentException(
+				"Replacement string must not be null.");
+		}
+		//
+		if (isEmpty(text) || isEmpty(searchStr)) {
+			return text;
+		}
+		//
 		StringBuffer sb = new StringBuffer();
 		int searchStringPos = text.indexOf(searchStr);
 		int startPos = 0;

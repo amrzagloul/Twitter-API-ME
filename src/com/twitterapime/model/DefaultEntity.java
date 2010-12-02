@@ -13,11 +13,13 @@ import java.util.Hashtable;
 
 import com.twitterapime.rest.Credential;
 import com.twitterapime.rest.GeoLocation;
+import com.twitterapime.rest.List;
 import com.twitterapime.rest.RateLimitStatus;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Topic;
 import com.twitterapime.search.Tweet;
 import com.twitterapime.search.TweetEntity;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -25,7 +27,7 @@ import com.twitterapime.search.TweetEntity;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  * @see Tweet
  * @see Credential
@@ -34,6 +36,7 @@ import com.twitterapime.search.TweetEntity;
  * @see GeoLocation
  * @see Topic
  * @see TweetEntity
+ * @see List
  */
 public class DefaultEntity implements Entity {
 	/**
@@ -177,6 +180,32 @@ public class DefaultEntity implements Entity {
 	 */
 	public final int size() {
 		return data.size();
+	}
+	
+	/**
+	 * <p>
+	 * Checks if the value associated to the is null or empty.
+	 * </p>
+	 * @param key Key.
+	 * @return Empty (true).
+	 */
+	public boolean isEmpty(String key) {
+		Object v = data.get(key);
+		//
+		return v == null || StringUtil.isEmpty(v.toString());
+	}
+	
+	/**
+	 * <p>
+	 * Checks if the value associated to the is null or empty.
+	 * </p>
+	 * @param key Key.
+	 * @throws IllegalArgumentException If key's value is empty.
+	 */
+	public void checkEmpty(String key) {
+		if (isEmpty(key)) {
+			throw new IllegalArgumentException(key + " must not be empty.");
+		}
 	}
 	
 	/**

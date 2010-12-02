@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
@@ -77,18 +78,102 @@ public final class ListManager {
 	 * Key for Twitter API URL service user lists.
 	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#create(List)
 	 * @see ListManager#getLists()
 	 * @see ListManager#getLists(UserAccount)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_USER_LISTS =
 		"TWITTER_API_URL_SERVICE_USER_LISTS";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service user lists update.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#update(List)
+	 * @see ListManager#delete(List)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_ID =
+		"TWITTER_API_URL_SERVICE_USER_LISTS_ID";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service user lists memberships.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#getMemberships()
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_MEMBERSHIPS =
+		"TWITTER_API_URL_SERVICE_USER_LISTS_MEMBERSHIPS";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service user lists subscriptions.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#getSubscriptions()
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_SUBSCRIPTIONS=
+		"TWITTER_API_URL_SERVICE_USER_LISTS_SUBSCRIPTIONS";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service list membership checking.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#isMember(List)
+	 * @see ListManager#isMember(List, UserAccount)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS_ID =
+		"TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS_ID";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service list membership management.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#addMember(List)
+	 * @see ListManager#addMember(List, UserAccount)
+	 * @see ListManager#removeMember(List)
+	 * @see ListManager#removeMember(List, UserAccount)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS =
+		"TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service list subscription management.
+	 * </p>
+	 * @see ListManager#setServiceURL(String, String)
+	 * @see ListManager#subscribe(List)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS=
+		"TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS";
+
 	static {
-		SERVICES_URL = new Hashtable(4);
+		SERVICES_URL = new Hashtable(10);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_USER_LISTS,
 			"http://api.twitter.com/1/:user/lists.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LISTS_ID,
+			"http://api.twitter.com/1/:user/lists/:id.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LISTS_MEMBERSHIPS,
+			"http://api.twitter.com/1/:user/lists/memberships.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LISTS_SUBSCRIPTIONS,
+			"http://api.twitter.com/1/:user/lists/subscriptions.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS_ID,
+			"http://api.twitter.com/1/:user/:list_id/members/:id.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS,
+			"http://api.twitter.com/1/:user/:list_id/members.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS,
+			"http://api.twitter.com/1/:user/:list_id/subscribers.xml");
 	}
 	
 	/**
@@ -144,6 +229,12 @@ public final class ListManager {
 	 * @param serviceKey Service key.
 	 * @param url New URL.
 	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LISTS
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LISTS_ID
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LISTS_MEMBERSHIPS
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LISTS_SUBSCRIPTIONS
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS_ID
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS
+	 * @see ListManager#TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -224,6 +315,443 @@ public final class ListManager {
 	
 	/**
 	 * <p>
+	 * Creates a new list for the authenticated user.
+	 * </p>
+	 * @param list List to be created.
+	 * @return List created.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list or list's name is null.
+	 */
+	public List create(List list) throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_NAME);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LISTS),
+				null,
+				getUsernameFromCredential(),
+				null);
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("name", list.getString(MetadataSet.LIST_NAME));
+		if (!list.isEmpty(MetadataSet.LIST_MODE)) {
+			req.setBodyParameter("mode", list.getString(MetadataSet.LIST_MODE));
+		}
+		if (!list.isEmpty(MetadataSet.LIST_DESCRIPTION)) {
+			req.setBodyParameter(
+				"description", list.getString(MetadataSet.LIST_DESCRIPTION));
+		}
+		//
+		return processRequest(req)[0];
+	}
+	
+	/**
+	 * <p>
+	 * Updates the given list.
+	 * </p>
+	 * @param list List to be updated.
+	 * @return List updated.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list or list's id is null.
+	 */
+	public List update(List list) throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LISTS_ID),
+				null,
+				getUsernameFromCredential(),
+				list.getString(MetadataSet.LIST_ID));
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		if (!list.isEmpty(MetadataSet.LIST_NAME)) {
+			req.setBodyParameter("name", list.getString(MetadataSet.LIST_NAME));
+		}
+		if (!list.isEmpty(MetadataSet.LIST_MODE)) {
+			req.setBodyParameter("mode", list.getString(MetadataSet.LIST_MODE));
+		}
+		if (!list.isEmpty(MetadataSet.LIST_DESCRIPTION)) {
+			req.setBodyParameter(
+				"description", list.getString(MetadataSet.LIST_DESCRIPTION));
+		}
+		//
+		return processRequest(req)[0];
+	}
+	
+	/**
+	 * <p>
+	 * Deletes the given list. Must be owned by the authenticated user.
+	 * </p>
+	 * @param list List to be deleted.
+	 * @return List deleted.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list or list's id is null.
+	 */
+	public List delete(List list) throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LISTS_ID),
+				null,
+				getUsernameFromCredential(),
+				list.getString(MetadataSet.LIST_ID));
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("_method", "DELETE");
+		//
+		return processRequest(req)[0];
+	}
+	
+	/**
+	 * <p>
+	 * Get the lists the authenticated user has been added to.
+	 * </p>
+	 * @return Lists.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 */
+	public List[] getMemberships() throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		return getMemberships(getUserAccountFromCredential());
+	}
+	
+	/**
+	 * <p>
+	 * Get the lists the given user has been added to.
+	 * </p>
+	 * @return Lists.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If user or username is null.
+	 */
+	public List[] getMemberships(UserAccount user) throws IOException,
+		LimitExceededException {
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		//
+		user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LISTS_MEMBERSHIPS),
+				null,
+				user.getString(MetadataSet.USERACCOUNT_USER_NAME),
+				null);
+		//
+		return processRequest(req);
+	}
+	
+	/**
+	 * <p>
+	 * Get the lists the authenticated user follows.
+	 * </p>
+	 * @return Lists.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 */
+	public List[] getSubscriptions() throws IOException,
+		LimitExceededException {
+		checkUserAuth();
+		//
+		return getSubscriptions(getUserAccountFromCredential());
+	}
+	
+	/**
+	 * <p>
+	 * Get the lists the given user follows.
+	 * </p>
+	 * @return Lists.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If user or username is null.
+	 */
+	public List[] getSubscriptions(UserAccount user) throws IOException,
+		LimitExceededException {
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		//
+		user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LISTS_SUBSCRIPTIONS),
+				null,
+				user.getString(MetadataSet.USERACCOUNT_USER_NAME),
+				null);
+		//
+		return processRequest(req);
+	}
+	
+	/**
+	 * <p>
+	 * Make the authenticated user follow the given list.
+	 * </p>
+	 * @param list List.
+	 * @return List.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list or list's id is null.
+	 */
+	public List subscribe(List list) throws IOException,
+		LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS),
+				null,
+				getUsernameFromCredential(),
+				list.getString(MetadataSet.LIST_ID));
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("list_id", list.getString(MetadataSet.LIST_ID));
+		//
+		return processRequest(req)[0];
+	}
+
+	/**
+	 * <p>
+	 * Unsubscribes the authenticated user form the given list.
+	 * </p>
+	 * @param list List.
+	 * @return List.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list or list's id is null.
+	 */
+	public List unsubscribe(List list) throws IOException,
+		LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS),
+				null,
+				getUsernameFromCredential(),
+				list.getString(MetadataSet.LIST_ID));
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("list_id", list.getString(MetadataSet.LIST_ID));
+		req.setBodyParameter("_method", "DELETE");
+		//
+		return processRequest(req)[0];
+	}
+	
+	/**
+	 * <p>
+	 * Add the authenticated user to a list. The authenticated user must own the
+	 * list to be able to add members to it.
+	 * </p>
+	 * @param list List.
+	 * @return User added.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list is null.
+	 */
+	public UserAccount addMember(List list)	throws IOException,
+		LimitExceededException {
+		return addMember(list, userAccountMngr.getUserAccount());
+	}
+
+	/**
+	 * <p>
+	 * Add a member to a list. The authenticated user must own the list to be
+	 * able to add members to it.
+	 * </p>
+	 * @param list List.
+	 * @param user User.
+	 * @return User added.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list, list's, user, user's name and
+	 *                                  id id is null.
+	 */
+	public UserAccount addMember(List list, UserAccount user)
+		throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		user.checkEmpty(MetadataSet.USERACCOUNT_ID);
+		user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		String listid = list.getString(MetadataSet.LIST_ID);
+		String userid = user.getString(MetadataSet.USERACCOUNT_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS),
+				null,
+				user.getString(MetadataSet.USERACCOUNT_USER_NAME),
+				listid);
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("list_id", listid);
+		req.setBodyParameter("id", userid);
+		//
+//		try {
+//			HttpResponse resp = req.send();
+//			//
+//			HttpResponseCodeInterpreter.perform(resp);
+//			//
+//			//define parser
+//			Parser parser = ParserFactory.getDefaultParser();
+//			ListHandler handler = new ListHandler();
+//			parser.parse(resp.getStream(), handler);
+//			//define parser
+//			//
+//			return null;
+//		} catch (ParserException e) {
+//			throw new IOException(e.getMessage());
+//		} finally {
+//			req.close();
+//		}
+		return user;
+	}
+	
+	/**
+	 * <p>
+	 * Removes the authenticated user from the list. The authenticated user must
+	 * be the list's owner to remove members from the list.
+	 * </p>
+	 * @param list List.
+	 * @return User removed.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list is null.
+	 */
+	public UserAccount removeMember(List list) throws IOException,
+		LimitExceededException {
+		return removeMember(list, userAccountMngr.getUserAccount());
+	}
+
+	/**
+	 * <p>
+	 * Removes the given user from the list. The authenticated user must be the
+	 * list's owner to remove members from the list.
+	 * </p>
+	 * @param list List.
+	 * @param user User.
+	 * @return User removed.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If list, list's, user, user's name and
+	 *                                  id id is null.
+	 */
+	public UserAccount removeMember(List list, UserAccount user)
+		throws IOException, LimitExceededException {
+		checkUserAuth();
+		//
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		user.checkEmpty(MetadataSet.USERACCOUNT_ID);
+		user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		String listid = list.getString(MetadataSet.LIST_ID);
+		String userid = user.getString(MetadataSet.USERACCOUNT_ID);
+		//
+		HttpRequest req =
+			createRequest(
+				getURL(TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS),
+				null,
+				user.getString(MetadataSet.USERACCOUNT_USER_NAME),
+				listid);
+		//
+		req.setMethod(HttpConnection.POST);
+		//
+		req.setBodyParameter("list_id", listid);
+		req.setBodyParameter("id", userid);
+		req.setBodyParameter("_method", "DELETE");
+		//
+//		try {
+//			HttpResponse resp = req.send();
+//			//
+//			HttpResponseCodeInterpreter.perform(resp);
+//			//
+//			//define parser
+//			Parser parser = ParserFactory.getDefaultParser();
+//			ListHandler handler = new ListHandler();
+//			parser.parse(resp.getStream(), handler);
+//			//define parser
+//			//
+//			return null;
+//		} catch (ParserException e) {
+//			throw new IOException(e.getMessage());
+//		} finally {
+//			req.close();
+//		}
+		return user;
+	}
+	
+	/**
+	 * <p>
 	 * Get the lists (public and privates) of the authenticated user.
 	 * </p>
 	 * @return Lists.
@@ -234,7 +762,7 @@ public final class ListManager {
 	public List[] getLists() throws IOException, LimitExceededException {
 		checkUserAuth();
 		//
-		return getLists(userAccountMngr.getUserAccount());
+		return getLists(getUserAccountFromCredential());
 	}
 
 	/**
@@ -246,7 +774,7 @@ public final class ListManager {
 	 * @return Lists.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
-	 * @throws IllegalArgumentException If user account is null.
+	 * @throws IllegalArgumentException If user or username is null.
 	 */
 	public List[] getLists(UserAccount user) throws IOException,
 		LimitExceededException {
@@ -254,39 +782,12 @@ public final class ListManager {
 			throw new IllegalArgumentException("User must not be null.");
 		}
 		//
+		user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
 		String username = user.getString(MetadataSet.USERACCOUNT_USER_NAME);
-		//
-		if (StringUtil.isEmpty(username)) {
-			throw new IllegalArgumentException(
-				"User account's name must not be null.");
-		}
-		//
 		String url = getURL(TWITTER_API_URL_SERVICE_USER_LISTS);
 		//
-		url = StringUtil.replace(url, ":user", username);
-		//
-		HttpRequest req;
-		if (userAccountMngr != null) {
-			req = userAccountMngr.createRequest(url);
-		} else {
-			req = new HttpRequest(url);
-		}
-		//
-		try {
-			HttpResponse resp = req.send();
-			//
-			HttpResponseCodeInterpreter.perform(resp);
-			//
-			Parser parser = ParserFactory.getDefaultParser();
-			ListHandler handler = new ListHandler();
-			parser.parse(resp.getStream(), handler);
-			//
-			return handler.getParsedLists();
-		} catch (ParserException e) {
-			throw new IOException(e.getMessage());
-		} finally {
-			req.close();
-		}
+		return processRequest(createRequest(url, null, username, null));
 	}
 	
 	/**
@@ -302,6 +803,85 @@ public final class ListManager {
 		}
 		//
 		tml.startGetListTweets(list, q, l);
+	}
+	
+	/**
+	 * <p>
+	 * Get the username from user's credential.
+	 * </p>
+	 * @return Username.
+	 */
+	private String getUsernameFromCredential() {
+		return
+			userAccountMngr.getCredential().getString(
+				MetadataSet.CREDENTIAL_USERNAME);
+	}
+
+	/**
+	 * <p>
+	 * Create an UserAccount object from user's credential.
+	 * </p>
+	 * @return UserAccount object.
+	 */
+	private UserAccount getUserAccountFromCredential() {
+		return new UserAccount(getUsernameFromCredential());
+	}
+	
+	/**
+	 * <p>
+	 * Create a request to a given URL.
+	 * </p>
+	 * @param url URL.
+	 * @param userid User Id.
+	 * @param username Username.
+	 * @param listid List Id.
+	 * @return Request.
+	 */
+	private HttpRequest createRequest(String url, String userid,
+		String username, String listid) {
+		if (userid != null) {
+			url = StringUtil.replace(url, ":id", userid);
+		}
+		if (username != null) {
+			url = StringUtil.replace(url, ":user", username);
+		}
+		if (listid != null) {
+			url = StringUtil.replace(url, ":list_id", listid);
+		}
+		//
+		if (userAccountMngr != null) {
+			return userAccountMngr.createRequest(url);
+		} else {
+			return new HttpRequest(url);
+		}
+	}
+	
+	/**
+	 * <p>
+	 * Process the given request.
+	 * </p>
+	 * @param req Request.
+	 * @return List array.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 */
+	private List[] processRequest(HttpRequest req) throws IOException,
+		LimitExceededException {
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			ListHandler handler = new ListHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedLists();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}
 	}
 	
 	/**
