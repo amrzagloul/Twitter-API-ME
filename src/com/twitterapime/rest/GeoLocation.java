@@ -19,11 +19,11 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.4
  * @see Tweet
  */
-public class GeoLocation extends DefaultEntity {
+public final class GeoLocation extends DefaultEntity {
 	/**
 	 * <p>
 	 * Create an instance of GeoLocation class.

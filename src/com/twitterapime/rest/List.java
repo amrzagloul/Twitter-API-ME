@@ -22,7 +22,7 @@ import com.twitterapime.util.StringUtil;
  * @version 1.0
  * @since 1.6
  */
-public class List extends DefaultEntity {
+public final class List extends DefaultEntity {
 	/**
 	 * <p>
 	 * Create an instance of List class.
@@ -51,7 +51,7 @@ public class List extends DefaultEntity {
 	 * @param description Description.
 	 */
 	public List(String id, String name, boolean isPublic, String description) {
-		Hashtable t = new Hashtable(3);
+		Hashtable t = new Hashtable(4);
 		if (!StringUtil.isEmpty(id)) {
 			t.put(MetadataSet.LIST_ID, id);
 		}

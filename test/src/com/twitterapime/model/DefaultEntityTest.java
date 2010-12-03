@@ -250,4 +250,59 @@ public class DefaultEntityTest extends TestCase {
 		d = new DefaultEntity(null);
 		assertEquals(0, d.size());	
 	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.model.DefaultEntity#checkEmpty(String)}.
+	 */
+	public void testCheckEmpty() {
+		Hashtable t = new Hashtable();
+		//
+		t.put("a", "");
+		t.put("b", "b");
+		t.put("d", "    ");
+		//
+		DefaultEntity e = new DefaultEntity(t);
+		//
+		try {
+			e.checkEmpty("a");
+			fail();
+		} catch (IllegalArgumentException e2) {
+		}
+		//
+		try {
+			e.checkEmpty("b");
+		} catch (IllegalArgumentException e2) {
+			fail();
+		}
+		//
+		try {
+			e.checkEmpty("c");
+			fail();
+		} catch (IllegalArgumentException e2) {
+		}
+		//
+		try {
+			e.checkEmpty("d");
+			fail();
+		} catch (IllegalArgumentException e2) {
+		}
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.model.DefaultEntity#isEmpty(String)}.
+	 */
+	public void testIsEmpty() {
+		Hashtable t = new Hashtable();
+		//
+		t.put("a", "");
+		t.put("b", "b");
+		t.put("d", "    ");
+		//
+		DefaultEntity e = new DefaultEntity(t);
+		//
+		assertTrue(e.isEmpty("a"));
+		assertFalse(e.isEmpty("b"));
+		assertTrue(e.isEmpty("c"));
+		assertTrue(e.isEmpty("d"));
+	}
 }

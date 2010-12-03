@@ -178,12 +178,41 @@ public class StringUtilTest extends TestCase {
 	}
 	
 	/**
-	 * Test method for {@link com.twitterapime.util.StringUtil#isEmpty(String).
+	 * Test method for {@link com.twitterapime.util.StringUtil#isEmpty(String)}.
 	 */
 	public void testIsEmpty() {
 		assertTrue(StringUtil.isEmpty(null));
 		assertTrue(StringUtil.isEmpty(""));
 		assertFalse(StringUtil.isEmpty("a"));
 		assertFalse(StringUtil.isEmpty("dajsdhkajd"));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.util.StringUtil#replace(String, String, String)}.
+	 */
+	public void testReplace() {
+		try {
+			StringUtil.replace(null, "", "");
+			fail();
+		} catch (Exception e) {}
+		//
+		try {
+			StringUtil.replace("", null, "");
+			fail();
+		} catch (Exception e) {}
+		//
+		try {
+			StringUtil.replace("", "", null);
+			fail();
+		} catch (Exception e) {}
+		//
+		assertEquals("", StringUtil.replace("", "aaa", "bbb"));
+		assertEquals("aaa", StringUtil.replace("aaa", "", "bbb"));
+		assertEquals("horse", StringUtil.replace("house", "u", "r"));
+		assertEquals("house", StringUtil.replace("house", "U", "r"));
+		assertEquals("banana", StringUtil.replace("bununu", "u", "a"));
+		assertEquals("Java EE", StringUtil.replace("Java ME EE", " ME", ""));
+		assertEquals("bbb", StringUtil.replace("aaa", "a", "b"));
+		assertEquals("TwitterAPIME", StringUtil.replace("Twitter API ME", " ", ""));
 	}
 }
