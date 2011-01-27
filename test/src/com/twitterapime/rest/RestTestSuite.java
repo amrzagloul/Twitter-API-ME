@@ -22,5 +22,6 @@ public class RestTestSuite extends TestSuite {
 		addTest(new GeoLocationTest());
 		addTest(new FriendshipManagerTest());
 		addTest(new ListTest());
+		addTest(new ListManagerTest());
 	}
 }
