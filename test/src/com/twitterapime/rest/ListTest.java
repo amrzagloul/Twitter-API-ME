@@ -24,19 +24,32 @@ public class ListTest extends TestCase {
 	 * Test method for {@link com.twitterapime.rest.List#List(java.lang.String, java.lang.String, boolean, java.lang.String)}.
 	 */
 	public void testListStringStringBooleanString() {
-		List l = new List("1", "name", true, "description");
+		List l = new List("name", true, "description");
 		//
-		assertEquals("1", l.getString(MetadataSet.LIST_ID));
 		assertEquals("name", l.getString(MetadataSet.LIST_NAME));
 		assertEquals("public", l.getString(MetadataSet.LIST_MODE));
 		assertEquals("description", l.getString(MetadataSet.LIST_DESCRIPTION));
 		//
-		l = new List(null, null, false, null);
+		l = new List("name", false, null);
 		//
-		assertNull(l.getString(MetadataSet.LIST_ID));
-		assertNull(l.getString(MetadataSet.LIST_NAME));
 		assertEquals("private", l.getString(MetadataSet.LIST_MODE));
 		assertNull(l.getString(MetadataSet.LIST_DESCRIPTION));
+		//
+		try {
+			l = new List(null, true, null);
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			l = new List("", true, "description");
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**

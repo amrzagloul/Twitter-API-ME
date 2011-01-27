@@ -633,7 +633,7 @@ public final class Timeline {
 	 * <ul>
 	 * <li>{@link QueryComposer#sinceID(String)}</li>
 	 * <li>{@link QueryComposer#maxID(String)}</li>
-	 * <li>{@link QueryComposer#count(int)}</li>
+	 * <li>{@link QueryComposer#perPage(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>

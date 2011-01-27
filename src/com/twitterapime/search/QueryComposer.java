@@ -20,7 +20,7 @@ import com.twitterapime.rest.Timeline;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -201,6 +201,13 @@ public final class QueryComposer {
 	 * </p>
 	 */
 	static final String PM_INCLUDE_ENTITIES = "include_entities=true";
+	
+	/**
+	 * <p>
+	 * Constant that represents the "per_page" parameter.
+	 * </p>
+	 */
+	static final String PM_PER_PAGE = "per_page=";
 
 	/**
 	 * <p>
@@ -580,6 +587,17 @@ public final class QueryComposer {
 	 */
 	public static Query includeEntities() {
 		return new Query(PM_INCLUDE_ENTITIES);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to define the tweet count to be returned per page.
+	 * </p>
+	 * @param count The count.
+	 * @return A new query.
+	 */
+	public static Query perPage(int count) {
+		return new Query(PM_PER_PAGE + count);
 	}
 
 	/**

@@ -43,27 +43,47 @@ public final class List extends DefaultEntity {
 	
 	/**
 	 * <p>
-	 * Create an instance of List class.
+	 * Create an instance of List class. Use this constructor when you intend
+	 * to create a new list.
 	 * </p>
-	 * @param id Id.
 	 * @param name Name.
 	 * @param isPublic Mode: Public (true) or private (false).
 	 * @param description Description.
+	 * @throws IllegalArgumentException If name is null/empty.
 	 */
-	public List(String id, String name, boolean isPublic, String description) {
+	public List(String name, boolean isPublic, String description) {
 		Hashtable t = new Hashtable(4);
-		if (!StringUtil.isEmpty(id)) {
-			t.put(MetadataSet.LIST_ID, id);
+		if (StringUtil.isEmpty(name)) {
+			throw new IllegalArgumentException("Name must not be null/empty.");
 		}
-		if (!StringUtil.isEmpty(name)) {
-			t.put(MetadataSet.LIST_NAME, name);
-		}
+		//
+		t.put(MetadataSet.LIST_NAME, name);
 		t.put(MetadataSet.LIST_MODE, isPublic ? "public" : "private");
 		if (!StringUtil.isEmpty(description)) {
 			t.put(MetadataSet.LIST_DESCRIPTION, description.trim());
 		}
 		//
 		setData(t);
+	}
+	
+	/**
+	 * <p>
+	 * Create an instance of List class. Use this constructor when you intend
+	 * to update an existent list.
+	 * </p>
+	 * @param name Name.
+	 * @param isPublic Mode: Public (true) or private (false).
+	 * @param description Description.
+	 * @throws IllegalArgumentException If id/name is null/empty.
+	 */
+	public List(String id, String name, boolean isPublic, String description) {
+		this(name, isPublic, description);
+		//
+		if (StringUtil.isEmpty(id)) {
+			throw new IllegalArgumentException("ID must not be null/empty.");
+		}
+		//
+		data.put(MetadataSet.LIST_ID, id);
 	}
 
 	/**

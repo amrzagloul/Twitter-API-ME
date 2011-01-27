@@ -290,4 +290,12 @@ public class QueryComposerTest extends TestCase {
 	public void testIncludeEntities() {
 		assertEquals(new Query(QueryComposer.PM_INCLUDE_ENTITIES), QueryComposer.includeEntities());
 	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#perPage(int)}.
+	 */
+	public void testPerPage() {
+		assertEquals(new Query(QueryComposer.PM_PER_PAGE + "6"), QueryComposer.perPage(6));
+		assertEquals(new Query(QueryComposer.PM_PER_PAGE + "7"), QueryComposer.perPage(7));
+	}
 }
