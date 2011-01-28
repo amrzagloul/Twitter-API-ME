@@ -51,7 +51,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.4
  */
 public final class FriendshipManager {
@@ -704,7 +704,7 @@ public final class FriendshipManager {
 			AccountHandler handler = new AccountHandler();
 			parser.parse(resp.getStream(), handler);
 			//
-			return handler.getParsedUserAccount();
+			return handler.getParsedUserAccounts()[0];
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {

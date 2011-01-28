@@ -472,7 +472,7 @@ public final class UserAccountManager {
 			AccountHandler handler = new AccountHandler();
 			parser.parse(resp.getStream(), handler);
 			//
-			handler.loadParsedUserAccount(user);
+			handler.loadParsedUserAccount(user, 0);
 			//
 			return user;
 		} catch (ParserException e) {
@@ -670,7 +670,7 @@ public final class UserAccountManager {
 			AccountHandler handler = new AccountHandler();
 			parser.parse(resp.getStream(), handler);
 			//
-			handler.loadParsedUserAccount(newUserInfo);
+			handler.loadParsedUserAccount(newUserInfo, 0);
 			//
 			return newUserInfo;
 		} catch (ParserException e) {
@@ -716,7 +716,7 @@ public final class UserAccountManager {
 			AccountHandler handler = new AccountHandler();
 			parser.parse(resp.getStream(), handler);
 			//
-			handler.loadParsedUserAccount(user);
+			handler.loadParsedUserAccount(user, 0);
 			//
 			return user;
 		} catch (ParserException e) {

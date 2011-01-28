@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.5 - READ ME                         *
+*                         TWITTER API ME 1.6 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -20,7 +20,7 @@ quicker for the developers to port their applications to other platforms.
 ********************************************************************************
 + Runtime Environment
   - Java ME: MIDP 2.0 / CLDC 1.0
-  - Android 1.1
+  - Android 1.6
   - RIM OS
 
 + Development Environment
@@ -32,13 +32,11 @@ quicker for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- List of pending friends/followers request.
-- Report spam.
-- Retweets of me timeline.
-- Trend Topics search (i.e. current, daily and weekly).
-- Tweet's entities.
-- 1970 year date bug fix.
-- Retrieval of access token from UserAccountManager class.
+- Retweets to me timeline.
+- Retweets by me timeline.
+- Tweets from list timeline.
+- List management (e.g. create, update, memberships, subscriptions, etc).
+- Special characters in password bug fix.
 - Some bug fixes and optimizations.
 
  KNOWN BUGS IN THIS VERSION:
@@ -47,19 +45,11 @@ quicker for the developers to port their applications to other platforms.
 
  REMARKS:
 ********************************************************************************
-- Tweet's entities retrieval is only available for tweet post, repost, find and
-  timelines. However, for timelines, you need to set a parameter query
-  (QueryComposer.includeEntities()) to indicate you want to have access to this
-  data. It is not default, because this extra info increase the volume of bytes 
-  to be downloaded. Direct Message and Search API has no support for 
-  tweet's entities. It is also important to point out that not all tweets have
-  entities data.
+- None
 
- COMING NEXT VERSION: 1.6
+ COMING NEXT VERSION: 1.7
 ********************************************************************************
-- Lists.
-- Find people.
-- Much more... Let us know what you need.
+- Let us know what you need.
 
  PREPROCESSOR DIRECTIVES:
 ********************************************************************************

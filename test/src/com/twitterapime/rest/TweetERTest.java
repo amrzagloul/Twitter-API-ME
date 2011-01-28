@@ -20,36 +20,6 @@ public class TweetERTest extends TestCase {
 	/**
 	 * 
 	 */
-	private Credential credential1;
-	
-	/**
-	 * 
-	 */
-	private Credential credential2;
-
-	/**
-	 * 
-	 */
-	private Credential credential3;
-
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr1;
-	
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr2;
-
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr3;
-
-	/**
-	 * 
-	 */
 	public TweetERTest() {
 		super("TweetERTest");
 	}
@@ -58,36 +28,16 @@ public class TweetERTest extends TestCase {
 	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
 	 */
 	public void setUp() throws Throwable {
-		String conKey = UserAccountManagerTest.CONSUMER_KEY;
-		String conSec = UserAccountManagerTest.CONSUMER_SECRET;
-		//
-		credential1 = new Credential("twiterapimetest", "f00bar", conKey, conSec);
-		credential2 = new Credential("twiterapimetst2", "f00bar", conKey, conSec);
-		credential3 = new Credential("username", "password", conKey, conSec);
-		//
-		userMngr1 = UserAccountManager.getInstance(credential1);
-		userMngr2 = UserAccountManager.getInstance(credential2);
-		userMngr3 = UserAccountManager.getInstance(credential3);
-		//
-		if (!(userMngr1.verifyCredential() && userMngr2.verifyCredential() && !userMngr3.verifyCredential())) {
-			throw new IllegalStateException("TweetERTest: Login failed!");
-		}
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
 	}
 	
 	/**
 	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
 	 */
 	public void tearDown() throws Throwable {
-		userMngr1.signOut();
-		userMngr2.signOut();
-		//
-		try {
-			TweetER tr = TweetER.getInstance(userMngr1);
-			tr.post(new Tweet("text"));
-			//
-			throw new IllegalStateException("TweetERTest: Sign out failed!");
-		} catch (IllegalStateException e) {
-		}
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
 	}
 
 	/**
@@ -103,7 +53,7 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			TweetER.getInstance(userMngr3);
+			TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_3_NON_EXISTENT));
 			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
@@ -111,14 +61,14 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			TweetER t = TweetER.getInstance(userMngr1);
+			TweetER t = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 			assertNotNull("test: 5", t);
-			assertSame("test: 6", t, TweetER.getInstance(UserAccountManager.getInstance(credential1)));			
+			assertSame("test: 6", t, TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1)));			
 		} catch (Exception e) {
 			fail("test: 7");
 		}
 		//
-		assertNotSame("test: 8", TweetER.getInstance(userMngr1), TweetER.getInstance(userMngr2));
+		assertNotSame("test: 8", TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1)), TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2)));
 	}
 
 	/**
@@ -206,7 +156,7 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			t = TweetER.getInstance(userMngr1);
+			t = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 			//
 			String msg = "Test at " + System.currentTimeMillis() + " milis.";
 			Tweet tw1 = new Tweet(msg);
@@ -255,8 +205,8 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			t1 = TweetER.getInstance(userMngr1);
-			TweetER t2 = TweetER.getInstance(userMngr2);
+			t1 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
+			TweetER t2 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2));
 			//
 			Tweet tw = new Tweet("Test at " + System.currentTimeMillis() + " milis.");
 			tw = t1.post(tw);
@@ -329,7 +279,7 @@ public class TweetERTest extends TestCase {
 		}
 		//
 		try {
-			t = TweetER.getInstance(userMngr1);
+			t = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 			//
 			String msg = "DM at " + System.currentTimeMillis() + " milis.";
 			Tweet tw1 = new Tweet("twiterapimetst2", msg);

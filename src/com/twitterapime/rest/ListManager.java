@@ -19,6 +19,7 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.ListHandler;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Query;
@@ -492,7 +493,8 @@ public final class ListManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not authenticated.
-	 * @throws IllegalArgumentException If list, list's id or username is null.
+	 * @throws IllegalArgumentException If list, list's id or list's owner's
+	 *                                  username is null.
 	 */
 	public List subscribe(List list) throws IOException,
 		LimitExceededException {
@@ -527,7 +529,8 @@ public final class ListManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not authenticated.
-	 * @throws IllegalArgumentException If list, list's id or name is null.
+	 * @throws IllegalArgumentException If list, list's id or list's owner's
+	 *                                  username is null.
 	 */
 	public List unsubscribe(List list) throws IOException,
 		LimitExceededException {
@@ -565,8 +568,8 @@ public final class ListManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not authenticated.
-	 * @throws IllegalArgumentException If list, list's, user, user's name and
-	 *                                  id id is null.
+	 * @throws IllegalArgumentException If list, list's id, user, user's id
+	 *                                  is null.
 	 */
 	public List addMember(List list, UserAccount user)
 		throws IOException, LimitExceededException {
@@ -609,8 +612,8 @@ public final class ListManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not authenticated.
-	 * @throws IllegalArgumentException If list, list's, user, user's name and
-	 *                                  id id is null.
+	 * @throws IllegalArgumentException If list, list's id, user, user's id
+	 *                                  is null.
 	 */
 	public List removeMember(List list, UserAccount user)
 		throws IOException, LimitExceededException {
@@ -643,31 +646,42 @@ public final class ListManager {
 		return processRequest(req)[0];
 	}
 	
-//	public UserAccount[] getMembers(List list) throws IOException,
-//		LimitExceededException {
-//		checkUserAuth();
-//		//
-//		if (list == null) {
-//			throw new IllegalArgumentException("List must not be null.");
-//		}
-//		//
-//		list.checkEmpty(MetadataSet.LIST_ID);
-//		list.checkEmpty(MetadataSet.LIST_USER_ACCOUNT);
-//		list.getUserAccount().checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
-//		//
-//		HttpRequest req =
-//			createRequest(
-//				TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS,
-//				null,
-//				getUsernameFromList(list),
-//				list.getString(MetadataSet.LIST_ID));
-//		//
-//		HttpResponse s = req.send();
-//		System.out.println(s.getBodyContent());
-//		//
-//		return null;
-//	}
-	
+	/**
+	 * <p>
+	 * Get the members of the given list. Members from a private list just can
+	 * be accessed by the owner's (authenticated) list.
+	 * </p>
+	 * @param list List.
+	 * @return Members.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If list, list's id or list's owner's 
+	 *                                  username is null.
+	 */
+	public UserAccount[] getMembers(List list) throws IOException,
+		LimitExceededException {
+		return processMembersSubscribersRequest(
+			list, TWITTER_API_URL_SERVICE_USER_LIST_ID_MEMBERS);
+	}
+
+	/**
+	 * <p>
+	 * Get the subscribers of the given public list. Private list there is no
+	 * subscribers, since it is only access by the owner itself.
+	 * </p>
+	 * @param list List.
+	 * @return Subscribers.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If list, list's id or list's owner's 
+	 *                                  username is null.
+	 */
+	public UserAccount[] getSubscribers(List list) throws IOException,
+		LimitExceededException {
+		return processMembersSubscribersRequest(
+			list, TWITTER_API_URL_SERVICE_USER_LIST_ID_SUBSCRIBERS);
+	}
+
 	/**
 	 * <p>
 	 * Get the lists (public and privates) of the authenticated user.
@@ -820,6 +834,51 @@ public final class ListManager {
 			parser.parse(resp.getStream(), handler);
 			//
 			return handler.getParsedLists();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}
+	}
+
+	/**
+	 * <p>
+	 * Process the request related to members and subscribers.
+	 * </p>
+	 * @param list List.
+	 * @return Members or subscribers..
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws IllegalArgumentException If list, list's id or list's owner's 
+	 *                                  username is null.
+	 */
+	private UserAccount[] processMembersSubscribersRequest(List list,
+		String urlKey) throws IOException, LimitExceededException {
+		if (list == null) {
+			throw new IllegalArgumentException("List must not be null.");
+		}
+		//
+		list.checkEmpty(MetadataSet.LIST_ID);
+		list.checkEmpty(MetadataSet.LIST_USER_ACCOUNT);
+		list.getUserAccount().checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		HttpRequest req =
+			createRequest(
+				urlKey,
+				null,
+				getUsernameFromList(list),
+				list.getString(MetadataSet.LIST_ID));
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedUserAccounts();
 		} catch (ParserException e) {
 			throw new IOException(e.getMessage());
 		} finally {

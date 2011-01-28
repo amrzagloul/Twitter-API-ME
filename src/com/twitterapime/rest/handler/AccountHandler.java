@@ -8,8 +8,10 @@
 package com.twitterapime.rest.handler;
 
 import java.util.Hashtable;
+import java.util.Vector;
 
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.parser.Attributes;
 import com.twitterapime.parser.DefaultXMLHandler;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.rest.UserAccount;
@@ -21,7 +23,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.2
  */
 public final class AccountHandler extends DefaultXMLHandler {
@@ -44,14 +46,45 @@ public final class AccountHandler extends DefaultXMLHandler {
 	 * Hash with user account values.
 	 * </p>
 	 */
-	private Hashtable userAccountValues = new Hashtable(25);
+	private Hashtable userAccountValues;
 
 	/**
 	 * <p>
 	 * Hash with last tweet values.
 	 * </p>
 	 */
-	private Hashtable lastTweetValues = new Hashtable(10);
+	private Hashtable lastTweetValues;
+	
+	/**
+	 * <p>
+	 * List of users.
+	 * </p>
+	 */
+	private Vector usersList = new Vector(10);
+	
+	/**
+	 * <p>
+	 * List of users hash.
+	 * </p>
+	 */
+	private Vector usersHashList = new Vector(10);
+
+	/**
+	 * @see com.twitterapime.parser.DefaultXMLHandler#startElement(java.lang.String, java.lang.String, java.lang.String, com.twitterapime.parser.Attributes)
+	 */
+	public void startElement(String namespaceURI, String localName,
+		String qName, Attributes attrs) throws ParserException {
+		super.startElement(namespaceURI, localName, qName, attrs);
+		//
+		if (localName.toLowerCase().equals("user")) {
+			userAccountValues = new Hashtable(25);
+			lastTweetValues = new Hashtable(5);
+			//
+			//
+			usersHashList.addElement(userAccountValues);
+			usersList.addElement(new UserAccount(userAccountValues));
+		}
+	}
 
 	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#text(java.lang.String)
@@ -59,29 +92,37 @@ public final class AccountHandler extends DefaultXMLHandler {
 	public void text(String text) throws ParserException {
 		text = text.trim();
 		//
-		if (xmlPath.startsWith("/user/status/")) {
+		if (xmlPath.indexOf("/user/status/") != -1) {
 			tHandler.populate(lastTweetValues, xmlPath, text);
-		} else if (xmlPath.startsWith("/user/")) {
+		} else {
 			uaHandler.populate(userAccountValues, xmlPath, text);
 		}
 	}
 	
 	/**
-	 * @see com.twitterapime.parser.DefaultXMLHandler#endDocument()
+	 * @see com.twitterapime.parser.DefaultXMLHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void endDocument() throws ParserException {
-		userAccountValues.put(
-			MetadataSet.USERACCOUNT_LAST_TWEET, new Tweet(lastTweetValues));
+	public void endElement(String namespaceURI, String localName, String qName)
+		throws ParserException {
+		super.endElement(namespaceURI, localName, qName);
+		if (localName.toLowerCase().equals("user")
+				&& lastTweetValues.size() > 0) {
+			userAccountValues.put(
+				MetadataSet.USERACCOUNT_LAST_TWEET, new Tweet(lastTweetValues));
+		}
 	}
 	
 	/**
 	 * <p>
-	 * Return the parsed user account.
+	 * Return the parsed user accounts.
 	 * </p>
-	 * @return User account.
+	 * @return User accounts.
 	 */
-	public UserAccount getParsedUserAccount() {
-		return new UserAccount(userAccountValues);
+	public UserAccount[] getParsedUserAccounts() {
+		UserAccount[] users = new UserAccount[usersList.size()];
+		usersList.copyInto(users);
+		//
+		return users;
 	}
 	
 	/**
@@ -89,8 +130,9 @@ public final class AccountHandler extends DefaultXMLHandler {
 	 * Load the parsed values into the given UserAccount.
 	 * </p>
 	 * @param user UserAccount to be loaded.
+	 * @param index UserAccount index.
 	 */
-	public void loadParsedUserAccount(UserAccount user) {
-		user.setData(userAccountValues);
+	public void loadParsedUserAccount(UserAccount user, int index) {
+		user.setData((Hashtable)usersHashList.elementAt(index));
 	}
 }

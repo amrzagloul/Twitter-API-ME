@@ -17,36 +17,6 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */
-	private Credential credential1;
-	
-	/**
-	 * 
-	 */
-	private Credential credential2;
-	
-	/**
-	 * 
-	 */
-	private Credential credential3;
-
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr1;
-	
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr2;
-	
-	/**
-	 * 
-	 */
-	private UserAccountManager userMngr3;
-
-	/**
-	 * 
-	 */
 	private int count;
 	
 	/**
@@ -85,28 +55,16 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
 	 */
 	public void setUp() throws Throwable {
-		String conKey = UserAccountManagerTest.CONSUMER_KEY;
-		String conSec = UserAccountManagerTest.CONSUMER_SECRET;
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
 		//
-		credential1 = new Credential("twiterapimetest", "f00bar", conKey, conSec);
-		credential2 = new Credential("twiterapimetst2", "f00bar", conKey, conSec);
-		credential3 = new Credential("username", "password", conKey, conSec);
-		//
-		userMngr1 = UserAccountManager.getInstance(credential1);
-		userMngr2 = UserAccountManager.getInstance(credential2);
-		userMngr3 = UserAccountManager.getInstance(credential3);
-		//
-		if (!(userMngr1.verifyCredential() && userMngr2.verifyCredential() && !userMngr3.verifyCredential())) {
-			throw new IllegalStateException("TweetERTest: Login failed!");
-		}
-		//
-		TweetER t1 = TweetER.getInstance(userMngr1);
+		TweetER t1 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
 		t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
 		t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
 		t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
 		//
-		TweetER t2 = TweetER.getInstance(userMngr2);
+		TweetER t2 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2));
 		t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
 		t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
 		t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
@@ -117,16 +75,8 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
 	 */
 	public void tearDown() throws Throwable {
-		userMngr1.signOut();
-		userMngr2.signOut();
-		//
-		try {
-			Timeline tl = Timeline.getInstance(userMngr1);
-			tl.startGetHomeTweets(null, this);
-			//
-			throw new IllegalStateException("TimelineTest: Sign out failed!");
-		} catch (IllegalStateException e) {
-		}
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
 	}
 
 	/**
@@ -142,16 +92,16 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 		}
 		//
 		try {
-			Timeline.getInstance(userMngr3);
+			Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_3_NON_EXISTENT));
 			fail("test: 3");
 		} catch (SecurityException e) {
 		} catch (Exception e) {
 			fail("test: 4");
 		}
 		//
-		Timeline t = Timeline.getInstance(userMngr1);
+		Timeline t = Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		assertNotNull("test: 5", t);
-		assertSame("test: 6", t, Timeline.getInstance(userMngr1));
+		assertSame("test: 6", t, Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1)));
 	}
 	
 	/**
@@ -212,7 +162,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(userMngr1);
+		t = Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		//
 		try {
 			tweetsFromUserCount = 0;
@@ -263,7 +213,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(userMngr1);
+		t = Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		//
 		try {
 			tweetsFromUserCount = 0;
@@ -316,7 +266,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(userMngr1);
+		t = Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		//
 		try {
 			tweetsReferencesUserCount = 0;
@@ -369,7 +319,7 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 			fail("test: 4");
 		}
 		//
-		t = Timeline.getInstance(userMngr1);
+		t = Timeline.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		//
 		try {
 			count = 0;

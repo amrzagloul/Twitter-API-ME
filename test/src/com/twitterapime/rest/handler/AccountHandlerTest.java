@@ -80,7 +80,7 @@ public class AccountHandlerTest extends TestCase {
 		tweet.setData(tweetSample);
 		sample.put(MetadataSet.USERACCOUNT_LAST_TWEET, tweet);
 		//
-		assertEquals(new UserAccount(sample), handler.getParsedUserAccount());
-		assertEquals(0, new AccountHandler().getParsedUserAccount().size());
+		assertEquals(new UserAccount(sample), handler.getParsedUserAccounts()[0]);
+		assertEquals(0, new AccountHandler().getParsedUserAccounts()[0].size());
 	}
 }

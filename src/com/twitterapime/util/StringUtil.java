@@ -18,7 +18,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.1
  */
 public final class StringUtil {
@@ -220,6 +220,18 @@ public final class StringUtil {
     
     /**
 	 * <p>
+	 * Encode a given string. UTF-8 is considered.
+	 * </p>
+	 * @param s String to encode.
+	 * @return Encoded string.
+	 * @throws IllegalArgumentException If string is empty or null.
+	 */
+	public static String encode(String s) {
+		return encode(s, null);
+	}
+    
+    /**
+	 * <p>
 	 * Encode a given string. If encode type is not informed, UTF-8 is
 	 * considered.
 	 * </p>
@@ -251,10 +263,10 @@ public final class StringUtil {
 			if ((c >= 'a' && c <= 'z')
 					|| (c >= 'A' && c <= 'Z')
 					|| (c >= '0' && c <= '9')
-					|| c == '.'
+				  /*|| c == '.'
 					|| c == '-'
 					|| c == '*'
-					|| c == '_') {
+					|| c == '_'*/) {
 				ret.append((char) c);
 			} else if (c == ' ') {
 				ret.append("%20");
