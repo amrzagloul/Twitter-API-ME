@@ -6,10 +6,10 @@ package com.twitterapime.rest;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 
@@ -17,7 +17,7 @@ import com.twitterapime.xauth.Token;
  * @author Main
  *
  */
-public class UserAccountManagerTest extends TestCase {
+public class UserAccountManagerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -111,11 +111,7 @@ public class UserAccountManagerTest extends TestCase {
 		//
 		credentialHash.put(TEST_USER_2, credential);
 		//
-		if (!StringUtil.isEmpty(TOKEN_ACCESS_USER_1) && !StringUtil.isEmpty(TOKEN_SECRET_USER_1)) {
-			credential = new Credential(TEST_USER_3_NON_EXISTENT, CONSUMER_KEY_USER_1, CONSUMER_SECRET_USER_1, new Token(TOKEN_ACCESS_USER_1, TOKEN_SECRET_USER_1)); 
-		} else {
-			credential = new Credential(TEST_USER_3_NON_EXISTENT, "password", CONSUMER_KEY_USER_1, CONSUMER_SECRET_USER_1);
-		}
+		credential = new Credential(TEST_USER_3_NON_EXISTENT, "password", CONSUMER_KEY_USER_1, CONSUMER_SECRET_USER_1);
 		//
 		credentialHash.put(TEST_USER_3_NON_EXISTENT, credential);
 	}
@@ -128,19 +124,27 @@ public class UserAccountManagerTest extends TestCase {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
-		getUserAccountManager(TEST_USER_1, true);
-		getUserAccountManager(TEST_USER_2, true);
+	public void setUp() {
+		try {
+			getUserAccountManager(TEST_USER_1, true);
+			getUserAccountManager(TEST_USER_2, true);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 * @see junit.framework.TestCase#tearDown()
 	 */
-	public void tearDown() throws Throwable {
-		getUserAccountManager(TEST_USER_1, false);
-		getUserAccountManager(TEST_USER_2, false);
+	public void tearDown() {
+		try {
+			getUserAccountManager(TEST_USER_1, false);
+			getUserAccountManager(TEST_USER_2, false);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**
@@ -224,6 +228,7 @@ public class UserAccountManagerTest extends TestCase {
 			UserAccount ua = getUserAccountManager(TEST_USER_1).getUserAccount();
 			//
 			assertNotNull("test: 3", ua);
+			assertEquals(TEST_USER_1, ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
 			assertTrue("test: 4", ua.size() > 0);
 		} catch (Exception e) {
 			fail("test: 5");
@@ -477,13 +482,30 @@ public class UserAccountManagerTest extends TestCase {
 	public void testUpdateProfile() {
 		try {
 			getUserAccountManager(TEST_USER_3_NON_EXISTENT).updateProfile(null);
+		} catch (SecurityException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			getUserAccountManager(TEST_USER_1).updateProfile(null);
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
-			getUserAccountManager(TEST_USER_3_NON_EXISTENT).updateProfile(new UserAccount());
+			getUserAccountManager(TEST_USER_1).updateProfile(new UserAccount());
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Hashtable d1 = new Hashtable();
+			d1.put(MetadataSet.USERACCOUNT_NAME, "aaaaaaaaaabbbbbbbbbbc");
+			getUserAccountManager(TEST_USER_1).updateProfile(new UserAccount(d1));
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
@@ -492,21 +514,22 @@ public class UserAccountManagerTest extends TestCase {
 		try {
 			Hashtable d1 = new Hashtable();
 			d1.put(MetadataSet.USERACCOUNT_DESCRIPTION, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-			getUserAccountManager(TEST_USER_3_NON_EXISTENT).updateProfile(new UserAccount(d1));
+			getUserAccountManager(TEST_USER_1).updateProfile(new UserAccount(d1));
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		Hashtable d = new Hashtable();
-		d.put(MetadataSet.USERACCOUNT_NAME, "Twiter API ME Test 2 " + System.currentTimeMillis());
+		d.put(MetadataSet.USERACCOUNT_NAME, "TwAPIme" + System.currentTimeMillis());
 		d.put(MetadataSet.USERACCOUNT_DESCRIPTION, "Description " + System.currentTimeMillis());
-		d.put(MetadataSet.USERACCOUNT_URL, "http://www.twapime.com " + System.currentTimeMillis());
+		d.put(MetadataSet.USERACCOUNT_URL, "http://www.twapime.com");
 		d.put(MetadataSet.USERACCOUNT_LOCATION, "Fortaleza " + System.currentTimeMillis());
 		UserAccount u = new UserAccount(d);
 		//
 		try {
-			UserAccount nu = getUserAccountManager(TEST_USER_3_NON_EXISTENT).updateProfile(u);
+			UserAccount nu = getUserAccountManager(TEST_USER_1).updateProfile(u);
 			//
 			assertEquals(u.getString(MetadataSet.USERACCOUNT_NAME), nu.getString(MetadataSet.USERACCOUNT_NAME));
 			assertEquals(u.getString(MetadataSet.USERACCOUNT_DESCRIPTION), nu.getString(MetadataSet.USERACCOUNT_DESCRIPTION));

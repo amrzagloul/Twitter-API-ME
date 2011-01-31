@@ -7,17 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class SearchResultHandlerTest extends TestCase implements SearchDeviceListener {
+public class SearchResultHandlerTest extends TwitterAPIMETestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */
@@ -64,12 +64,16 @@ public class SearchResultHandlerTest extends TestCase implements SearchDeviceLis
 		sample.put(MetadataSet.TWEET_LANG, "en");
 		sample.put(MetadataSet.TWEET_SOURCE, "TweetDeck");
 		sample.put(MetadataSet.TWEET_AUTHOR_PICTURE_URI, "http://a3.twimg.com/profile_images/45684621/pic_normal.JPG");
-		sample.put(MetadataSet.TWEET_PUBLISH_DATE, "1259630700000");
+		sample.put(MetadataSet.TWEET_PUBLISH_DATE, "1259641500000");
 		//
 		for (int i = 0; i < ts.length; i++) {
 			sample.put(MetadataSet.TWEET_ID, Integer.toString(i +1));
 			sample.put(MetadataSet.TWEET_CONTENT, "Tweet message " + Integer.toString(i +1));
 			sample.put(MetadataSet.TWEET_URI, "http://twitter.com/twapime/statuses/" + Integer.toString(i +1));
+			//
+			System.out.println(new Tweet(sample));
+			System.out.println("-----------");
+			System.out.println(ts[i]);
 			//
 			assertTrue(new Tweet(sample).equals(ts[i]));
 		}

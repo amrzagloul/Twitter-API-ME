@@ -3,13 +3,13 @@
  */
 package com.twitterapime.platform;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class PlatformProviderSelectorTest extends TestCase {
+public class PlatformProviderSelectorTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -22,15 +22,19 @@ public class PlatformProviderSelectorTest extends TestCase {
 	 */
 	public void testGetAvailableProviders() {
 		PlatformProvider[] ps = PlatformProviderSelector.getAvailableProviders();
-		assertEquals(1, ps.length);
+		assertEquals(2, ps.length);
 		assertEquals(PlatformProvider.PPID_JAVA_ME, ps[0].getID());
+		assertEquals(PlatformProvider.PPID_ANDROID, ps[1].getID());
 	}
 
 	/**
 	 * Test method for {@link com.twitterapime.platform.PlatformProviderSelector#getCurrentProvider()}.
 	 */
 	public void testGetCurrentProvider() {
+		PlatformProviderSelector.select(PlatformProviderSelector.getAvailableProviders()[0]);
 		assertEquals(new PlatformProvider(PlatformProvider.PPID_JAVA_ME, PlatformProvider.PPNM_JAVA_ME), PlatformProviderSelector.getCurrentProvider());
+		PlatformProviderSelector.select(PlatformProviderSelector.getAvailableProviders()[1]);
+		assertEquals(new PlatformProvider(PlatformProvider.PPID_ANDROID, PlatformProvider.PPNM_ANDROID), PlatformProviderSelector.getCurrentProvider());
 	}
 
 	/**
@@ -38,27 +42,5 @@ public class PlatformProviderSelectorTest extends TestCase {
 	 */
 	public void testGetDefaultProvider() {
 		assertEquals(new PlatformProvider(PlatformProvider.PPID_JAVA_ME, PlatformProvider.PPNM_JAVA_ME), PlatformProviderSelector.getDefaultProvider());
-	}
-
-	/**
-	 * Test method for {@link com.twitterapime.platform.PlatformProviderSelector#select(com.twitterapime.platform.PlatformProvider)}.
-	 */
-	public void testSelect() {
-		PlatformProvider pd = PlatformProviderSelector.getCurrentProvider();
-		//
-		try {
-			PlatformProviderSelector.select(null);
-			fail();
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			fail();
-		}
-		//
-		PlatformProvider p = new PlatformProvider(PlatformProvider.PPID_ANDROID, PlatformProvider.PPNM_ANDROID);
-		assertFalse(pd.equals(p));
-		PlatformProviderSelector.select(p);
-		assertTrue(p.equals(PlatformProviderSelector.getCurrentProvider()));
-		//
-		PlatformProviderSelector.select(pd); //keep original state.
 	}
 }

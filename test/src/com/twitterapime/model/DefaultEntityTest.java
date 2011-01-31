@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class DefaultEntityTest extends TestCase {
+public class DefaultEntityTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

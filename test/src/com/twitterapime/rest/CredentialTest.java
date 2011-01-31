@@ -3,15 +3,15 @@
  */
 package com.twitterapime.rest;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.xauth.Token;
 
 /**
  * @author Main
  *
  */
-public class CredentialTest extends TestCase {
+public class CredentialTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

@@ -3,7 +3,8 @@
  */
 package com.twitterapime.test;
 
-import com.sonyericsson.junit.framework.TestSuite;
+import junit.framework.TestSuite;
+
 import com.twitterapime.io.IOTestSuite;
 import com.twitterapime.io.handler.IOHandlerTestSuite;
 import com.twitterapime.model.ModelTestSuite;

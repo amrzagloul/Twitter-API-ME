@@ -3,15 +3,15 @@
  */
 package com.twitterapime.search;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.RateLimitStatus;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class SearchDeviceTest extends TestCase implements SearchDeviceListener {
+public class SearchDeviceTest extends TwitterAPIMETestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */

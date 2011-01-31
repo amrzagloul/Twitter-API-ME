@@ -1,14 +1,14 @@
 package com.twitterapime.rest;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.search.QueryComposer;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.xauth.Token;
 
 /**
  * @author Ernandes Jr
  *
  */
-public class FriendshipManagerTest extends TestCase {
+public class FriendshipManagerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

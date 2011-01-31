@@ -5,15 +5,15 @@ package com.twitterapime.rest.handler;
 
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.GeoLocation;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Ernandes Jr
  *
  */
-public class GeoLocationHandlerTest extends TestCase {
+public class GeoLocationHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

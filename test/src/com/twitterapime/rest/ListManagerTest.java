@@ -6,13 +6,14 @@ package com.twitterapime.rest;
 import java.util.Hashtable;
 
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 
 /**
  * @author 82177082315
  *
  */
-public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
+public class ListManagerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -21,17 +22,25 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+	public void setUp() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 * @see junit.framework.TestCase#tearDown()
 	 */
-	public void tearDown() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+	public void tearDown() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
@@ -40,23 +49,23 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 	public void testGetInstanceUserAccountManager() {
 		try {
 			ListManager.getInstance(null);
-			fail("test: 1");
+			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
-			fail("test: 2");
+			fail();
 		}
 		//
 		try {
-			ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
-			fail("test: 3");
+			ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_3_NON_EXISTENT));
+			fail();
 		} catch (SecurityException e) {
 		} catch (Exception e) {
-			fail("test: 4");
+			fail();
 		}
 		//
 		ListManager t = ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
-		assertNotNull("test: 5", t);
-		assertSame("test: 6", t, ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1)));
+		assertNotNull(t);
+		assertSame(t, ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1)));
 	}
 	
 	/**
@@ -67,7 +76,6 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 		assertNotNull("test: 1", t);
 		assertSame("test: 2", t, ListManager.getInstance());
 	}
-
 	
 	/**
 	 * Test method for {@link com.twitterapime.rest.ListManager#getLists()}.
@@ -279,6 +287,23 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 		} catch (Exception e) {
 			fail();
 		}
+		//
+		try {
+			List l = lm.getLists()[0];
+			String id = l.getString(MetadataSet.LIST_ID);
+			String name = ("name-" + System.currentTimeMillis()).substring(0, 5);
+			String desc = ("desc-" + System.currentTimeMillis()).substring(0, 5);
+			//
+			List nl = lm.update(new List(id, name, l.getString(MetadataSet.LIST_MODE).equals("public"), desc));
+			//
+			assertNotNull(nl);
+			assertEquals(id, nl.getString(MetadataSet.LIST_ID));
+			assertEquals(name, nl.getString(MetadataSet.LIST_NAME));
+			assertEquals("public", nl.getString(MetadataSet.LIST_MODE));
+			assertEquals(desc, nl.getString(MetadataSet.LIST_DESCRIPTION));
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
@@ -314,7 +339,7 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 		}
 		//
 		try {
-			List l[] = lm.getMemberships();
+			List l[] = lm.getMemberships(new UserAccount("twapime"));
 			//
 			assertNotNull(l);
 			assertTrue(l.length > 0);
@@ -356,7 +381,7 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 		}
 		//
 		try {
-			List l[] = lm.getSubscriptions();
+			List l[] = lm.getSubscriptions(new UserAccount("twapime"));
 			//
 			assertNotNull(l);
 			assertTrue(l.length > 0);
@@ -534,11 +559,22 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 			fail();
 		}
 		//
+		UserAccount ua = null;
+		//
 		try {
-			lm.addMember(new List(data), new UserAccount("twitterapimeteste"));
+			ua = UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1).getUserAccount(new UserAccount("twitterapimetest"));
+			//
+			lm.addMember(new List(data), ua);
 		} catch (IllegalArgumentException e) {
 			fail();
 		} catch (Exception e) {
+		} finally {
+			if (ua != null) {
+				try {
+					lm.removeMember(new List(data), ua);
+				} catch (Exception e) {
+				}
+			}
 		}
 	}
 	
@@ -584,9 +620,13 @@ public class ListManagerTest extends com.sonyericsson.junit.framework.TestCase {
 		} catch (Exception e) {
 			fail();
 		}
+		UserAccount ua = null;
 		//
 		try {
-			lm.removeMember(new List(data), new UserAccount("twitterapimeteste"));
+			ua = UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1).getUserAccount(new UserAccount("twitterapimetest"));
+			//
+			lm.addMember(new List(data), ua);
+			lm.removeMember(new List(data), ua);
 		} catch (IllegalArgumentException e) {
 			fail();
 		} catch (Exception e) {

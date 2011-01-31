@@ -3,15 +3,15 @@
  */
 package com.twitterapime.rest;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 
 /**
  * @author Ernandes Jr
  *
  */
-public class GeoLocationTest extends TestCase {
+public class GeoLocationTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

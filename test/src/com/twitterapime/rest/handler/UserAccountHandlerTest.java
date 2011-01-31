@@ -5,16 +5,16 @@ package com.twitterapime.rest.handler;
 
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.UserAccount;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.util.StringUtil;
 
 /**
  * @author Main
  *
  */
-public class UserAccountHandlerTest extends TestCase {
+public class UserAccountHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

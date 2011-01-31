@@ -3,16 +3,17 @@
  */
 package com.twitterapime.io.handler;
 
+import java.io.IOException;
 import java.io.InputStream;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.parser.ParserFactory;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class HttpResponseCodeErrorHandlerTest extends TestCase {
+public class HttpResponseCodeErrorHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -26,9 +27,9 @@ public class HttpResponseCodeErrorHandlerTest extends TestCase {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
+	public void setUp() {
 		InputStream errorXML = null;
 		handler = new HttpResponseCodeErrorHandler();
 		//
@@ -39,7 +40,10 @@ public class HttpResponseCodeErrorHandlerTest extends TestCase {
 			fail();
 		} finally {
 			if (errorXML != null) {
-				errorXML.close();
+				try {
+					errorXML.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 	}

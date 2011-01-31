@@ -1,8 +1,8 @@
 package com.twitterapime.util;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
-public class QSortTest extends TestCase {
+public class QSortTest extends TwitterAPIMETestCase {
 
 	public QSortTest() {
 		super("QSortTest");

@@ -7,18 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.util.StringUtil;
 
 /**
  * @author Main
  *
  */
-public class AccountHandlerTest extends TestCase {
+public class AccountHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -81,6 +81,6 @@ public class AccountHandlerTest extends TestCase {
 		sample.put(MetadataSet.USERACCOUNT_LAST_TWEET, tweet);
 		//
 		assertEquals(new UserAccount(sample), handler.getParsedUserAccounts()[0]);
-		assertEquals(0, new AccountHandler().getParsedUserAccounts()[0].size());
+		assertEquals(0, new AccountHandler().getParsedUserAccounts().length);
 	}
 }

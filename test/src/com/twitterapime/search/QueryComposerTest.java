@@ -5,13 +5,13 @@ package com.twitterapime.search;
 
 import java.util.Calendar;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class QueryComposerTest extends TestCase {
+public class QueryComposerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

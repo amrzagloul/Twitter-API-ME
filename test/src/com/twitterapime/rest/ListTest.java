@@ -5,14 +5,14 @@ package com.twitterapime.rest;
 
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author 82177082315
  *
  */
-public class ListTest extends TestCase {
+public class ListTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

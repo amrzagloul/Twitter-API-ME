@@ -263,10 +263,10 @@ public final class StringUtil {
 			if ((c >= 'a' && c <= 'z')
 					|| (c >= 'A' && c <= 'Z')
 					|| (c >= '0' && c <= '9')
-				  /*|| c == '.'
+				    || c == '.'
 					|| c == '-'
-					|| c == '*'
-					|| c == '_'*/) {
+					/*|| c == '*'*/
+					|| c == '_') {
 				ret.append((char) c);
 			} else if (c == ' ') {
 				ret.append("%20");
@@ -324,7 +324,7 @@ public final class StringUtil {
 				"Replacement string must not be null.");
 		}
 		//
-		if (isEmpty(text) || isEmpty(searchStr)) {
+		if (text.length() == 0 || searchStr.length() == 0) {
 			return text;
 		}
 		//

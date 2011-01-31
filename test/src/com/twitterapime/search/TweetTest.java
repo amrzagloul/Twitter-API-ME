@@ -5,15 +5,15 @@ package com.twitterapime.search;
 
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.UserAccount;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class TweetTest extends TestCase {
+public class TweetTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

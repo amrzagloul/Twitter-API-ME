@@ -3,17 +3,17 @@
  */
 package com.twitterapime.io;
 
-import impl.javame.com.twitterapime.io.HttpConnectionImpl;
+import impl.android.com.twitterapime.io.HttpConnectionImpl;
 
 import java.io.IOException;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class HttpConnectorTest extends TestCase {
+public class HttpConnectorTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

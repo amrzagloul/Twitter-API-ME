@@ -3,13 +3,13 @@
  */
 package com.twitterapime.util;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class StringUtilTest extends TestCase {
+public class StringUtilTest extends TwitterAPIMETestCase {
 	/**
 	 *
 	 */
@@ -37,11 +37,11 @@ public class StringUtilTest extends TestCase {
 			fail();
 		}
 		//
-		assertEquals(1259403912000l, StringUtil.convertTweetDateToLong("2009-11-28 10:25:12"));
-		assertEquals(1259630700000l, StringUtil.convertTweetDateToLong("2009-12-01T01:25:00+00:00"));
-		assertEquals(1257629403000l, StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009"));
-		assertEquals(1245735000000l, StringUtil.convertTweetDateToLong("2009-06-23X05:30:00"));
-		assertEquals(1243364400000l, StringUtil.convertTweetDateToLong("Tue May 26 19:00:00 +0000 2009"));
+		assertEquals(1259414712000l, StringUtil.convertTweetDateToLong("2009-11-28 10:25:12"));
+		assertEquals(1259641500000l, StringUtil.convertTweetDateToLong("2009-12-01T01:25:00+00:00"));
+		assertEquals(1257640203000l, StringUtil.convertTweetDateToLong("Sat Nov 07 21:30:03 +0000 2009"));
+		assertEquals(1245745800000l, StringUtil.convertTweetDateToLong("2009-06-23X05:30:00"));
+		assertEquals(1243375200000l, StringUtil.convertTweetDateToLong("Tue May 26 19:00:00 +0000 2009"));
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class StringUtilTest extends TestCase {
 		}
 		//
 		assertEquals("", StringUtil.encode("", null));
-		assertEquals("%21*%22%27%28%29%3B%40%2B%24%2C%25%23%5B%5D", StringUtil.encode("!*\"\'();@+$,%#[]", null));
+		assertEquals("%21%2A%22%27%28%29%3B%40%2B%24%2C%25%23%5B%5D", StringUtil.encode("!*\"\'();@+$,%#[]", null));
 		assertEquals("%22twitter%20api%20me%22", StringUtil.encode("\"twitter api me\"", null));
 		assertEquals("twitter%26param1%3Dtwitter%20api%26param2%3Dme", StringUtil.encode("twitter&param1=twitter api&param2=me", null));
 	}
@@ -205,6 +205,12 @@ public class StringUtilTest extends TestCase {
 			StringUtil.replace("", "", null);
 			fail();
 		} catch (Exception e) {}
+		//
+		try {
+			StringUtil.replace("teste", " ", " ");
+		} catch (Exception e) {
+			fail();
+		}
 		//
 		assertEquals("", StringUtil.replace("", "aaa", "bbb"));
 		assertEquals("aaa", StringUtil.replace("aaa", "", "bbb"));

@@ -3,13 +3,13 @@
  */
 package com.twitterapime.platform;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class PlatformProviderTest extends TestCase {
+public class PlatformProviderTest extends TwitterAPIMETestCase {
 	/**
 	 *
 	 */

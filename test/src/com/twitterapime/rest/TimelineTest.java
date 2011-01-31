@@ -3,17 +3,17 @@
  */
 package com.twitterapime.rest;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.QueryComposer;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author ernandes
  *
  */
-public class TimelineTest extends TestCase implements SearchDeviceListener {
+public class TimelineTest extends TwitterAPIMETestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */
@@ -52,31 +52,39 @@ public class TimelineTest extends TestCase implements SearchDeviceListener {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
-		//
-		TweetER t1 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
-		t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
-		t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
-		t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
-		t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
-		//
-		TweetER t2 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2));
-		t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
-		t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
-		t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
-		t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
+	public void setUp() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
+			//
+			TweetER t1 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
+			t1.post(new Tweet("Test msg 1 @twiterapimetest " + System.currentTimeMillis()));
+			t1.post(new Tweet("Test msg 2 @twiterapimetest " + System.currentTimeMillis()));
+			t1.send(new Tweet("twiterapimetest", "Test DM 1 " + System.currentTimeMillis()));
+			t1.send(new Tweet("twiterapimetest", "Test DM 2 " + System.currentTimeMillis()));
+			//
+			TweetER t2 = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2));
+			t2.post(new Tweet("Test msg 1 " + System.currentTimeMillis()));
+			t2.post(new Tweet("Test msg 2 " + System.currentTimeMillis()));
+			t2.send(new Tweet("twiterapimetst2", "Test DM 1 " + System.currentTimeMillis()));
+			t2.send(new Tweet("twiterapimetst2", "Test DM 2 " + System.currentTimeMillis()));
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 * @see junit.framework.TestCase#tearDown()
 	 */
-	public void tearDown() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
+	public void tearDown() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**

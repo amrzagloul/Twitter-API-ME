@@ -3,7 +3,7 @@
  */
 package com.twitterapime.rest.handler;
 
-import com.sonyericsson.junit.framework.TestSuite;
+import junit.framework.TestSuite;
 
 /**
  * @author Main

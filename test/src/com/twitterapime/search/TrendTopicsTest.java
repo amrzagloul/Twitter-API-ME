@@ -3,14 +3,14 @@
  */
 package com.twitterapime.search;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Ernandes Jr
  *
  */
-public class TrendTopicsTest extends TestCase  {
+public class TrendTopicsTest extends TwitterAPIMETestCase  {
 	/**
 	 * 
 	 */

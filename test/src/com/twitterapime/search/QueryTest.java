@@ -3,13 +3,13 @@
  */
 package com.twitterapime.search;
 
-import com.sonyericsson.junit.framework.TestCase;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class QueryTest extends TestCase {
+public class QueryTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -48,13 +48,13 @@ public class QueryTest extends TestCase {
 			fail();
 		}
 		//
-		try {
-			new Query(new String(new byte[] {-61})); //invalid utf-8 char.
-			fail();
-		} catch (RuntimeException e) {
-		} catch (Exception e) {
-			fail();
-		}
+//		try {
+//			new Query(new String(new byte[] {-61})); //invalid utf-8 char.
+//			fail();
+//		} catch (RuntimeException e) {
+//		} catch (Exception e) {
+//			fail();
+//		}
 	}
 
 	/**

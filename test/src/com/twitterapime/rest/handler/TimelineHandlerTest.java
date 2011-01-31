@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.util.StringUtil;
 
 /**
  * @author ernandes
  *
  */
-public class TimelineHandlerTest extends TestCase implements SearchDeviceListener {
+public class TimelineHandlerTest extends TwitterAPIMETestCase implements SearchDeviceListener {
 	/**
 	 * 
 	 */

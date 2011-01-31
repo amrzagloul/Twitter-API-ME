@@ -3,22 +3,23 @@
  */
 package com.twitterapime.rest.handler;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 import com.twitterapime.util.StringUtil;
 
 /**
  * @author Main
  *
  */
-public class StatusHandlerTest extends TestCase {
+public class StatusHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -32,9 +33,9 @@ public class StatusHandlerTest extends TestCase {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
+	public void setUp() {
 		InputStream errorXML = null;
 		handler = new StatusHandler();
 		//
@@ -45,7 +46,10 @@ public class StatusHandlerTest extends TestCase {
 			fail();
 		} finally {
 			if (errorXML != null) {
-				errorXML.close();
+				try {
+					errorXML.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 	}

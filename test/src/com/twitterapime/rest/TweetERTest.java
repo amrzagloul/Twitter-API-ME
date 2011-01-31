@@ -6,17 +6,17 @@ package com.twitterapime.rest;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class TweetERTest extends TestCase {
+public class TweetERTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -25,19 +25,27 @@ public class TweetERTest extends TestCase {
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#setUp()
+	 * @see junit.framework.TestCase#setUp()
 	 */
-	public void setUp() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
+	public void setUp() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	/**
-	 * @see com.sonyericsson.junit.framework.TestCase#tearDown()
+	 * @see junit.framework.TestCase#tearDown()
 	 */
-	public void tearDown() throws Throwable {
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
-		UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
+	public void tearDown() {
+		try {
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**

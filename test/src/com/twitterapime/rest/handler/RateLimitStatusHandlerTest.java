@@ -6,16 +6,16 @@ package com.twitterapime.rest.handler;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.RateLimitStatus;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class RateLimitStatusHandlerTest extends TestCase {
+public class RateLimitStatusHandlerTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
@@ -49,7 +49,7 @@ public class RateLimitStatusHandlerTest extends TestCase {
 		assertEquals(3, rls.size());
 		assertEquals("150", rls.getString(MetadataSet.RATELIMITSTATUS_HOURLY_LIMIT));
 		assertEquals("150", rls.getString(MetadataSet.RATELIMITSTATUS_REMAINING_HITS));
-		assertEquals("1259630700000", rls.getString(MetadataSet.RATELIMITSTATUS_RESET_TIME));
+		assertEquals("1259641500000", rls.getString(MetadataSet.RATELIMITSTATUS_RESET_TIME));
 		//
 		assertEquals(0, new RateLimitStatusHandler().getParsedRateLimitStatus().size());
 	}

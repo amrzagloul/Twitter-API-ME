@@ -7,15 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.sonyericsson.junit.framework.TestCase;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.test.TwitterAPIMETestCase;
 
 /**
  * @author Main
  *
  */
-public class HttpResponseCodeInterpreterTest extends TestCase {
+public class HttpResponseCodeInterpreterTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */

@@ -337,6 +337,7 @@ public final class UserAccountManager {
 			//
 			if (token != null) {
 				verified = true;
+				saveSelfOnPool();
 				//
 				return true;
 			}
@@ -632,6 +633,13 @@ public final class UserAccountManager {
 		//
 		String info = newUserInfo.getString(MetadataSet.USERACCOUNT_NAME);
 		if (!StringUtil.isEmpty(info)) {
+			final int MAX_LEN = 20;
+			//
+			if (info.trim().length() > MAX_LEN) {
+				throw new IllegalArgumentException(
+					"Name must not be longer than " + MAX_LEN +	" characters.");
+			}
+			//
 			req.setBodyParameter("name", info);
 		}
 		info = newUserInfo.getString(MetadataSet.USERACCOUNT_DESCRIPTION);
