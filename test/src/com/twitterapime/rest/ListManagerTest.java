@@ -27,6 +27,7 @@ public class ListManagerTest extends TwitterAPIMETestCase {
 	public void setUp() {
 		try {
 			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, true);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, true);
 		} catch (Exception e) {
 			fail();
 		}
@@ -38,6 +39,7 @@ public class ListManagerTest extends TwitterAPIMETestCase {
 	public void tearDown() {
 		try {
 			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1, false);
+			UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2, false);
 		} catch (Exception e) {
 			fail();
 		}
@@ -122,7 +124,7 @@ public class ListManagerTest extends TwitterAPIMETestCase {
 	 * Test method for {@link com.twitterapime.rest.ListManager#getLists(UserAccount)}.
 	 */
 	public void testGetListUserAccount() {
-		ListManager lm = ListManager.getInstance();
+		ListManager lm = ListManager.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_2));
 		//
 		try {
 			lm.getLists(null);

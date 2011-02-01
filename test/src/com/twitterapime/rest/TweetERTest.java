@@ -92,7 +92,17 @@ public class TweetERTest extends TwitterAPIMETestCase {
 	 * Test method for {@link com.twitterapime.rest.TweetER#findByID(java.lang.String)}.
 	 */
 	public void testFindByID() {
-		TweetER t = TweetER.getInstance();
+		UserAccount ua = null;
+		//
+		try {
+			ua = UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1).getUserAccount();
+		} catch (Exception e1) {
+			fail();
+		}
+		//
+		final String tweetID = ua.getLastTweet().getString(MetadataSet.TWEET_ID);
+		//
+		TweetER t = TweetER.getInstance(UserAccountManagerTest.getUserAccountManager(UserAccountManagerTest.TEST_USER_1));
 		//
 		try {
 			t.findByID(null);
@@ -110,13 +120,13 @@ public class TweetERTest extends TwitterAPIMETestCase {
 			fail("test: 4");
 		}
 		//
-		try {
-			t.findByID("7141196879");
-			fail("test: 5");
-		} catch (SecurityException e) {
-		} catch (Exception e) {
-			fail("test: 6");
-		}
+//		try {
+//			t.findByID("7141196879");
+//			fail("test: 5");
+//		} catch (SecurityException e) {
+//		} catch (Exception e) {
+//			fail("test: 6");
+//		}
 		//
 		try {
 			assertNull("test: 7", t.findByID("9890asdh9809"));
@@ -125,9 +135,9 @@ public class TweetERTest extends TwitterAPIMETestCase {
 		}
 		//
 		try {
-			Tweet tw = t.findByID("7041609437");
+			Tweet tw = t.findByID(tweetID);
 			assertNotNull("test: 9", tw);
-			assertEquals("test: 10", "7041609437", tw.getString(MetadataSet.TWEET_ID));
+			assertEquals("test: 10", tweetID, tw.getString(MetadataSet.TWEET_ID));
 		} catch (Exception e) {
 			fail("test: 11");
 		}

@@ -83,6 +83,8 @@ public class UserAccountManagerTest extends TwitterAPIMETestCase {
 		final String TOKEN_ACCESS = "";
 		final String TOKEN_SECRET = "";
 		//
+		boolean useToken = false;
+		//
 		final String CONSUMER_KEY_USER_1 = StringUtil.isEmpty(CONSUMER_KEY) ? "gJT21KgpjtJvFrvkcsL5w" : CONSUMER_KEY;
 		final String CONSUMER_SECRET_USER_1 = StringUtil.isEmpty(CONSUMER_SECRET) ? "uRM24w1KnN5Hno3cgsf77gkeRNQSzd1atLFzLlsk" : CONSUMER_SECRET;
 		final String CONSUMER_KEY_USER_2 = StringUtil.isEmpty(CONSUMER_KEY) ? "1WwEJKBNfy2RL0I8QuE1g" : CONSUMER_KEY;
@@ -95,7 +97,7 @@ public class UserAccountManagerTest extends TwitterAPIMETestCase {
 		//
 		Credential credential = null;
 		//
-		if (!StringUtil.isEmpty(TOKEN_ACCESS_USER_1) && !StringUtil.isEmpty(TOKEN_SECRET_USER_1)) {
+		if (useToken && !StringUtil.isEmpty(TOKEN_ACCESS_USER_1) && !StringUtil.isEmpty(TOKEN_SECRET_USER_1)) {
 			credential = new Credential(TEST_USER_1, CONSUMER_KEY_USER_1, CONSUMER_SECRET_USER_1, new Token(TOKEN_ACCESS_USER_1, TOKEN_SECRET_USER_1)); 
 		} else {
 			credential = new Credential(TEST_USER_1, "f00bar", CONSUMER_KEY_USER_1, CONSUMER_SECRET_USER_1);
@@ -103,7 +105,7 @@ public class UserAccountManagerTest extends TwitterAPIMETestCase {
 		//
 		credentialHash.put(TEST_USER_1, credential);
 		//
-		if (!StringUtil.isEmpty(TOKEN_ACCESS_USER_2) && !StringUtil.isEmpty(TOKEN_SECRET_USER_2)) {
+		if (useToken && !StringUtil.isEmpty(TOKEN_ACCESS_USER_2) && !StringUtil.isEmpty(TOKEN_SECRET_USER_2)) {
 			credential = new Credential(TEST_USER_2, CONSUMER_KEY_USER_2, CONSUMER_SECRET_USER_2, new Token(TOKEN_ACCESS_USER_2, TOKEN_SECRET_USER_2)); 
 		} else {
 			credential = new Credential(TEST_USER_2, "f00bar", CONSUMER_KEY_USER_2, CONSUMER_SECRET_USER_2);
