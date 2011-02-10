@@ -29,6 +29,7 @@ quicker for the developers to port their applications to other platforms.
   - Android SDK 1.1 or newer.
   - Java Preprocessor (e.g. Antenna Preprocessor Plug-in for Eclipse)
   - BlackBerry Java SDK v4.5 or newer.
+  - JUnit 3
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
