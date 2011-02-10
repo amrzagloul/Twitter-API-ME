@@ -145,7 +145,7 @@ public final class HttpConnector {
 		final String ANDROID_HTTP_IMPL_CLASS =
 			"impl.android.com.twitterapime.io.HttpConnectionImpl";
 		final String ANDROID_HTTP_USER_AGENT =
-			"Twitter API ME/1.6 (compatible; Android 1.1)";
+			"Twitter API ME/1.6 (compatible; Android 1.5)";
 		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//

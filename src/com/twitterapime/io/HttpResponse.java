@@ -42,6 +42,13 @@ public final class HttpResponse {
 	 * </p>
 	 */
 	private InputStream stream;
+	
+	/**
+	 * <p>
+	 * Http connection.
+	 * </p>
+	 */
+	private HttpConnection conn;
 
 	/**
 	 * <p>
@@ -51,6 +58,7 @@ public final class HttpResponse {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	HttpResponse(HttpConnection conn) throws IOException {
+		this.conn = conn;
 		code = conn.getResponseCode();
 		stream = conn.openInputStream();
 	}
@@ -94,6 +102,19 @@ public final class HttpResponse {
 	 */
 	public int getCode() {
 		return code;
+	}
+	
+	/**
+	 * <p>
+	 * Returns the value of the named general response field for this 
+	 * connection.
+	 * </p>
+	 * @param key Field.
+	 * @return Value.
+	 * @throws IOException If an I/O error occurs. 
+	 */
+	public String getResponseField(String key) throws IOException {
+		return conn.getRequestProperty(key);
 	}
 
 	/**

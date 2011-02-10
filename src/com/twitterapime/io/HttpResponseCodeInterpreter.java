@@ -15,6 +15,7 @@ import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -23,7 +24,7 @@ import com.twitterapime.search.LimitExceededException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  * @see LimitExceededException
  * @see InvalidQueryException
@@ -63,7 +64,14 @@ public final class HttpResponseCodeInterpreter {
 			if (isInvalidQueryError(respCode)) {
 				throw new InvalidQueryException(getErrorMessage(response));
 			} else if (isLimitExceededError(respCode)) {
-				throw new LimitExceededException(getErrorMessage(response));
+				String emgs = getErrorMessage(response);
+				String raft = response.getResponseField("Retry-After");
+				//
+				if (!StringUtil.isEmpty(raft)) {
+					emgs += " / Retry after " + raft + " secs.";
+				}
+				//
+				throw new LimitExceededException(emgs);
 			} else if (isSecurityError(respCode)) {
 				throw new SecurityException(getErrorMessage(response));
 			} else {
