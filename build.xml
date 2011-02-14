@@ -67,12 +67,6 @@
 			   target="${tapime.version.source}"
 			   optimize="true"
 			   debug="${tapime.compile.debug}">
-			<include name="com/twitterapime/**"/>
-			<include name="impl/javame/**" if="tapime.building.javame"/>
-			<include name="impl/android/**" if="tapime.building.android"/>
-			<include name="impl/javame/com/twitterapime/parser/JSON**" if="tapime.building.android"/>
-			<include name="impl/javame/**" if="tapime.building.rim"/>
-
 			<classpath refid="tapime.classpath"/>
 		</javac>
 	</target>
@@ -208,7 +202,11 @@
 
 		<zip destfile="${tapime.version.path.dist}/${tapime.package}-${tapime.name}.zip">
 			<zipfileset dir="${tapime.path.src.preprocessed}" prefix="${tapime.package}/src" includes="**/*.*"/>
-			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib" includes="**/*.*"/>
+			<zipfileset dir="${tapime.path.lib}" prefix="${tapime.package}/lib">
+				<include name="${tapime.lib.kxml2}" if="tapime.building.javame"/>
+				<include name="${tapime.lib.kxml2}" if="tapime.building.rim"/>
+				<include name="${tapime.lib.jsonorg}"/>
+			</zipfileset>	
 			<zipfileset dir="${tapime.version.path.dist}" prefix="${tapime.package}/dist" includes="**/*.jar"/>
 		    <zipfileset dir="${tapime.path.javadoc}" prefix="${tapime.package}/doc/javadoc" includes="**/*.*"/>
 			<zipfileset dir="${basedir}" prefix="${tapime.package}" includes="LICENSE.txt"/>
