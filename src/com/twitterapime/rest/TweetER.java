@@ -24,6 +24,7 @@ import com.twitterapime.rest.handler.StatusHandler;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Tweet;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -360,6 +361,13 @@ public final class TweetER {
 				req.setBodyParameter("place_id", pid);
 				req.setBodyParameter("display_coordinates", "true");
 			}
+		}
+		//
+		String repliedTweetID =
+			tweet.getString(MetadataSet.TWEET_IN_REPLY_TO_TWEET_ID);
+		//
+		if (!StringUtil.isEmpty(repliedTweetID)) {
+			req.setBodyParameter("in_reply_to_status_id", repliedTweetID);
 		}
 		//
 		try {

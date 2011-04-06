@@ -14,6 +14,7 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.TweetER;
 import com.twitterapime.rest.UserAccount;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -123,6 +124,38 @@ public final class Tweet extends DefaultEntity {
 		//
 		validateRecipient();
 		validateContent();
+	}
+	
+	/**
+	 * <p>
+	 * Create an instance of Tweet class.
+	 * </p>
+	 * @param content Content (status).
+	 * @param inReplyTo Tweet to be replied.
+	 * @throws IllegalArgumentException If content is invalid.
+	 */
+	public Tweet(String content, Tweet inReplyTo) {
+		this(content);
+		//
+		UserAccount ua = inReplyTo.getUserAccount();
+		//
+		if (inReplyTo != null && ua != null) {
+			String tweetID = inReplyTo.getString(MetadataSet.TWEET_ID);
+			String username = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			//
+			if (!StringUtil.isEmpty(tweetID) && !StringUtil.isEmpty(username)) {
+				data.put(MetadataSet.TWEET_IN_REPLY_TO_TWEET_ID, tweetID);
+				//
+				if (content.indexOf("@" + username) == -1) {
+					int len = MAX_CHARACTERS - username.length() -2;
+					//
+					if (content.length() <= len) {
+						content += " @" + username;
+						data.put(MetadataSet.TWEET_CONTENT, content);
+					}
+				}
+			}
+		}
 	}
 	
 	/**

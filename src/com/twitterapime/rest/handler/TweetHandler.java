@@ -44,6 +44,8 @@ public final class TweetHandler extends DefaultXMLHandler {
 			data.put(MetadataSet.TWEET_SOURCE, StringUtil.removeTags(text));
 		} else if (path.endsWith("/favorited")) {
 			data.put(MetadataSet.TWEET_FAVOURITE, text);
+		} else if (path.endsWith("/in_reply_to_status_id")) {
+			data.put(MetadataSet.TWEET_IN_REPLY_TO_TWEET_ID, text);
 		}
 	}
 }

@@ -142,6 +142,14 @@ public final class MetadataSet {
 
 	/**
 	 * <p>
+	 * Report the tweet's replied tweet's id, e.g., "83721987832".
+	 * </p>
+	 */
+	public static final String TWEET_IN_REPLY_TO_TWEET_ID =
+		"TWEET_IN_REPLY_TO_TWEET_ID";
+
+	/**
+	 * <p>
 	 * Report the credential's username, e.g., "johnsmith".
 	 * </p>
 	 */
