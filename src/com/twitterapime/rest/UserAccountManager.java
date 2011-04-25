@@ -23,6 +23,7 @@ import com.twitterapime.rest.handler.AccountHandler;
 import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Query;
+import com.twitterapime.search.QueryComposer;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
@@ -44,7 +45,7 @@ import com.twitterapime.xauth.encoders.Base64Encoder;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.1
  */
 public final class UserAccountManager {
@@ -123,8 +124,18 @@ public final class UserAccountManager {
 	public static final String TWITTER_API_URL_SERVICE_REPORT_SPAM =
 		"TWITTER_API_URL_SERVICE_REPORT_SPAM";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service users search.
+	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#search(Query)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USERS_SEARCH =
+		"TWITTER_API_URL_SERVICE_USERS_SEARCH";
+
 	static {
-		SERVICES_URL = new Hashtable(10);
+		SERVICES_URL = new Hashtable(7);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS,
@@ -144,6 +155,9 @@ public final class UserAccountManager {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_REPORT_SPAM,
 			"http://api.twitter.com/1/report_spam.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USERS_SEARCH,
+			"http://api.twitter.com/1/users/search.xml");
 	}
 
 	/**
@@ -210,6 +224,7 @@ public final class UserAccountManager {
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SHOW
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_REPORT_SPAM
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SEARCH
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -734,6 +749,73 @@ public final class UserAccountManager {
 		}		
 	}
 
+	/**
+	 * <p>
+	 * Search for users similar to Find People button on Twitter.com. The
+	 * results returned by people search on Twitter.com are the same as those 
+	 * returned by this API request.
+	 * </p>
+	 * <pre>
+	 * UserAccountManager uam = ...;
+	 * if (uam.verifyCredential()) {
+	 *   Query query = QueryComposer.query("Twitter API ME");
+	 *   UserAccount[] users = uam.search(query);
+	 *   ...
+	 * }
+	 * </pre>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#query(String)} <b>(required)</b></li>
+	 * <li>{@link QueryComposer#perPage(int)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param query Search query.
+	 * @return Users that match the criteria.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If query null or not properly informed.
+	 */
+	public UserAccount[] search(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		checkVerified();
+		//
+		if (query == null) {
+			throw new IllegalArgumentException("Query must not be null.");
+		}
+		//
+		if (query.toString().indexOf("q=") == -1) {
+			throw new IllegalArgumentException(
+				"QueryComposer#query(String) is required.");
+		}
+		//
+		String url = getURL(TWITTER_API_URL_SERVICE_USERS_SEARCH);
+		url += "?" + query.toString();
+		//
+		HttpRequest req = createRequest(url);
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedUserAccounts();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}		
+	}
+	
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

@@ -23,7 +23,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  * @see SearchDevice
  * @see TweetER

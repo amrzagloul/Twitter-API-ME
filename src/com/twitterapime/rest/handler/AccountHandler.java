@@ -23,7 +23,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.2
  */
 public final class AccountHandler extends DefaultXMLHandler {
@@ -68,6 +68,20 @@ public final class AccountHandler extends DefaultXMLHandler {
 	 * </p>
 	 */
 	private Vector usersHashList = new Vector(10);
+	
+	/**
+	 * <p>
+	 * Next cursor index.
+	 * </p>
+	 */
+	private long nextCursorIndex;
+
+	/**
+	 * <p>
+	 * Previous cursor index.
+	 * </p>
+	 */
+	private long prevCursorIndex;
 
 	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#startElement(java.lang.String, java.lang.String, java.lang.String, com.twitterapime.parser.Attributes)
@@ -94,6 +108,10 @@ public final class AccountHandler extends DefaultXMLHandler {
 		//
 		if (xmlPath.indexOf("/user/status/") != -1) {
 			tHandler.populate(lastTweetValues, xmlPath, text);
+		} else if (xmlPath.endsWith("/next_cursor")) {
+			nextCursorIndex = Long.parseLong(text);
+		} else if (xmlPath.endsWith("/previous_cursor")) {
+			prevCursorIndex = Long.parseLong(text);
 		} else {
 			uaHandler.populate(userAccountValues, xmlPath, text);
 		}
@@ -134,5 +152,25 @@ public final class AccountHandler extends DefaultXMLHandler {
 	 */
 	public void loadParsedUserAccount(UserAccount user, int index) {
 		user.setData((Hashtable)usersHashList.elementAt(index));
+	}
+	
+	/**
+	 * <p>
+	 * Return the next cursor index.
+	 * </p>
+	 * @return Index.
+	 */
+	public long getNextCursorIndex() {
+		return nextCursorIndex;
+	}
+
+	/**
+	 * <p>
+	 * Return the previous cursor index.
+	 * </p>
+	 * @return Index.
+	 */
+	public long getPreviousCursorIndex() {
+		return prevCursorIndex;
 	}
 }

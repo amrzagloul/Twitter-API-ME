@@ -52,7 +52,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.2
  * @see UserAccountManager
  * @see SearchDeviceListener
@@ -180,8 +180,18 @@ public final class Timeline {
 	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES =
 		"TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service favorite statuses.
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetFavorites(Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FAVORITES =
+		"TWITTER_API_URL_SERVICE_FAVORITES";
+
 	static {
-		SERVICES_URL = new Hashtable(6);
+		SERVICES_URL = new Hashtable(11);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_STATUSES_PUBLIC_TIMELINE,
@@ -213,7 +223,10 @@ public final class Timeline {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES,
 			"http://api.twitter.com/1/:user/lists/:id/statuses.xml");
-	}
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FAVORITES,
+			"http://api.twitter.com/1/favorites.xml");
+}
 	
 	/**
 	 * <p>
@@ -270,6 +283,7 @@ public final class Timeline {
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES
+	 * @see Timeline#TWITTER_API_URL_SERVICE_FAVORITES
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -679,6 +693,36 @@ public final class Timeline {
 		url = StringUtil.replace(url, ":id", id);
 		//
 		startGet(url, q, l, h, userAccountMngr != null);
+	}
+
+	/**
+	 * <p>
+	 * Get most recent favorite tweets for the authenticating user, according to
+	 * given filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered. 
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException If listener is null.
+	 */
+	public void startGetFavorites(Query q, SearchDeviceListener l) {
+		TimelineHandler h = new TimelineHandler();
+		h.setSearchDeviceListener(l);
+		//
+		startGet(TWITTER_API_URL_SERVICE_FAVORITES, q, l, h,true);
 	}
 
 	/**

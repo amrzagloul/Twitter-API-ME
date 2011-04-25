@@ -20,7 +20,7 @@ import com.twitterapime.rest.Timeline;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.0
  * @see Query
  * @see SearchDevice
@@ -211,6 +211,34 @@ public final class QueryComposer {
 
 	/**
 	 * <p>
+	 * Constant that represents the "q" parameter.
+	 * </p>
+	 */
+	static final String PM_QUERY = "q=";
+
+	/**
+	 * <p>
+	 * Constant that represents the "cursor" parameter.
+	 * </p>
+	 */
+	static final String PM_CURSOR = "cursor=";
+
+	/**
+	 * <p>
+	 * Constant that represents the "user_id" parameter.
+	 * </p>
+	 */
+	static final String PM_USER_ID = "user_id=";
+
+	/**
+	 * <p>
+	 * Constant that represents the "screen_name" parameter.
+	 * </p>
+	 */
+	static final String PM_SCREEN_NAME = "screen_name=";
+
+	/**
+	 * <p>
 	 * Append a query to another one.
 	 * </p>
 	 * @param q1 Query 1.
@@ -227,6 +255,17 @@ public final class QueryComposer {
 		return new Query(q1.toString() + '&' + q2.toString());
 	}
 	
+	/**
+	 * <p>
+	 * Create a query to perform a search on Twitter based on a given query.
+	 * </p>
+	 * @param query Query.
+	 * @return A new query.
+	 */
+	public static Query query(String query) {
+		return new Query(PM_QUERY + query);
+	}
+
 	/**
 	 * <p>
 	 * Create a query to search for tweets that contain all the given words. To
@@ -598,6 +637,39 @@ public final class QueryComposer {
 	 */
 	public static Query perPage(int count) {
 		return new Query(PM_PER_PAGE + count);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define the page's index in the cursor.
+	 * </p>
+	 * @param cursor Cursor index.
+	 * @return A new query.
+	 */
+	public static Query cursor(long index) {
+		return new Query(PM_CURSOR + index);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define the user's id.
+	 * </p>
+	 * @param id User ID.
+	 * @return A new query.
+	 */
+	public static Query userID(String id) {
+		return new Query(PM_USER_ID + id);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define the user's screen name (username).
+	 * </p>
+	 * @param name User's screen name (username).
+	 * @return A new query.
+	 */
+	public static Query screenName(String name) {
+		return new Query(PM_SCREEN_NAME + name);
 	}
 
 	/**

@@ -47,7 +47,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.1
  * @see Tweet
  * @see UserAccountManager
@@ -114,8 +114,28 @@ public final class TweetER {
 	public static final String TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW =
 		"TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service to favorite tweet.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#favorite(Tweet)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FAVORITES_CREATE =
+		"TWITTER_API_URL_SERVICE_FAVORITES_CREATE";
+
+	/**
+	 * <p>
+	 * Key for Twitter API URL service to unfavorite tweet.
+	 * </p>
+	 * @see TweetER#setServiceURL(String, String)
+	 * @see TweetER#favorite(Tweet)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FAVORITES_DESTROY =
+		"TWITTER_API_URL_SERVICE_FAVORITES_DESTROY";
+
 	static {
-		SERVICES_URL = new Hashtable(4);
+		SERVICES_URL = new Hashtable(6);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_STATUSES_UPDATE,
@@ -129,6 +149,12 @@ public final class TweetER {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW,
 			"http://api.twitter.com/1/direct_messages/new.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FAVORITES_CREATE,
+			"http://api.twitter.com/1/favorites/create/:id.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FAVORITES_DESTROY,
+			"http://api.twitter.com/1/favorites/destroy/:id.xml");
 	}
 	
 	/**
@@ -180,6 +206,8 @@ public final class TweetER {
 	 * @see TweetER#TWITTER_API_URL_SERVICE_STATUSES_SHOW
 	 * @see TweetER#TWITTER_API_URL_SERVICE_STATUSES_RETWEET
 	 * @see TweetER#TWITTER_API_URL_SERVICE_DIRECT_MESSAGES_NEW
+	 * @see TweetER#TWITTER_API_URL_SERVICE_FAVORITES_CREATE
+	 * @see TweetER#TWITTER_API_URL_SERVICE_FAVORITES_DESTROY
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -496,6 +524,66 @@ public final class TweetER {
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Favorite/unfavorite the tweet specified in the parameter, according to
+	 * {@link MetadataSet#TWEET_FAVOURITE} property. If the property is "false",
+	 * then the tweet is marked as favorite. Otherwise, it is marked as
+	 * unfavorite.
+	 * </p>
+	 * @param tweet Tweet to be marked as favorite.
+	 * @return Favorite tweet.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IllegalArgumentException If the given tweet's ID is null/empty.
+	 */
+	public Tweet favorite(Tweet tweet) throws IOException,
+		LimitExceededException {
+		if (tweet == null) {
+			throw new IllegalArgumentException("Tweet must not be null.");
+		}
+		//
+		tweet.checkEmpty(MetadataSet.TWEET_ID);
+		//
+		checkUserAuth();
+		//
+		String id = tweet.getString(MetadataSet.TWEET_ID);
+		String favorite = tweet.getString(MetadataSet.TWEET_FAVOURITE);
+		String url;
+		//
+		if (favorite == null || "false".equals(favorite)) {
+			url = getURL(TWITTER_API_URL_SERVICE_FAVORITES_CREATE);
+		} else {
+			url = getURL(TWITTER_API_URL_SERVICE_FAVORITES_DESTROY);
+		}
+		//
+		url = StringUtil.replace(url, ":id", id);
+		//
+		HttpRequest req = userAccountMngr.createRequest(url);
+		//
+		req.setMethod(HttpConnection.POST);
+		req.setBodyParameter("include_entities", "true");
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			StatusHandler handler = new StatusHandler();
+			//
+			parser.parse(resp.getStream(), handler);
+			handler.loadParsedTweet(tweet);
+			//
+			return tweet;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}
+	}
+
 	/**
 	 * <p>
 	 * Check if the user's is authenticated.
