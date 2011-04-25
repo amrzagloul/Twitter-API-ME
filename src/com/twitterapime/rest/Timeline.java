@@ -185,7 +185,7 @@ public final class Timeline {
 	 * Key for Twitter API URL service favorite statuses.
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
-	 * @see Timeline#startGetFavorites(Query, SearchDeviceListener)
+	 * @see Timeline#startGetFavoriteTweets(Query, SearchDeviceListener)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_FAVORITES =
 		"TWITTER_API_URL_SERVICE_FAVORITES";
@@ -718,7 +718,7 @@ public final class Timeline {
 	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
-	public void startGetFavorites(Query q, SearchDeviceListener l) {
+	public void startGetFavoriteTweets(Query q, SearchDeviceListener l) {
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//

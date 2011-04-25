@@ -527,12 +527,12 @@ public final class TweetER {
 	/**
 	 * <p>
 	 * Favorite/unfavorite the tweet specified in the parameter, according to
-	 * {@link MetadataSet#TWEET_FAVOURITE} property. If the property is "false",
-	 * then the tweet is marked as favorite. Otherwise, it is marked as
-	 * unfavorite.
+	 * {@link MetadataSet#TWEET_FAVOURITE} property. If the property does not
+	 * exist or its value is "false", then the tweet is marked as favorite.
+	 * Otherwise, it is marked as unfavorite.
 	 * </p>
-	 * @param tweet Tweet to be marked as favorite.
-	 * @return Favorite tweet.
+	 * @param tweet Tweet to be marked as favorite/unfavorite.
+	 * @return Tweet.
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not properly logged in.

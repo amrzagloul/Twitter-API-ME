@@ -15,6 +15,7 @@ import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.io.HttpResponseCodeInterpreter;
+import com.twitterapime.model.Cursor;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
@@ -560,6 +561,7 @@ public final class UserAccountManager {
 	
 	/**
 	 * {@link FriendshipManager#getFriendsID(Query)}
+	 * @deprecated Use {@link UserAccountManager#getFriendsIDs(Query)}.
 	 */
 	public String[] getFriendsID(Query query) throws IOException,
 		LimitExceededException {
@@ -570,6 +572,7 @@ public final class UserAccountManager {
 	
 	/**
 	 * {@link FriendshipManager#getFollowersID(Query)}
+	 * @deprecated Use {@link UserAccountManager#getFollowersIDs(Query)}.
 	 */
 	public String[] getFollowersID(Query query) throws IOException,
 		LimitExceededException {
@@ -577,7 +580,27 @@ public final class UserAccountManager {
 		//
 		return FriendshipManager.getInstance(this).getFollowersID(query);
 	}
-	
+
+	/**
+	 * {@link FriendshipManager#getFriendsIDs(Query)}
+	 */
+	public Cursor getFriendsIDs(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).getFriendsIDs(query);
+	}
+
+	/**
+	 * {@link FriendshipManager#getFollowersIDs(Query)}
+	 */
+	public Cursor getFollowersIDs(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).getFollowersIDs(query);
+	}
+
 	/**
 	 * {@link FriendshipManager#getIncomingFollowersID(Query)}
 	 */

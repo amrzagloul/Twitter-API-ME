@@ -59,7 +59,6 @@ public class Cursor implements Enumeration {
 		this.elements = elements;
 		this.prevPageIndex = prevPageIndex;
 		this.nextPageIndex = nextPageIndex;
-		elementIndex = -1;
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class Cursor implements Enumeration {
 	 * @see java.util.Enumeration#nextElement()
 	 */
 	public Object nextElement() {
-		return elements[++elementIndex];
+		return elements[elementIndex++];
 	}
 	
 	/**

@@ -84,6 +84,8 @@ public final class FriendshipManager {
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFriendsID(Query)
+	 * @see FriendshipManager#getFriendsID(UserAccount, Query)
+	 * @see FriendshipManager#getFriendsIDs(Query)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_FRIENDS_ID =
 		"TWITTER_API_URL_SERVICE_FRIENDS_ID";
@@ -94,6 +96,8 @@ public final class FriendshipManager {
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFollowersID(Query)
+	 * @see FriendshipManager#getFollowersID(UserAccount, Query)
+	 * @see FriendshipManager#getFollowersIDs(Query)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_FOLLOWERS_ID =
 		"TWITTER_API_URL_SERVICE_FOLLOWERS_ID";
@@ -395,6 +399,7 @@ public final class FriendshipManager {
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException If user account manager is not informed.
 	 * @see UserAccountManager#getUserAccount(UserAccount)
+	 * @deprecated Use {@link FriendshipManager#getFriendsIDs(Query)}.
 	 */
 	public String[] getFriendsID(Query query) throws IOException,
 		LimitExceededException {
@@ -424,6 +429,7 @@ public final class FriendshipManager {
 	 * @throws IllegalArgumentException If user is not informed.
 	 * @throws SecurityException Given user is protected.
 	 * @see UserAccountManager#getUserAccount(UserAccount)
+	 * @deprecated Use {@link FriendshipManager#getFriendsIDs(Query)}.
 	 */
 	public String[] getFriendsID(UserAccount user, Query query)
 		throws IOException, LimitExceededException {
@@ -447,6 +453,7 @@ public final class FriendshipManager {
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException If user account manager is not informed.
 	 * @see UserAccountManager#getUserAccount(UserAccount)
+	 * @deprecated Use {@link FriendshipManager#getFollowersIDs(Query)}.
 	 */
 	public String[] getFollowersID(Query query) throws IOException,
 		LimitExceededException {
@@ -476,6 +483,7 @@ public final class FriendshipManager {
 	 * @throws IllegalArgumentException If user is not informed.
 	 * @throws SecurityException Given user is protected.
 	 * @see UserAccountManager#getUserAccount(UserAccount)
+	 * @deprecated Use {@link FriendshipManager#getFollowersIDs(Query)}.
 	 */
 	public String[] getFollowersID(UserAccount user, Query query)
 		throws IOException,	LimitExceededException {
@@ -483,6 +491,106 @@ public final class FriendshipManager {
 			getURL(TWITTER_API_URL_SERVICE_FOLLOWERS_ID), user, query);
 	}
 	
+	/**
+	 * <p>
+	 * Get the friends IDs of the authenticating user or given user.
+	 * </p>
+	 * <p>
+	 * As the number of friends of a given user can be very large, you have 
+	 * navigate through the cursor returned and perform other requests in order
+	 * to retrieve more results.
+	 * </p>
+	 * <pre>
+	 * FriendshipManager fm = ...;
+	 * Query query = QueryComposer.cursor(-1);
+	 * Cursor cursor = null;
+	 * 
+	 * do {
+	 *   if (cursor != null) {
+	 *     query = QueryComposer.cursor(cursor.getNextPageIndex());
+	 *   }
+	 *   
+	 *   cursor = fm.getFriendsIDs(query); //friends of authenticating user.
+	 *    
+	 *   while (cursor.hasMoreElements()) {
+	 *       String friendID = (String)cursor.nextElement();
+	 *       ...
+	 *   }
+	 * } while (cursor.hasMorePages());
+	 * ...
+	 * </pre>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#userID(String)}</li>
+	 * <li>{@link QueryComposer#screenName(String)}</li>
+	 * <li>{@link QueryComposer#cursor(long)}</li>
+	 * </ul>
+	 * </p>
+	 * @param query Query.
+	 * @return Friends.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException Given user is protected.
+	 * @see MetadataSet#USERACCOUNT_FRIENDS_COUNT
+	 */
+	public Cursor getFriendsIDs(Query query) throws IOException,
+		LimitExceededException {
+		return getFriendsIDsOrFollowersIDs(
+			getURL(TWITTER_API_URL_SERVICE_FRIENDS_ID), query);
+	}
+	
+	/**
+	 * <p>
+	 * Get the followers IDs of the authenticating user or given user.
+	 * </p>
+	 * <p>
+	 * As the number of followers of a given user can be very large, you have 
+	 * navigate through the cursor returned and perform other requests in order
+	 * to retrieve more results.
+	 * </p>
+	 * <pre>
+	 * FriendshipManager fm = ...;
+	 * Query query = QueryComposer.cursor(-1);
+	 * Cursor cursor = null;
+	 * 
+	 * do {
+	 *   if (cursor != null) {
+	 *     query = QueryComposer.cursor(cursor.getNextPageIndex());
+	 *   }
+	 *   
+	 *   cursor = fm.getFollowersIDs(query); //followers of authenticating user.
+	 *    
+	 *   while (cursor.hasMoreElements()) {
+	 *       String followerID = (String)cursor.nextElement();
+	 *       ...
+	 *   }
+	 * } while (cursor.hasMorePages());
+	 * ...
+	 * </pre>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#userID(String)}</li>
+	 * <li>{@link QueryComposer#screenName(String)}</li>
+	 * <li>{@link QueryComposer#cursor(long)}</li>
+	 * </ul>
+	 * </p>
+	 * @param query Query.
+	 * @return Friends.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException Given user is protected.
+	 * @see MetadataSet#USERACCOUNT_FOLLOWERS_COUNT
+	 */
+	public Cursor getFollowersIDs(Query query) throws IOException,
+		LimitExceededException {
+		return getFriendsIDsOrFollowersIDs(
+			getURL(TWITTER_API_URL_SERVICE_FOLLOWERS_ID), query);
+	}
+
 	/**
 	 * <p>
 	 * Get the friends of the authenticating user or given user.
@@ -494,7 +602,7 @@ public final class FriendshipManager {
 	 * </p>
 	 * <pre>
 	 * FriendshipManager fm = ...;
-	 * Query query = null;
+	 * Query query = QueryComposer.cursor(-1);
 	 * Cursor cursor = null;
 	 * 
 	 * do {
@@ -526,6 +634,7 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
+	 * @see MetadataSet#USERACCOUNT_FRIENDS_COUNT
 	 */
 	public Cursor getFriends(Query query) throws IOException,
 		LimitExceededException {
@@ -544,7 +653,7 @@ public final class FriendshipManager {
 	 * </p>
 	 * <pre>
 	 * FriendshipManager fm = ...;
-	 * Query query = null;
+	 * Query query = QueryComposer.cursor(-1);
 	 * Cursor cursor = null;
 	 * 
 	 * do {
@@ -576,6 +685,7 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
+	 * @see MetadataSet#USERACCOUNT_FOLLOWERS_COUNT
 	 */
 	public Cursor getFollowers(Query query) throws IOException,
 		LimitExceededException {
@@ -896,6 +1006,64 @@ public final class FriendshipManager {
 
 	/**
 	 * <p>
+	 * Get the friend/follower IDs of the authenticating user or given user.
+	 * </p>
+	 * @param url Url.
+	 * @param query Query.
+	 * @return Friends/Followers.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException Given user is protected.
+	 * @throws IllegalArgumentException If url is null/empty.
+	 */
+	private Cursor getFriendsIDsOrFollowersIDs(String url, Query query)
+		throws IOException,	LimitExceededException {
+		if (StringUtil.isEmpty(url)) {
+			throw new IllegalArgumentException("Url must not be null/empty.");
+		}
+		//
+		if (query != null) {
+			url += "?" + query.toString();
+		}
+		//
+		HttpRequest req;
+		//
+		if (userAccountMngr != null) {
+			req = userAccountMngr.createRequest(url);
+		} else {
+			req = new HttpRequest(url);
+		}
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			IDsHandler handler = new IDsHandler(Long.MAX_VALUE);
+			parser.parse(resp.getStream(), handler);
+			//
+			Vector idsVec = handler.getIDsList();
+			String[] ids = new String[idsVec.size()];
+			//
+			idsVec.copyInto(ids);
+			//
+			Cursor cursor =
+				new Cursor(
+					ids,
+					handler.getCursorPreviousIndex(),
+					handler.getCursorNextIndex());
+			//
+			return cursor;
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}		
+	}
+
+	/**
+	 * <p>
 	 * Retrieve friends/followers IDs of a given user.
 	 * </p>
 	 * @param url Service URL.
@@ -1018,11 +1186,18 @@ public final class FriendshipManager {
 
 		/**
 		 * <p>
+		 * Cursor previous index.
+		 * </p>
+		 */
+		private long cursorPrevIdx;
+
+		/**
+		 * <p>
 		 * Cursor next index.
 		 * </p>
 		 */
 		private long cursorNextIdx;
-		
+
 		/**
 		 * <p>
 		 * IDs list.
@@ -1053,6 +1228,8 @@ public final class FriendshipManager {
 				}
 			} else if (xmlPath.equals("/id_list/next_cursor")) {
 				cursorNextIdx = Long.parseLong(text);
+			} else if (xmlPath.equals("/id_list/previous_cursor")) {
+				cursorPrevIdx = Long.parseLong(text);
 			}
 		}
 		
@@ -1064,6 +1241,16 @@ public final class FriendshipManager {
 		 */
 		public Vector getIDsList() {
 			return idsList;
+		}
+		
+		/**
+		 * <p>
+		 * Cursor previous index.
+		 * </p>
+		 * @return Index.
+		 */
+		public long getCursorPreviousIndex() {
+			return cursorPrevIdx;
 		}
 		
 		/**
@@ -1084,6 +1271,7 @@ public final class FriendshipManager {
 		public void clear() {
 			idsList.removeAllElements();
 			cursorNextIdx = 0;
+			cursorPrevIdx = 0;
 		}
 	}
 }
