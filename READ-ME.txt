@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.6 - READ ME                         *
+*                         TWITTER API ME 1.7 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -33,12 +33,11 @@ quicker for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- Retweets to me timeline.
-- Retweets by me timeline.
-- Tweets from list timeline.
-- List management (e.g. create, update, memberships, subscriptions, etc).
-- Special character (*) in password bug fix.
-- Some bug fixes and optimizations.
+- Reply tweet.
+- Timeline of favorite tweets.
+- Favorite/unfavorite tweet.
+- User search.
+- Get friends and followers.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -54,7 +53,7 @@ quicker for the developers to port their applications to other platforms.
   project in order to build your application. Regarding xauth-encoders.jar, it
   will continue being packaged into API's jar file as usual.
 
- COMING NEXT VERSION: 1.7
+ COMING NEXT VERSION: 1.8
 ********************************************************************************
 - Let us know what you need.
 
