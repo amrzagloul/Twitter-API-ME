@@ -137,9 +137,8 @@ public final class Tweet extends DefaultEntity {
 	public Tweet(String content, Tweet inReplyTo) {
 		this(content);
 		//
-		UserAccount ua = inReplyTo.getUserAccount();
-		//
-		if (inReplyTo != null && ua != null) {
+		if (inReplyTo != null && inReplyTo.getUserAccount() != null) {
+			UserAccount ua = inReplyTo.getUserAccount();
 			String tweetID = inReplyTo.getString(MetadataSet.TWEET_ID);
 			String username = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
 			//
