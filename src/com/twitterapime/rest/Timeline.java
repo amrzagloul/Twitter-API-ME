@@ -378,6 +378,13 @@ public final class Timeline {
 	 * To have access to this search's result, a SearchDeviceListener object
 	 * must be registered. 
 	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#trimUser()}</li>
+	 * </ul>
+	 * </p>
 	 * @param l Listener object to be notified about the search's result.
 	 * @throws IllegalArgumentException If listener is null.
 	 */
@@ -412,6 +419,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
@@ -442,10 +450,14 @@ public final class Timeline {
 	 * In order to create the query, only the following methods can be used as
 	 * filters:
 	 * <ul>
+	 * <li>{@link QueryComposer#userID(String)}</li>
+	 * <li>{@link QueryComposer#screenName(String)}</li>
 	 * <li>{@link QueryComposer#sinceID(String)}</li>
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
+	 * <li>{@link QueryComposer#includeRetweets()}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
@@ -479,6 +491,9 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
+	 * <li>{@link QueryComposer#includeRetweets()}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
 	 * @param q The filter query. If null all tweets are returned.
@@ -550,6 +565,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
@@ -583,6 +599,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>
@@ -616,6 +633,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#maxID(String)}</li>
 	 * <li>{@link QueryComposer#count(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#trimUser()}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
 	 * </p>

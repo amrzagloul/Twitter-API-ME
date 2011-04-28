@@ -239,6 +239,20 @@ public final class QueryComposer {
 
 	/**
 	 * <p>
+	 * Constant that represents the "trim_user=true" parameter.
+	 * </p>
+	 */
+	static final String PM_TRIM_USER = "trim_user=true";
+	
+	/**
+	 * <p>
+	 * Constant that represents the "include_rts=true" parameter.
+	 * </p>
+	 */
+	static final String PM_INCLUDE_RTS = "include_rts=true";
+
+	/**
+	 * <p>
 	 * Append a query to another one.
 	 * </p>
 	 * @param q1 Query 1.
@@ -670,6 +684,26 @@ public final class QueryComposer {
 	 */
 	public static Query screenName(String name) {
 		return new Query(PM_SCREEN_NAME + name);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to define whether the user's information must be trimmed.
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query trimUser() {
+		return new Query(PM_TRIM_USER);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define whether the retweets must be included.
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query includeRetweets() {
+		return new Query(PM_INCLUDE_RTS);
 	}
 
 	/**
