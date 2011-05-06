@@ -186,6 +186,7 @@ public final class Timeline {
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetFavoriteTweets(Query, SearchDeviceListener)
+	 * @see Timeline#startGetFavoriteTweets(UserAccount, Query, SearchDeviceListener)
 	 */
 	public static final String TWITTER_API_URL_SERVICE_FAVORITES =
 		"TWITTER_API_URL_SERVICE_FAVORITES";
@@ -225,8 +226,8 @@ public final class Timeline {
 			"http://api.twitter.com/1/:user/lists/:id/statuses.xml");
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_FAVORITES,
-			"http://api.twitter.com/1/favorites.xml");
-}
+			"http://api.twitter.com/1/favorites/:id.xml");
+	}
 	
 	/**
 	 * <p>
@@ -437,9 +438,9 @@ public final class Timeline {
 	
 	/**
 	 * <p>
-	 * Get most recent tweets posted from the authenticating user
-	 * and that user's friends according to given filter. This is the equivalent
-	 * of the Web user page for your own user.
+	 * Get most recent tweets posted from the authenticating user and the user's
+	 * friends according to given filter. This is the equivalent of the Web user
+	 * page for your own user.
 	 * </p>
 	 * <p>
 	 * This method does not wait for the search process is completed to return.
@@ -727,6 +728,7 @@ public final class Timeline {
 	 * In order to create the query, only the following methods can be used as
 	 * filters:
 	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
 	 * </ul>
@@ -737,10 +739,62 @@ public final class Timeline {
 	 * @throws IllegalArgumentException If listener is null.
 	 */
 	public void startGetFavoriteTweets(Query q, SearchDeviceListener l) {
+		checkUserAuth();
+		//
+		String username =
+			userAccountMngr.getCredential().getString(
+				MetadataSet.USERACCOUNT_USER_NAME);
+		//
+		startGetFavoriteTweets(new UserAccount(username), q, l);
+	}
+
+	/**
+	 * <p>
+	 * Get most recent favorite tweets for the given user, according to given
+	 * filter.
+	 * </p>
+	 * <p>
+	 * This method does not wait for the search process is completed to return.
+	 * To have access to this search's result, a SearchDeviceListener object
+	 * must be registered.
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#sinceID(String)}</li>
+	 * <li>{@link QueryComposer#page(int)}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param user User account.
+	 * @param q The filter query. If null all tweets are returned.
+	 * @param l Listener object to be notified about the search's result.
+	 * @throws SecurityException If the given user is protected.
+	 * @throws IllegalArgumentException If user or listener is null.
+	 */
+	public void startGetFavoriteTweets(UserAccount user, Query q,
+		SearchDeviceListener l) {
+		if (user == null) {
+			throw new IllegalArgumentException("User must not be null");
+		}
+		//
+		String id = user.getString(MetadataSet.USERACCOUNT_ID);
+		//
+		if (StringUtil.isEmpty(id)) {
+			user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
+			//
+			id = user.getString(MetadataSet.USERACCOUNT_USER_NAME);
+		}
+		//
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		startGet(TWITTER_API_URL_SERVICE_FAVORITES, q, l, h,true);
+		String url = getURL(TWITTER_API_URL_SERVICE_FAVORITES);
+		//
+		url = StringUtil.replace(url, ":id", id);
+		//
+		startGet(url, q, l, h, false);
 	}
 
 	/**
