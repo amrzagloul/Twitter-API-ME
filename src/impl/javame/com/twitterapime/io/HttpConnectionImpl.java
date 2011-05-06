@@ -36,7 +36,9 @@ public final class HttpConnectionImpl implements HttpConnection {
 	 * @see com.twitterapime.io.HttpConnection#open(java.lang.String)
 	 */
 	public void open(String url) throws IOException {
-		httpConn = (javax.microedition.io.HttpConnection)Connector.open(url);
+		httpConn =
+			(javax.microedition.io.HttpConnection)
+				Connector.open(url, Connector.READ_WRITE, true);
 	}
 
 	/**
