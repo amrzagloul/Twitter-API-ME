@@ -743,7 +743,7 @@ public final class Timeline {
 		//
 		String username =
 			userAccountMngr.getCredential().getString(
-				MetadataSet.USERACCOUNT_USER_NAME);
+				MetadataSet.CREDENTIAL_USERNAME);
 		//
 		startGetFavoriteTweets(new UserAccount(username), q, l);
 	}
