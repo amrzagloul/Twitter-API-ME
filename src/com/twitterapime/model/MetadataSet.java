@@ -620,6 +620,30 @@ public final class MetadataSet {
 	 */
 	public static final String LIST_MODE = "LIST_MODE";
 
+	public static final String FRIENDSHIP_SOURCE = "FRIENDSHIP_SOURCE";
+
+	public static final String FRIENDSHIP_TARGET = "FRIENDSHIP_TARGET";
+	
+	public static final String FRIENDSHIP_FOLLOWING = "FRIENDSHIP_FOLLOWING";
+	
+	public static final String FRIENDSHIP_FOLLOWED_BY = "FRIENDSHIP_FOLLOWED_BY";
+	
+	public static final String FRIENDSHIP_USER_NAME = "FRIENDSHIP_USER_NAME";
+	
+	public static final String FRIENDSHIP_USER_ID = "FRIENDSHIP_USER_ID";
+
+	public static final String FRIENDSHIP_MARKED_SPAM = "FRIENDSHIP_MARKED_SPAM";
+	
+	public static final String FRIENDSHIP_ALL_REPLIES = "FRIENDSHIP_ALL_REPLIES";
+
+	public static final String FRIENDSHIP_BLOCKING = "FRIENDSHIP_BLOCKING";
+	
+	public static final String FRIENDSHIP_NOTIFICATIONS_ENABLED = "FRIENDSHIP_NOTIFICATIONS_ENABLED";
+	
+	public static final String FRIENDSHIP_CAN_DM = "FRIENDSHIP_CAN_DM";
+	
+	public static final String FRIENDSHIP_WANT_RETWEETS = "FRIENDSHIP_WANT_RETWEETS";
+	
 	/**
 	 * <p>
 	 * Private constructor to avoid object instantiation.

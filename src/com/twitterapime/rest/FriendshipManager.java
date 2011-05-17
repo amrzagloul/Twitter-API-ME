@@ -23,6 +23,7 @@ import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.rest.handler.AccountHandler;
+import com.twitterapime.rest.handler.FriendshipHandler;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Query;
@@ -202,8 +203,18 @@ public final class FriendshipManager {
 	public static final String TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS =
 		"TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service friendships show.
+	 * </p>
+	 * @see FriendshipManager#setServiceURL(String, String)
+	 * @see FriendshipManager#getFriendship(UserAccount, UserAccount)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW =
+		"TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW";
+
 	static {
-		SERVICES_URL = new Hashtable(12);
+		SERVICES_URL = new Hashtable(13);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_FRIENDS_ID,
@@ -241,6 +252,9 @@ public final class FriendshipManager {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS,
 			"http://api.twitter.com/1/statuses/followers.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW,
+			"http://api.twitter.com/1/friendships/show.json");
 	}
 	
 	/**
@@ -305,6 +319,7 @@ public final class FriendshipManager {
 	 * @see FriendshipManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_EXISTS
 	 * @see FriendshipManager#TWITTER_API_URL_SERVICE_STATUSES_FRIENDS
 	 * @see FriendshipManager#TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS
+	 * @see FriendshipManager#TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -898,6 +913,73 @@ public final class FriendshipManager {
 			getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_OUTGOING),
 			userAccountMngr.getUserAccount(),
 			query);
+	}
+	
+	/**
+	 * @param source
+	 * @param target
+	 * @return
+	 * @throws IOException
+	 * @throws LimitExceededException
+	 */
+	public Friendship getFriendship(UserAccount source, UserAccount target)
+		throws IOException,	LimitExceededException {
+		if (source == null) {
+			throw new IllegalArgumentException("Source must not me null.");
+		}
+		if (target == null) {
+			throw new IllegalArgumentException("Target must not me null.");
+		}
+		//
+		String sId = source.getString(MetadataSet.USERACCOUNT_ID);
+		String tId = target.getString(MetadataSet.USERACCOUNT_ID);
+		//
+		if (StringUtil.isEmpty(sId)) {
+			sId = source.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			//
+			if (StringUtil.isEmpty(sId)) {
+				throw new IllegalArgumentException(
+					"Source's user ID/username must not be null or empty");
+			} else {
+				sId = "source_screen_name=" + sId;
+			}
+		} else {
+			sId = "source_id=" + sId;
+		}
+		//
+		if (StringUtil.isEmpty(tId)) {
+			tId = target.getString(MetadataSet.USERACCOUNT_USER_NAME);
+			//
+			if (StringUtil.isEmpty(tId)) {
+				throw new IllegalArgumentException(
+					"Target's user ID/username must not be null or empty");
+			} else {
+				tId = "target_screen_name=" + tId;
+			}
+		} else {
+			tId = "target_id=" + tId;
+		}
+		//
+		String url = getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW);
+		url += "?" + sId + "&" + tId;
+		//
+		HttpRequest req = new HttpRequest(url);
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getParser(ParserFactory.JSON);
+			FriendshipHandler handler = new FriendshipHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedFriendship();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}
 	}
 
 	/**
