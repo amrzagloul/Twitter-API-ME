@@ -38,6 +38,7 @@ quicker for the developers to port their applications to other platforms.
 - Favorite/unfavorite tweet.
 - User search.
 - Get friends and followers.
+- Get friendship details between two users.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
