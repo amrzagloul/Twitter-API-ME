@@ -10,13 +10,15 @@ package com.twitterapime.parser;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.twitterapime.util.StringUtil;
+
 /**
  * <p>
  * This class defines a default JSON document handler.
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.5
  */
 public class DefaultJSONHandler implements JSONHandler {
@@ -112,5 +114,32 @@ public class DefaultJSONHandler implements JSONHandler {
 		}
 		//
 		return data;
+	}
+	
+	/**
+	 * <p>
+	 * Replace the key of a given property.
+	 * </p>
+	 * @param hashtable Hastable.
+	 * @param searchKey Key to be replaced.
+	 * @param replacementKey Replacement key.
+	 */
+	protected void replaceProperty(Hashtable hashtable,
+		String searchKey, String replacementKey) {
+		Object value = hashtable.get(searchKey);
+		//
+		if (value != null) {
+			hashtable.remove(searchKey);
+			//
+			if (value instanceof String) {
+				String str = value.toString();
+				//
+				if (StringUtil.isEmpty(str) || "null".equals(str)) {
+					return;
+				}
+			}
+			//
+			hashtable.put(replacementKey, value);
+		}
 	}
 }

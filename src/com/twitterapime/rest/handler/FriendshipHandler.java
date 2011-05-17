@@ -12,7 +12,6 @@ import java.util.Hashtable;
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.DefaultJSONHandler;
 import com.twitterapime.rest.Friendship;
-import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -41,94 +40,75 @@ public class FriendshipHandler extends DefaultJSONHandler {
 	 */
 	public Friendship getParsedFriendship() {
 		if (content != null && content.size() > 0) {
+			Hashtable friendship = new Hashtable(2);
 			Hashtable source = (Hashtable)content.get("source");
 			//
 			if (source != null) {
-				String following = (String)source.get("following");
-				String userId = (String)source.get("id_str");
-				String username = (String)source.get("screen_name");
-				String followedBy = (String)source.get("followed_by");
-				String notificationsEnabled =
-					(String)source.get("notifications_enabled");
-				String canDM = (String)source.get("can_dm");
-				String blocking = (String)source.get("blocking");
-				String allReplies = (String)source.get("all_replies");
-				String wantRetweets = (String)source.get("want_retweets");
-				String markedSpam = (String)source.get("marked_spam");
+				replaceProperty(
+					source,
+					"following",
+					MetadataSet.FRIENDSHIP_FOLLOWING);
+				replaceProperty(
+					source,
+					"id_str",
+					MetadataSet.FRIENDSHIP_USER_ID);
+				replaceProperty(
+					source,
+					"screen_name",
+					MetadataSet.FRIENDSHIP_USER_NAME);
+				replaceProperty(
+					source,
+					"followed_by",
+					MetadataSet.FRIENDSHIP_FOLLOWED_BY);
+				replaceProperty(
+					source,
+					"notifications_enabled",
+					MetadataSet.FRIENDSHIP_NOTIFICATIONS_ENABLED);
+				replaceProperty(
+					source,
+					"can_dm",
+					MetadataSet.FRIENDSHIP_CAN_DM);
+				replaceProperty(
+					source,
+					"blocking",
+					MetadataSet.FRIENDSHIP_BLOCKING);
+				replaceProperty(
+					source,
+					"all_replies",
+					MetadataSet.FRIENDSHIP_ALL_REPLIES);
+				replaceProperty(
+					source,
+					"want_retweets",
+					MetadataSet.FRIENDSHIP_WANT_RETWEETS);
+				replaceProperty(
+					source,
+					"marked_spam",
+					MetadataSet.FRIENDSHIP_MARKED_SPAM);
 				//
-				source.clear();
-				//
-				if (!StringUtil.isEmpty(following)) {
-					source.put(MetadataSet.FRIENDSHIP_FOLLOWING, following);
-				}
-				if (!StringUtil.isEmpty(userId)) {
-					source.put(MetadataSet.FRIENDSHIP_USER_ID, userId);
-				}
-				if (!StringUtil.isEmpty(username)) {
-					source.put(MetadataSet.FRIENDSHIP_USER_NAME, username);
-				}
-				if (!StringUtil.isEmpty(followedBy)) {
-					source.put(MetadataSet.FRIENDSHIP_FOLLOWED_BY, followedBy);
-				}
-				if (!StringUtil.isEmpty(notificationsEnabled)
-						&& !"null".equals(notificationsEnabled)) {
-					source.put(
-						MetadataSet.FRIENDSHIP_NOTIFICATIONS_ENABLED,
-						notificationsEnabled);
-				}
-				if (!StringUtil.isEmpty(canDM)) {
-					source.put(MetadataSet.FRIENDSHIP_CAN_DM, canDM);
-				}
-				if (!StringUtil.isEmpty(blocking)
-						&& !"null".equals(blocking)) {
-					source.put(MetadataSet.FRIENDSHIP_BLOCKING, blocking);
-				}
-				if (!StringUtil.isEmpty(allReplies)
-						&& !"null".equals(allReplies)) {
-					source.put(MetadataSet.FRIENDSHIP_ALL_REPLIES, allReplies);
-				}
-				if (!StringUtil.isEmpty(wantRetweets)
-						&& !"null".equals(wantRetweets)) {
-					source.put(
-						MetadataSet.FRIENDSHIP_WANT_RETWEETS, wantRetweets);
-				}
-				if (!StringUtil.isEmpty(markedSpam)
-						&& !"null".equals(markedSpam)) {
-					source.put(MetadataSet.FRIENDSHIP_MARKED_SPAM, markedSpam);
-				}
+				friendship.put(
+					MetadataSet.FRIENDSHIP_SOURCE, new Friendship(source));
 			}
 			//
 			Hashtable target = (Hashtable)content.get("target");
 			//
 			if (target != null) {
-				String following = (String)target.get("following");
-				String userId = (String)target.get("id_str");
-				String username = (String)target.get("screen_name");
-				String followedBy = (String)target.get("followed_by");
+				replaceProperty(
+					target,
+					"following",
+					MetadataSet.FRIENDSHIP_FOLLOWING);
+				replaceProperty(
+					target,
+					"id_str",
+					MetadataSet.FRIENDSHIP_USER_ID);
+				replaceProperty(
+					target,
+					"screen_name",
+					MetadataSet.FRIENDSHIP_USER_NAME);
+				replaceProperty(
+					target,
+					"followed_by",
+					MetadataSet.FRIENDSHIP_FOLLOWED_BY);
 				//
-				target.clear();
-				//
-				if (!StringUtil.isEmpty(following)) {
-					target.put(MetadataSet.FRIENDSHIP_FOLLOWING, following);
-				}
-				if (!StringUtil.isEmpty(userId)) {
-					target.put(MetadataSet.FRIENDSHIP_USER_ID, userId);
-				}
-				if (!StringUtil.isEmpty(username)) {
-					target.put(MetadataSet.FRIENDSHIP_USER_NAME, username);
-				}
-				if (!StringUtil.isEmpty(followedBy)) {
-					target.put(MetadataSet.FRIENDSHIP_FOLLOWED_BY, followedBy);
-				}
-			}
-			//
-			Hashtable friendship = new Hashtable(2);
-			//
-			if (source != null) {
-				friendship.put(
-					MetadataSet.FRIENDSHIP_SOURCE, new Friendship(source));
-			}
-			if (target != null) {
 				friendship.put(
 					MetadataSet.FRIENDSHIP_TARGET, new Friendship(target));
 			}

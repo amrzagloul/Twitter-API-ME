@@ -620,29 +620,110 @@ public final class MetadataSet {
 	 */
 	public static final String LIST_MODE = "LIST_MODE";
 
+	/**
+	 * <p>
+	 * Report the friendship's source user object, e.g., Friendship.
+	 * class.
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_SOURCE = "FRIENDSHIP_SOURCE";
 
+	/**
+	 * <p>
+	 * Report the friendship's target user object, e.g., Friendship.
+	 * class.
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_TARGET = "FRIENDSHIP_TARGET";
 	
+	/**
+	 * <p>
+	 * Report the friendship's following state. It means the user is following
+	 * the other one, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_FOLLOWING = "FRIENDSHIP_FOLLOWING";
 	
-	public static final String FRIENDSHIP_FOLLOWED_BY = "FRIENDSHIP_FOLLOWED_BY";
+	/**
+	 * <p>
+	 * Report the friendship's followed by state. It means the user is followed
+	 * by the other one, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
+	public static final String FRIENDSHIP_FOLLOWED_BY =
+		"FRIENDSHIP_FOLLOWED_BY";
 	
+	/**
+	 * <p>
+	 * Report the friendship's username, e.g., "johnsmith".
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_USER_NAME = "FRIENDSHIP_USER_NAME";
 	
+	/**
+	 * <p>
+	 * Report the friendship's user ID, e.g., "5465487864".
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_USER_ID = "FRIENDSHIP_USER_ID";
 
-	public static final String FRIENDSHIP_MARKED_SPAM = "FRIENDSHIP_MARKED_SPAM";
+	/**
+	 * <p>
+	 * Report the friendship's marked spam state. It means the user is marked as
+	 * spammer by the other one, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
+	public static final String FRIENDSHIP_MARKED_SPAM =
+		"FRIENDSHIP_MARKED_SPAM";
 	
-	public static final String FRIENDSHIP_ALL_REPLIES = "FRIENDSHIP_ALL_REPLIES";
+	/**
+	 * <p>
+	 * Report the friendship's all replies state, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
+	public static final String FRIENDSHIP_ALL_REPLIES =
+		"FRIENDSHIP_ALL_REPLIES";
 
+	/**
+	 * <p>
+	 * Report the friendship's blocking state. It means the user is blocking the
+	 * other one, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_BLOCKING = "FRIENDSHIP_BLOCKING";
+
+	/**
+	 * <p>
+	 * Report the friendship's notifications enabled state. It means the user is
+	 * up to receive notifications, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
+	public static final String FRIENDSHIP_NOTIFICATIONS_ENABLED =
+		"FRIENDSHIP_NOTIFICATIONS_ENABLED";
 	
-	public static final String FRIENDSHIP_NOTIFICATIONS_ENABLED = "FRIENDSHIP_NOTIFICATIONS_ENABLED";
-	
+	/**
+	 * <p>
+	 * Report the friendship's can direct message state. It means the user can 
+	 * send DM to the other one, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
 	public static final String FRIENDSHIP_CAN_DM = "FRIENDSHIP_CAN_DM";
 	
-	public static final String FRIENDSHIP_WANT_RETWEETS = "FRIENDSHIP_WANT_RETWEETS";
+	/**
+	 * <p>
+	 * Report the friendship's want retweets state, e.g., "true" or "false".
+	 * class.
+	 * </p>
+	 */
+	public static final String FRIENDSHIP_WANT_RETWEETS =
+		"FRIENDSHIP_WANT_RETWEETS";
 	
 	/**
 	 * <p>
