@@ -916,11 +916,40 @@ public final class FriendshipManager {
 	}
 	
 	/**
-	 * @param source
-	 * @param target
-	 * @return
-	 * @throws IOException
-	 * @throws LimitExceededException
+	 * <p>
+	 * Get the friendship's details between the authenticating user and a given
+	 * user.
+	 * </p>
+	 * @param source Source user.
+	 * @param target Target user.
+	 * @return Friendship details.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws SecurityException If user account manager is not informed.
+	 * @throws IllegalArgumentException if source, target, source's id/username
+	 * 									or target's id/username is empty. 
+	 */
+	public Friendship getFriendship(UserAccount target)
+		throws IOException,	LimitExceededException {
+		checkUserAuth();
+		//
+		Credential c = userAccountMngr.getCredential();
+		String username = c.getString(MetadataSet.CREDENTIAL_USERNAME);
+		//
+		return getFriendship(new UserAccount(username), target);
+	}
+	
+	/**
+	 * <p>
+	 * Get the friendship's details between two users.
+	 * </p>
+	 * @param source Source user.
+	 * @param target Target user.
+	 * @return Friendship details.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws IllegalArgumentException if source, target, source's id/username
+	 * 									or target's id/username is empty. 
 	 */
 	public Friendship getFriendship(UserAccount source, UserAccount target)
 		throws IOException,	LimitExceededException {
@@ -931,37 +960,25 @@ public final class FriendshipManager {
 			throw new IllegalArgumentException("Target must not me null.");
 		}
 		//
-		String sId = source.getString(MetadataSet.USERACCOUNT_ID);
-		String tId = target.getString(MetadataSet.USERACCOUNT_ID);
+		source.validateUserNameOrID();
+		target.validateUserNameOrID();
 		//
-		if (StringUtil.isEmpty(sId)) {
-			sId = source.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			//
-			if (StringUtil.isEmpty(sId)) {
-				throw new IllegalArgumentException(
-					"Source's user ID/username must not be null or empty");
-			} else {
-				sId = "source_screen_name=" + sId;
-			}
+		String[] pvSrc = source.getUserNameOrIDParamValue();
+		String[] pvTgt = target.getUserNameOrIDParamValue();
+		//
+		if ("user_id".equals(pvSrc[0])) {
+			pvSrc[0] = "source_id";
 		} else {
-			sId = "source_id=" + sId;
+			pvSrc[0] = "source_screen_name";
 		}
-		//
-		if (StringUtil.isEmpty(tId)) {
-			tId = target.getString(MetadataSet.USERACCOUNT_USER_NAME);
-			//
-			if (StringUtil.isEmpty(tId)) {
-				throw new IllegalArgumentException(
-					"Target's user ID/username must not be null or empty");
-			} else {
-				tId = "target_screen_name=" + tId;
-			}
+		if ("user_id".equals(pvTgt[0])) {
+			pvTgt[0] = "target_id";
 		} else {
-			tId = "target_id=" + tId;
+			pvTgt[0] = "target_screen_name";
 		}
 		//
 		String url = getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW);
-		url += "?" + sId + "&" + tId;
+		url += "?" + pvSrc[0] + "=" + pvSrc[1] + "&" + pvTgt[0] + "=" +pvTgt[1];
 		//
 		HttpRequest req = new HttpRequest(url);
 		//
@@ -980,6 +997,50 @@ public final class FriendshipManager {
 		} finally {
 			req.close();
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Verify whether the authenticating user is followed by the user specified
+	 * in the given UserAccount object.
+	 * </p>
+	 * @param user UserAccount object containing the user name or ID.
+	 * @return Followed by (true).
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException if user or user's id/username is empty. 
+	 */
+	public boolean isFollowedBy(UserAccount user) throws IOException,
+		LimitExceededException {
+		Friendship details = getFriendship(user).getSource();
+		//
+		String followedBy =
+			details.getString(MetadataSet.FRIENDSHIP_FOLLOWED_BY);
+		//
+		return followedBy != null && "true".equals(followedBy);
+	}
+
+	/**
+	 * <p>
+	 * Verify whether the authenticating user is enabled to send Direct
+	 * Messagens to the user specified in the given UserAccount object.
+	 * </p>
+	 * @param user UserAccount object containing the user name or ID.
+	 * @return Enabled (true).
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws SecurityException If it is not authenticated.
+	 * @throws IllegalArgumentException if user or user's id/username is empty.
+	 */
+	public boolean isEnabledToSendDMTo(UserAccount user) throws IOException,
+		LimitExceededException {
+		Friendship details = getFriendship(user).getSource();
+		//
+		String canSendDM =
+			details.getString(MetadataSet.FRIENDSHIP_CAN_DM);
+		//
+		return canSendDM != null && "true".equals(canSendDM);
 	}
 
 	/**

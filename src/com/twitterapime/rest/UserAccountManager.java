@@ -840,6 +840,26 @@ public final class UserAccountManager {
 	}
 	
 	/**
+	 * {@link FriendshipManager#isFollowedBy(UserAccount)}
+	 */
+	public boolean isFollowedBy(UserAccount user) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).isFollowedBy(user);
+	}
+	
+	/**
+	 * {@link FriendshipManager#isEnabledToSendDMTo(UserAccount)}
+	 */
+	public boolean isEnabledToSendDMTo(UserAccount user) throws IOException,
+		LimitExceededException {
+		checkValid();
+		//
+		return FriendshipManager.getInstance(this).isEnabledToSendDMTo(user);
+	}
+	
+	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o) {
