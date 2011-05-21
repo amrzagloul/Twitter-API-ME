@@ -50,6 +50,10 @@ public class FriendshipHandler extends DefaultJSONHandler {
 					MetadataSet.FRIENDSHIP_FOLLOWING);
 				replaceProperty(
 					source,
+					"id",
+					MetadataSet.FRIENDSHIP_USER_ID);
+				replaceProperty(
+					source,
 					"id_str",
 					MetadataSet.FRIENDSHIP_USER_ID);
 				replaceProperty(
@@ -96,6 +100,10 @@ public class FriendshipHandler extends DefaultJSONHandler {
 					target,
 					"following",
 					MetadataSet.FRIENDSHIP_FOLLOWING);
+				replaceProperty(
+					target,
+					"id",
+					MetadataSet.FRIENDSHIP_USER_ID);
 				replaceProperty(
 					target,
 					"id_str",
