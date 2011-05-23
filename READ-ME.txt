@@ -20,7 +20,7 @@ quicker for the developers to port their applications to other platforms.
 ********************************************************************************
 + Runtime Environment
   - Java ME: MIDP 2.0 / CLDC 1.0
-  - Android 1.5
+  - Android 1.5 (API Level 3)
   - RIM OS
 
 + Development Environment
