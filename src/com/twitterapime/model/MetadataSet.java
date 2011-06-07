@@ -260,6 +260,45 @@ public final class MetadataSet {
 	
 	/**
 	 * <p>
+	 * Report the user account's picture URI mini (24px by 24px), e.g.,
+	 * "http://api.twitter.com/1/users/profile_image/username.json?size=mini".
+	 * </p>
+	 * <p>
+	 * This URI does not return any image, but instead returns a 302 redirect to
+	 * the actual image resource.
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PICTURE_URI_MINI =
+		"USERACCOUNT_PICTURE_URI_MINI";
+
+	/**
+	 * <p>
+	 * Report the user account's picture URI normal (48px by 48px), e.g.,
+	 * "http://api.twitter.com/1/users/profile_image/username.json?size=normal".
+	 * </p>
+	 * <p>
+	 * This URI does not return any image, but instead returns a 302 redirect to
+	 * the actual image resource.
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PICTURE_URI_NORMAL =
+		"USERACCOUNT_PICTURE_URI_NORMAL";
+
+	/**
+	 * <p>
+	 * Report the user account's picture URI normal (73px by 73px), e.g.,
+	 * "http://api.twitter.com/1/users/profile_image/username.json?size=bigger".
+	 * </p>
+	 * <p>
+	 * This URI does not return any image, but instead returns a 302 redirect to
+	 * the actual image resource.
+	 * </p>
+	 */
+	public static final String USERACCOUNT_PICTURE_URI_BIGGER =
+		"USERACCOUNT_PICTURE_URI_BIGGER";
+
+	/**
+	 * <p>
 	 * Report the user account's URL, e.g., "http://www.johnsmith.com".
 	 * </p>
 	 */
