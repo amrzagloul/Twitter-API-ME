@@ -71,19 +71,3 @@ quicker for the developers to port their applications to other platforms.
   Plug-in for Eclipse for that. In case you want to compile for Java ME, use the
   directive PP_JAVA_ME. For Android, use PP_ANDROID. For RIM, use PP_RIM.
   Otherwise, your binaries may present some strange behaviors during runtime.
-  
- HEADS-UP ON OBFUSCATION:
-********************************************************************************
-- Just in case you decide to obfuscate Twitter API ME along with your
-  application, there is something you need to know firstly. Internally, some
-  classes are instantiated using reflection and this way, they cannot be
-  obfuscated at all. Otherwise, you will get some unexpected behaviors, e.g.,
-  NullPointerException.
-  
-  To avoid that and obfuscate you application properly, you need to specify in
-  your obfuscation tool, to keep the following classes unmodified:
-  - impl.javame.com.twitterapime.io.HttpConnectionImpl
-  - impl.android.com.twitterapime.io.HttpConnectionImpl
-  - impl.javame.com.twitterapime.parser.KXML2Parser
-  - impl.android.com.twitterapime.io.HttpConnectionImpl
-  - impl.javame.com.twitterapime.parser.JSONOrgParser
