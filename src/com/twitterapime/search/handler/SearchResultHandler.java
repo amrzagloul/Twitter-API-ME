@@ -14,6 +14,7 @@ import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.Attributes;
 import com.twitterapime.parser.DefaultXMLHandler;
 import com.twitterapime.parser.ParserException;
+import com.twitterapime.rest.UserAccount;
 import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
 import com.twitterapime.util.StringUtil;
@@ -24,7 +25,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.1
  */
 public final class SearchResultHandler extends DefaultXMLHandler {
@@ -57,6 +58,13 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 	private Hashtable tweetValues;
 	
 	/**
+	 * <p>
+	 * Current tweet's user values.
+	 * </p>
+	 */
+	private Hashtable tweetUserValues;
+
+	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#startElement(java.lang.String, java.lang.String, java.lang.String, com.twitterapime.parser.Attributes)
 	 */
 	public void startElement(String namespaceURI, String localName,
@@ -68,6 +76,10 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 			tweet = new Tweet();
 			tweetValues = new Hashtable(15);
 			tweet.setData(tweetValues);
+			tweetUserValues = new Hashtable(3);
+			tweetValues.put(
+				MetadataSet.TWEET_USER_ACCOUNT,
+				new UserAccount(tweetUserValues));
 		} else if (localName.equals("link")
 				&& xmlPath.equals("/feed/entry/link")) {
 			final String attrValue = attrs.getValue("type");
@@ -77,6 +89,10 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 			} else if (attrValue.equals("image/png")) {
 				tweetValues.put(
 					MetadataSet.TWEET_AUTHOR_PICTURE_URI,
+					attrs.getValue("href"));
+				//
+				tweetUserValues.put(
+					MetadataSet.USERACCOUNT_PICTURE_URI,
 					attrs.getValue("href"));
 			}
 		}
@@ -117,6 +133,21 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 			String[] names = StringUtil.splitTweetAuthorNames(text);
 			tweetValues.put(MetadataSet.TWEET_AUTHOR_USERNAME, names[0]);
 			tweetValues.put(MetadataSet.TWEET_AUTHOR_NAME, names[1]);
+			//
+			tweetUserValues.put(MetadataSet.USERACCOUNT_USER_NAME, names[0]);
+			tweetUserValues.put(MetadataSet.USERACCOUNT_NAME, names[1]);
+			//
+			final String picUri =
+				"http://api.twitter.com/1/users/profile_image/" + 
+				names[0] + 
+				".json?size=";
+			//
+			tweetUserValues.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_MINI, picUri + "mini");
+			tweetUserValues.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_NORMAL, picUri + "normal");
+			tweetUserValues.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_BIGGER, picUri + "bigger");
 		} else if (xmlPath.equals("/feed/entry/author/uri")) {
 			tweetValues.put(MetadataSet.TWEET_AUTHOR_URI, text);
 		}

@@ -19,7 +19,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  */
 public final class UserAccountHandler extends DefaultXMLHandler {
@@ -38,6 +38,18 @@ public final class UserAccountHandler extends DefaultXMLHandler {
 			data.put(MetadataSet.USERACCOUNT_NAME, text);
 		} else if (path.endsWith("/screen_name")) {
 			data.put(MetadataSet.USERACCOUNT_USER_NAME, text);
+			//
+			final String picUri =
+				"http://api.twitter.com/1/users/profile_image/" + 
+				text + 
+				".json?size=";
+			//
+			data.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_MINI, picUri + "mini");
+			data.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_NORMAL, picUri + "normal");
+			data.put(
+				MetadataSet.USERACCOUNT_PICTURE_URI_BIGGER, picUri + "bigger");
 		} else if (path.endsWith("/location")) {
 			data.put(MetadataSet.USERACCOUNT_LOCATION, text);
 		} else if (path.endsWith("/description")) {
