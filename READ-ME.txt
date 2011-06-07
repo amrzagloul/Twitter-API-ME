@@ -39,6 +39,7 @@ quicker for the developers to port their applications to other platforms.
 - User search.
 - Get friends and followers.
 - Get friendship details between two users.
+- New attributes in MetadataSet class.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -46,13 +47,13 @@ quicker for the developers to port their applications to other platforms.
 
  REMARKS:
 ********************************************************************************
-- From this version on the jar files json-me.jar and kxml2-min-2.3.0.jar are no
-  longer packaged into API's jar file. This change has been necessary since in
-  some environments those classes are already present in classpath, causing some
-  unexpected behaviors, e.g., duplicated class definition error. Because of this
-  change, during development, you will have to add those libraries into your 
-  project in order to build your application. Regarding xauth-encoders.jar, it
-  will continue being packaged into API's jar file as usual.
+- From this version on the release's jar file is no longer preverified for Java 
+  ME and RIM platforms. It is not necessary, because you will do that when you 
+  build your application.
+  
+- You can now obfuscate your app with Twitter API ME's jar file without adding 
+  any rule to your obfuscator. No class is instantiated using reflection any 
+  more.
 
  COMING NEXT VERSION: 1.8
 ********************************************************************************
