@@ -21,7 +21,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  */
 public final class ParserFactory {
@@ -59,52 +59,30 @@ public final class ParserFactory {
 	 * @see ParserFactory#JSON
 	 */
 	public static Parser getParser(int type) {
-		final String JAVA_ME_XML_PARSER_IMPL_CLASS =
-			"impl.javame.com.twitterapime.parser.KXML2Parser";
-		final String ANDROID_XML_PARSER_IMPL_CLASS =
-			"impl.android.com.twitterapime.parser.SAXParser";
-		final String JAVA_ME_JSON_PARSER_IMPL_CLASS =
-			"impl.javame.com.twitterapime.parser.JSONOrgParser";
-		final String ANDROID_JSON_PARSER_IMPL_CLASS =
-			"impl.javame.com.twitterapime.parser.JSONOrgParser";
-		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//
-		//if JAVA ME PLATFORM
-		if (PPID == PlatformProvider.PPID_JAVA_ME) {
+		//#ifdef PP_JAVA_ME
+		if (PPID == PlatformProvider.PPID_JAVA_ME) { //if JAVA ME PLATFORM
 			if (type == JSON) {
-				return newInstance(JAVA_ME_JSON_PARSER_IMPL_CLASS);
+				return new impl.javame.com.twitterapime.parser.JSONOrgParser();
 			} else {
-				return newInstance(JAVA_ME_XML_PARSER_IMPL_CLASS);
+				return new impl.javame.com.twitterapime.parser.KXML2Parser();
 			}
-		//if ANDROID PLATFORM
-		} else if (PPID == PlatformProvider.PPID_ANDROID) {
-			if (type == JSON) {
-				return newInstance(ANDROID_JSON_PARSER_IMPL_CLASS);				
-			} else {
-				return newInstance(ANDROID_XML_PARSER_IMPL_CLASS);				
-			}
-		} else {
-			throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 		}
-	}
-	
-	/**
-	 * <p>
-	 * Create an instance of the given class.
-	 * </p>
-	 * @param className Class name.
-	 * @return Parser instance.
-	 */
-	private static Parser newInstance(String className) {
-		try {
-			return (Parser)Class.forName(className).newInstance();
-		} catch (IllegalAccessException e) {
-		} catch (InstantiationException e) {
-		} catch (ClassNotFoundException e) {
-		}
+		//#else
+//@		//
+		//#ifdef PP_ANDROID
+//@		if (PPID == PlatformProvider.PPID_ANDROID) { //if ANDROID PLATFORM
+//@			if (type == JSON) {
+//@				return new impl.javame.com.twitterapime.parser.JSONOrgParser();				
+//@			} else {
+//@				return new impl.android.com.twitterapime.parser.SAXParser();				
+//@			}
+//@		}
+		//#endif
+		//#endif
 		//
-		return null;
+		throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 	}
 	
 	/**

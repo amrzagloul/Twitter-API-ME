@@ -28,24 +28,6 @@ import java.util.Vector;
  */
 public final class PlatformProviderSelector {
 	//#ifdef PP_JAVA_ME
-	//#define PP_JAVA_ME = 1
-	//#else
-	//#define PP_JAVA_ME = 0
-	//#endif
-
-	//#ifdef PP_ANDROID
-	//#define PP_ANDROID = 1
-	//#else
-	//#define PP_ANDROID = 0
-	//#endif
-
-	//#if PP_JAVA_ME == 0 && PP_ANDROID == 0
-	//#define PP_ALL = 1
-	//#else
-	//#define PP_ALL = 0
-	//#endif
-
-	//#if PP_JAVA_ME == 1 || PP_ALL == 1
 	/**
 	 * <p>
 	 * Platform provider that represents Java Micro Edition platform.
@@ -56,18 +38,18 @@ public final class PlatformProviderSelector {
 			PlatformProvider.PPID_JAVA_ME, PlatformProvider.PPNM_JAVA_ME);
 	//#endif
 
-	//#if PP_ANDROID == 1 || PP_ALL == 1
-	/**
-	 * <p>
-	 * Platform provider that represents Android platform.
-	 * </p>
-	 * <p>
-	 * Coming soon!
-	 * </p>
-	 */
-	private static final PlatformProvider androidProvider =
-		new PlatformProvider(
-			PlatformProvider.PPID_ANDROID, PlatformProvider.PPNM_ANDROID);
+	//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Platform provider that represents Android platform.
+//@	 * </p>
+//@	 * <p>
+//@	 * Coming soon!
+//@	 * </p>
+//@	 */
+//@	private static final PlatformProvider androidProvider =
+//@		new PlatformProvider(
+//@			PlatformProvider.PPID_ANDROID, PlatformProvider.PPNM_ANDROID);
 	//#endif
 	
 	/**
@@ -76,10 +58,12 @@ public final class PlatformProviderSelector {
 	 * selector.
 	 * </p>
 	 */
-	//#if PP_JAVA_ME == 1 || PP_ALL == 1
+	//#ifdef PP_JAVA_ME
 	private static final PlatformProvider defaultPlatform = javameProvider;
-	//#elif PP_ANDROID == 1
+	//#else
+	//#ifdef PP_ANDROID
 //@	private static final PlatformProvider defaultPlatform = androidProvider;
+	//#endif
 	//#endif
 
 	/**
@@ -102,11 +86,11 @@ public final class PlatformProviderSelector {
 	 */
 	public static PlatformProvider[] getAvailableProviders() {
 		Vector v = new Vector(2);
-		//#if PP_JAVA_ME == 1 || PP_ALL == 1
+		//#ifdef PP_JAVA_ME
 		v.addElement(javameProvider);
 		//#endif
-		//#if PP_ANDROID == 1 || PP_ALL == 1
-		v.addElement(androidProvider);
+		//#ifdef PP_ANDROID
+//@		v.addElement(androidProvider);
 		//#endif
 		//
 		PlatformProvider[] plats = new PlatformProvider[v.size()];

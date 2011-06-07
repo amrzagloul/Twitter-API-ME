@@ -9,13 +9,6 @@ package com.twitterapime.io;
 
 import java.io.IOException;
 
-//#ifdef PP_RIM
-//@import net.rim.device.api.servicebook.ServiceBook;
-//@import net.rim.device.api.servicebook.ServiceRecord;
-//@import net.rim.device.api.system.CoverageInfo;
-//@import net.rim.device.api.system.WLANInfo;
-//#endif
-
 import com.twitterapime.platform.PlatformProvider;
 import com.twitterapime.platform.PlatformProviderSelector;
 
@@ -39,24 +32,6 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * @see HttpConnection
  */
 public final class HttpConnector {
-	/**
-	 * <p>
-	 * Create a new instance of a HttpConnection subclass.
-	 * </p>
-	 * @param className Subclass's full name.
-	 * @return New HttpConnection instance.
-	 */
-	private static final HttpConnection newInstance(String className) {
-		try {
-			return (HttpConnection)Class.forName(className).newInstance();
-		} catch (IllegalAccessException e) {
-		} catch (InstantiationException e) {
-		} catch (ClassNotFoundException e) {
-		}
-		//
-		return null;
-	}
-
 	//#ifdef PP_RIM
 //@	/**
 //@	 * <p>
@@ -70,24 +45,22 @@ public final class HttpConnector {
 //@	private static final String getBlackBerryConnectionParams() {
 //@	    String connParams = "";
 //@	    //
-//@	    if (WLANInfo.getWLANState() == WLANInfo.WLAN_STATE_CONNECTED) {
+//@	    if (net.rim.device.api.system.WLANInfo.getWLANState() == net.rim.device.api.system.WLANInfo.WLAN_STATE_CONNECTED) {
 //@	        connParams = ";interface=wifi"; //Connected to a WiFi access point.
 //@	    } else {
-//@			int coverageStatus = CoverageInfo.getCoverageStatus();
-//@			ServiceRecord record = getWAP2ServiceRecord();
+//@			int coverageStatus = net.rim.device.api.system.CoverageInfo.getCoverageStatus();
+//@			net.rim.device.api.servicebook.ServiceRecord record = getWAP2ServiceRecord();
 //@			//
-//@			if (record != null
-//@					&& (coverageStatus & CoverageInfo.COVERAGE_DIRECT) == CoverageInfo.COVERAGE_DIRECT) {
+//@			if (record != null && (coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
 //@				// Have network coverage and a WAP 2.0 service book record
-//@				connParams = ";deviceside=true;ConnectionUID="
-//@						+ record.getUid();
-//@			} else if ((coverageStatus & CoverageInfo.COVERAGE_MDS) == CoverageInfo.COVERAGE_MDS) {
+//@				connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
+//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) == net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) {
 //@				// Have an MDS service book and network coverage
 //@				connParams = ";deviceside=false";
-//@			} else if ((coverageStatus & CoverageInfo.COVERAGE_DIRECT) == CoverageInfo.COVERAGE_DIRECT) {
+//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
 //@				// Have network coverage but no WAP 2.0 service book record
 //@				connParams = ";deviceside=true";
-//@			} else if ((coverageStatus & CoverageInfo.COVERAGE_BIS_B) == CoverageInfo.COVERAGE_BIS_B) {
+//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) == net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) {
 //@				connParams = ";deviceside=false;ConnectionType=mds-public";
 //@			}
 //@	    }
@@ -102,19 +75,17 @@ public final class HttpConnector {
 //@	 * 
 //@	 * @return ServiceRecord Currently in use.
 //@	 */
-//@	private static final ServiceRecord getWAP2ServiceRecord() {
+//@	private static final net.rim.device.api.servicebook.ServiceRecord getWAP2ServiceRecord() {
 //@	    String cid;
 //@	    String uid;
-//@		ServiceBook sb = ServiceBook.getSB();
-//@	    ServiceRecord[] records = sb.getRecords();
+//@		net.rim.device.api.servicebook.ServiceBook sb = net.rim.device.api.servicebook.ServiceBook.getSB();
+//@	    net.rim.device.api.servicebook.ServiceRecord[] records = sb.getRecords();
 //@	    //
 //@	    for (int i = records.length -1; i >= 0; i--) {
 //@	        cid = records[i].getCid().toLowerCase();
 //@	        uid = records[i].getUid().toLowerCase();
 //@	        //
-//@	        if (cid.indexOf("wptcp") != -1 &&
-//@	        		uid.indexOf("wifi") == -1 &&
-//@	        		uid.indexOf("mms") == -1) {
+//@	        if (cid.indexOf("wptcp") != -1 && uid.indexOf("wifi") == -1 && uid.indexOf("mms") == -1) {
 //@	            return records[i];
 //@	        }
 //@	    }
@@ -138,27 +109,28 @@ public final class HttpConnector {
 			throw new IllegalArgumentException("URL must not be null/empty.");
 		}
 		//
-		final String JAVA_ME_HTTP_IMPL_CLASS =
-			"impl.javame.com.twitterapime.io.HttpConnectionImpl";
-		final String JAVA_ME_HTTP_USER_AGENT =
-			"Twitter API ME/1.7 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
-		final String ANDROID_HTTP_IMPL_CLASS =
-			"impl.android.com.twitterapime.io.HttpConnectionImpl";
-		final String ANDROID_HTTP_USER_AGENT =
-			"Twitter API ME/1.7 (compatible; Android 1.5)";
-		//
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//
 		HttpConnection conn = null;
 		String userAgent = null;
 		//
+		//#ifdef PP_JAVA_ME
 		if (PPID == PlatformProvider.PPID_JAVA_ME) {
-			conn = newInstance(JAVA_ME_HTTP_IMPL_CLASS);
-			userAgent = JAVA_ME_HTTP_USER_AGENT;
-		} else if (PPID == PlatformProvider.PPID_ANDROID) {
-			conn = newInstance(ANDROID_HTTP_IMPL_CLASS);
-			userAgent = ANDROID_HTTP_USER_AGENT;
-		} else {
+			conn = new impl.javame.com.twitterapime.io.HttpConnectionImpl();
+			userAgent =
+				"Twitter API ME/1.7 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
+		}
+		//#else
+//@		//
+		//#ifdef PP_ANDROID
+//@		if (PPID == PlatformProvider.PPID_ANDROID) {
+//@			conn = new impl.android.com.twitterapime.io.HttpConnectionImpl();
+//@			userAgent = "Twitter API ME/1.7 (compatible; Android 1.5)";
+//@		}
+		//#endif
+		//#endif
+		//
+		if (conn == null) {
 			throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 		}
 		//
