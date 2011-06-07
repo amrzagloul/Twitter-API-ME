@@ -117,16 +117,8 @@
 			<path path="${tapime.path.lib.jsonorg}"/>
 		</path>
 	</target>
-
-	<target name="-preverify_javame" if="tapime.building.javame">
-		<wtkpreverify classpathref="tapime.classpath" jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
-	</target>
-
-	<target name="-preverify_rim" if="tapime.building.rim">
-		<wtkpreverify classpathref="tapime.classpath" jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
-	</target>
 	
-	<target name="-run" depends="-classpath_javame, -classpath_android, -classpath_rim, -compile, -lib_javame, -lib_android, -lib_rim, -preverify_javame, -preverify_rim, -findbugs, +javadoc, -package"/>
+	<target name="-run" depends="-classpath_javame, -classpath_android, -classpath_rim, -compile, -lib_javame, -lib_android, -lib_rim, -findbugs, +javadoc, -package"/>
 	
 	<target name="+build_javame">
 		<antcall target="-run">
