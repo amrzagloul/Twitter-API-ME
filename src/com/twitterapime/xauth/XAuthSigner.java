@@ -10,6 +10,7 @@ package com.twitterapime.xauth;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.encoders.Base64Encoder;
@@ -21,7 +22,7 @@ import com.twitterapime.xauth.encoders.HMAC;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.3
  */
 public final class XAuthSigner {
@@ -89,6 +90,7 @@ public final class XAuthSigner {
 	 */
 	public void signForAccessToken(HttpRequest req, String username,
 		String password) {
+		req.setMethod(HttpConnection.POST);
 		req.setBodyParameter(XAuthConstants.MODE, "client_auth");
 		req.setBodyParameter(XAuthConstants.USERNAME, username);
 		req.setBodyParameter(XAuthConstants.PASSWORD, password);

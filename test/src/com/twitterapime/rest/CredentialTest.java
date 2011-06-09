@@ -72,26 +72,21 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		}
 		//
 		try {
-			Credential c = new Credential("twitterapime", "password", (String)null, (String)null);
-			assertEquals("twitterapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
-			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
-			assertFalse(c.hasXAuthCredentials());
+			new Credential("AA", "BB", "", "");
+			fail();
+		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
 			fail();
 		}
 		//
 		try {
 			Credential c = new Credential("twitterapime", "password", "1234567890", "0987654321");
+			assertEquals("twitterapime", c.getUsernameOrEmail());
 			assertEquals("twitterapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
 			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
 			assertEquals("1234567890", c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
 			assertEquals("0987654321", c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
-			assertTrue(c.hasXAuthCredentials());
-			//
-			c = new Credential("twitterapime", "password", "", "");
-			assertNull(c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
-			assertNull(c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
-			assertFalse(c.hasXAuthCredentials());
+			assertTrue(c.hasUsername());
 		} catch (Exception e) {
 			fail();
 		}
@@ -99,20 +94,55 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		try {
 			Token token = new Token("654321", "654789");
 			Credential c = new Credential("twapime", "1234567890", "0987654321", token);
+			assertEquals("twapime", c.getUsernameOrEmail());
 			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
 			assertEquals("1234567890", c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
 			assertEquals("0987654321", c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
 			assertSame(token, c.getAccessToken());
+			assertTrue(c.hasUsername());
 		} catch (Exception e) {
 			fail();
 		}
-	}
-
-	/**
-	 * Test method for {@link com.twitterapime.rest.Credential#getBasicHttpAuthCredential()}.
-	 */
-	public void testGetBasicHttpAuthCredential() {
-		Credential c = new Credential("twitterapime", "password", (String)null, (String)null);
-		assertEquals("twitterapime:password", c.getBasicHttpAuthCredential());
+		//
+		try {
+			Credential c = new Credential("twitterapime@twapime.com", "password", "1234567890", "1234567890");
+			assertEquals("twitterapime@twapime.com", c.getString(MetadataSet.CREDENTIAL_EMAIL));
+			assertEquals("twitterapime@twapime.com", c.getUsernameOrEmail());
+			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
+			assertNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			assertFalse(c.hasUsername());
+			//
+			c.setUsername("twapime");
+			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Credential c = new Credential("twitterapime@twapime.com", "password", "1234567890", "1234567890");
+			assertEquals("twitterapime@twapime.com", c.getString(MetadataSet.CREDENTIAL_EMAIL));
+			assertEquals("twitterapime@twapime.com", c.getUsernameOrEmail());
+			assertEquals("password", c.getString(MetadataSet.CREDENTIAL_PASSWORD));
+			assertNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			assertFalse(c.hasUsername());
+			//
+			c.setUsername("twapime");
+			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Credential c = new Credential("twitterapime@twapime.com", "1234567890", "1234567890", new Token("654321", "654789"));
+			assertEquals("twitterapime@twapime.com", c.getString(MetadataSet.CREDENTIAL_EMAIL));
+			assertEquals("twitterapime@twapime.com", c.getUsernameOrEmail());
+			assertNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			assertFalse(c.hasUsername());
+			//
+			c.setUsername("twapime");
+			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
+		} catch (Exception e) {
+			fail();
+		}
 	}
 }

@@ -150,6 +150,13 @@ public final class MetadataSet {
 
 	/**
 	 * <p>
+	 * Report the credential's e-mail, e.g., "johnsmith@twitter.com".
+	 * </p>
+	 */
+	public static final String CREDENTIAL_EMAIL = "CREDENTIAL_EMAIL";
+
+	/**
+	 * <p>
 	 * Report the credential's username, e.g., "johnsmith".
 	 * </p>
 	 */

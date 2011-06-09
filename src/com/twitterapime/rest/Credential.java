@@ -11,6 +11,7 @@ import java.util.Hashtable;
 
 import com.twitterapime.model.DefaultEntity;
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 
 /**
@@ -19,7 +20,7 @@ import com.twitterapime.xauth.Token;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  * @see UserAccountManager
  */
@@ -28,48 +29,59 @@ public final class Credential extends DefaultEntity {
 	 * <p>
 	 * Create an instance of Credential class.
 	 * </p>
-	 * @param username Username.
+	 * <p>
+	 * <b>This constructor is not longer supported! It always throws an 
+	 * exception.</b>
+	 * </p>
+	 * @param usernameOrEmail Username or e-mail.
 	 * @param password Password.
-	 * @throws IllegalArgumentException If username/password is empty or null.
-	 * @deprecated
+	 * @throws IllegalArgumentException If any parameter is empty or null.
+	 * @deprecated Use {@link Credential#Credential(String, String, String, String)}
+	 *             instead.
 	 */
-	public Credential(String username, String password) {
-		this(username, password, (String)null, (String)null);
+	public Credential(String usernameOrEmail, String password) {
+		throw new IllegalArgumentException("This constructor is deprecated!");
 	}
 	
 	/**
 	 * <p>
 	 * Create an instance of Credential class.
 	 * </p>
-	 * @param username Username.
+	 * @param usernameOrEmail Username or e-mail.
 	 * @param password Password.
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.
-	 * @throws IllegalArgumentException If username/password is empty or null.
+	 * @throws IllegalArgumentException If any parameter is empty or null.
 	 */
-	public Credential(String username, String password, String consumerKey,
-		String consumerSecret) {
-		if (username == null || (username = username.trim()).length() == 0) {
+	public Credential(String usernameOrEmail, String password, 
+		String consumerKey,	String consumerSecret) {
+		if (StringUtil.isEmpty(usernameOrEmail)) {
 			throw new IllegalArgumentException(
-				"Username must not be empty/null");
+				"Username or e-mail must not be empty/null");
 		}
-		if (password == null || (password = password.trim()).length() == 0) {
+		if (StringUtil.isEmpty(password)) {
 			throw new IllegalArgumentException(
 				"Password must not be empty/null");
 		}
+		if (StringUtil.isEmpty(consumerKey)) {
+			throw new IllegalArgumentException(
+				"Consumer Key must not be empty/null");
+		}
+		if (StringUtil.isEmpty(consumerSecret)) {
+			throw new IllegalArgumentException(
+				"Consumer Secret must not be empty/null");
+		}
 		//
 		Hashtable credtls = new Hashtable(4);
-		credtls.put(MetadataSet.CREDENTIAL_USERNAME, username);
-		credtls.put(MetadataSet.CREDENTIAL_PASSWORD, password);
 		//
-		if (consumerKey != null
-				&& (consumerKey = consumerKey.trim()).length() > 0) {
-			credtls.put(MetadataSet.CREDENTIAL_CONSUMER_KEY, consumerKey);
+		if (usernameOrEmail.indexOf('@') != -1) { //is e-mail?
+			credtls.put(MetadataSet.CREDENTIAL_EMAIL, usernameOrEmail);	
+		} else {
+			credtls.put(MetadataSet.CREDENTIAL_USERNAME, usernameOrEmail);
 		}
-		if (consumerSecret != null
-				&& (consumerSecret = consumerSecret.trim()).length() > 0) {
-			credtls.put(MetadataSet.CREDENTIAL_CONSUMER_SECRET, consumerSecret);
-		}
+		credtls.put(MetadataSet.CREDENTIAL_PASSWORD, password);
+		credtls.put(MetadataSet.CREDENTIAL_CONSUMER_KEY, consumerKey);
+		credtls.put(MetadataSet.CREDENTIAL_CONSUMER_SECRET, consumerSecret);
 		//
 		setData(credtls);
 	}
@@ -78,15 +90,15 @@ public final class Credential extends DefaultEntity {
 	 * <p>
 	 * Create an instance of Credential class.
 	 * </p>
-	 * @param username Username.
+	 * @param usernameOrEmail Username or e-mail.
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.
 	 * @param accessToken OAuth access token.
-	 * @throws IllegalArgumentException If username/accessToken is null.
+	 * @throws IllegalArgumentException If any parameter is empty/null.
 	 */
-	public Credential(String username, String consumerKey,
+	public Credential(String usernameOrEmail, String consumerKey,
 		String consumerSecret, Token accessToken) {
-		this(username, "ignored", consumerKey, consumerSecret);
+		this(usernameOrEmail, "ignored", consumerKey, consumerSecret);
 		//
 		if (accessToken == null) {
 			throw new IllegalArgumentException("accessToken must not be null.");
@@ -97,43 +109,47 @@ public final class Credential extends DefaultEntity {
 	
 	/**
 	 * <p>
-	 * Get the credential in HttpAuth format (e.g. username:password).
-	 * </p>
-	 * @return Credential.
-	 */
-	String getBasicHttpAuthCredential() {
-		return getString(MetadataSet.CREDENTIAL_USERNAME) +
-		       ':' +
-		       getString(MetadataSet.CREDENTIAL_PASSWORD);
-	}
-	
-	/**
-	 * <p>
-	 * Verify whether XAuth credentials were entered.
-	 * </p>
-	 * @return true credentials entered.
-	 */
-	boolean hasXAuthCredentials() {
-		String key = getString(MetadataSet.CREDENTIAL_CONSUMER_KEY);
-		if (key == null || key.trim().length() == 0) {
-			return false;
-		}
-		//
-		key = getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET);
-		if (key == null || key.trim().length() == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	/**
-	 * <p>
 	 * Get entered OAuth access token.
 	 * <p>
 	 * @return Token.
 	 */
 	Token getAccessToken() {
 		return (Token)getObject(MetadataSet.CREDENTIAL_ACCESS_TOKEN);
+	}
+	
+	/**
+	 * <p>
+	 * Verify whether username were entered.
+	 * </p>
+	 * @return true username entered.
+	 */
+	boolean hasUsername() {
+		return data.get(MetadataSet.CREDENTIAL_USERNAME) != null;
+	}
+	
+	/**
+	 * <p>
+	 * Get username or e-mail credential.
+	 * </p>
+	 * @return Username or e-mail.
+	 */
+	String getUsernameOrEmail() {
+		String username = getString(MetadataSet.CREDENTIAL_USERNAME);
+		//
+		if (username == null) {
+			username = getString(MetadataSet.CREDENTIAL_EMAIL);
+		}
+		//
+		return username;
+	}
+	
+	/**
+	 * <p>
+	 * Set username.
+	 * </p>
+	 * @param username Username.
+	 */
+	void setUsername(String username) {
+		data.put(MetadataSet.CREDENTIAL_USERNAME, username);
 	}
 }

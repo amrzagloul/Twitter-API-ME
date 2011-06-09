@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import com.twitterapime.io.handler.HttpResponseCodeErrorHandler;
 import com.twitterapime.parser.Parser;
-import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.search.InvalidQueryException;
 import com.twitterapime.search.LimitExceededException;
@@ -65,7 +64,12 @@ public final class HttpResponseCodeInterpreter {
 				throw new InvalidQueryException(getErrorMessage(response));
 			} else if (isLimitExceededError(respCode)) {
 				String emgs = getErrorMessage(response);
-				String raft = response.getResponseField("Retry-After");
+				String raft =
+					response.getResponseField("X-FeatureRateLimit-Reset");
+				//
+				if (StringUtil.isEmpty(raft)) {
+					raft = response.getResponseField("Retry-After");
+				}
 				//
 				if (!StringUtil.isEmpty(raft)) {
 					emgs += " / Retry after " + raft + " secs.";
@@ -100,7 +104,7 @@ public final class HttpResponseCodeInterpreter {
 			parser.parse(response.getStream(), handler);
 			//
 			errorMsg = handler.getParsedErrorMessage();
-		} catch (ParserException e) {
+		} catch (Exception e) {
 			errorMsg = "HTTP ERROR CODE: " + response.getCode();
 		}
 		//

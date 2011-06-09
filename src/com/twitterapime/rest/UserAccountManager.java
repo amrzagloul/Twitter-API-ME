@@ -8,7 +8,6 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -28,7 +27,6 @@ import com.twitterapime.search.QueryComposer;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
-import com.twitterapime.xauth.encoders.Base64Encoder;
 
 /**
  * <p>
@@ -270,12 +268,10 @@ public final class UserAccountManager {
 	private UserAccountManager(Credential c) {
 		credential = c;
 		//
-		if (c.hasXAuthCredentials()) {
-			String conKey = c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY);
-			String conSec = c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET);
-			//
-			signer = new XAuthSigner(conKey, conSec);
-		}
+		signer =
+			new XAuthSigner(
+				c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY),
+				c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
 	}
 
 	/**
@@ -348,49 +344,69 @@ public final class UserAccountManager {
 		}
 		//
 		HttpRequest req;
-		if (credential.hasXAuthCredentials()) {
-			token = credential.getAccessToken();
+		//
+		token = credential.getAccessToken();
+		//
+		if (token == null) {
+			req =
+				createRequest(
+					getURL(TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN));
 			//
-			if (token != null) {
-				verified = true;
-				saveSelfOnPool();
+			signer.signForAccessToken(
+				req,
+				credential.getUsernameOrEmail(),
+				credential.getString(MetadataSet.CREDENTIAL_PASSWORD));
+			//
+			try {
+				HttpResponse resp = req.send();
 				//
-				return true;
+				if (resp.getCode() == HttpConnection.HTTP_OK) {
+					token = Token.parse(resp.getBodyContent());
+				} else if (resp.getCode() == HttpConnection.HTTP_UNAUTHORIZED) {
+					return false;
+				} else {
+					HttpResponseCodeInterpreter.perform(resp);
+					//
+					return false;
+				}
+			} finally {
+				req.close();
 			}
-			//
-			String user = credential.getString(MetadataSet.CREDENTIAL_USERNAME);
-			String pass = credential.getString(MetadataSet.CREDENTIAL_PASSWORD);
-			//
-			req = createRequest(
-				getURL(TWITTER_API_URL_SERVICE_OAUTH_ACCESS_TOKEN));
-			req.setMethod(HttpConnection.POST);
-			//
-			signer.signForAccessToken(req, user, pass);
-		} else {
-			req = createRequest(
-				getURL(TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS));
 		}
+		//
+		req = createRequest(
+			getURL(TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS));
 		//
 		try {
 			HttpResponse resp = req.send();
 			//
 			if (resp.getCode() == HttpConnection.HTTP_OK) {
-				if (credential.hasXAuthCredentials()) {
-					token = Token.parse(resp.getBodyContent()); //access token.
-				}
-				verified = true;
+				AccountHandler handler = new AccountHandler();
+				Parser parser = ParserFactory.getDefaultParser();
+				parser.parse(resp.getStream(), handler);
+				UserAccount ua = handler.getParsedUserAccounts()[0];
 				//
+				credential.setUsername(
+					ua.getString(MetadataSet.USERACCOUNT_USER_NAME));
+				//
+				verified = true;
 				saveSelfOnPool();
+				//
+				return true;
 			} else if (resp.getCode() == HttpConnection.HTTP_UNAUTHORIZED) {
-				verified = false;
+				token = null;
+				//
+				return false;
 			} else {
 				HttpResponseCodeInterpreter.perform(resp);
+				//
+				return false;
 			}
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
 		} finally {
 			req.close();
 		}
-		//
-		return verified;
 	}
 	
 	/**
@@ -899,21 +915,7 @@ public final class UserAccountManager {
 	 */
 	synchronized HttpRequest createRequest(String url) {
 		HttpRequest req = new HttpRequest(url);
-		//
-		if (credential.hasXAuthCredentials()) {
-			if (token != null) {
-				req.setSigner(signer, token);
-			}
-		} else {
-			try {
-				String crdntls = credential.getBasicHttpAuthCredential();
-				crdntls = Base64Encoder.encode(crdntls.getBytes("UTF-8"));
-				req.setHeaderField("Authorization", "Basic " + crdntls);
-			} catch (UnsupportedEncodingException e) {
-				throw new IllegalArgumentException(
-					"Invalid UTF-8 credentials.");
-			}
-		}
+		req.setSigner(signer, token);
 		//
 		return req;
 	}

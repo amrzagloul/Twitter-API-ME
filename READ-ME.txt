@@ -40,6 +40,7 @@ quicker for the developers to port their applications to other platforms.
 - Get friends and followers.
 - Get friendship details between two users.
 - New attributes in MetadataSet class.
+- Bug fixes related to authentication using e-mail address instead of username.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -54,6 +55,8 @@ quicker for the developers to port their applications to other platforms.
 - You can now obfuscate your app with Twitter API ME's jar file without adding 
   any rule to your obfuscator. No class is instantiated using reflection any 
   more.
+  
+- Http Basic Authentication support was completely removed from source code.
 
  COMING NEXT VERSION: 1.8
 ********************************************************************************
