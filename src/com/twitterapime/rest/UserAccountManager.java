@@ -8,6 +8,7 @@
 package com.twitterapime.rest;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.twitterapime.io.HttpConnection;
@@ -133,8 +134,18 @@ public final class UserAccountManager {
 	public static final String TWITTER_API_URL_SERVICE_USERS_SEARCH =
 		"TWITTER_API_URL_SERVICE_USERS_SEARCH";
 
+	/**
+	 * <p>
+	 * Key for Twitter API URL service users lookup.
+	 * </p>
+	 * @see UserAccountManager#setServiceURL(String, String)
+	 * @see UserAccountManager#lookup(Query)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_USERS_LOOKUP =
+		"TWITTER_API_URL_SERVICE_USERS_LOOKUP";
+
 	static {
-		SERVICES_URL = new Hashtable(7);
+		SERVICES_URL = new Hashtable(8);
 		//
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_ACCOUNT_VERIFY_CREDENTIALS,
@@ -157,6 +168,9 @@ public final class UserAccountManager {
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_USERS_SEARCH,
 			"http://api.twitter.com/1/users/search.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_USERS_LOOKUP,
+			" http://api.twitter.com/1/users/lookup.xml");
 	}
 
 	/**
@@ -224,6 +238,7 @@ public final class UserAccountManager {
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_ACCOUNT_UPDATE_PROFILE
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_REPORT_SPAM
 	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_SEARCH
+	 * @see UserAccountManager#TWITTER_API_URL_SERVICE_USERS_LOOKUP
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -873,6 +888,86 @@ public final class UserAccountManager {
 		checkValid();
 		//
 		return FriendshipManager.getInstance(this).isEnabledToSendDMTo(user);
+	}
+	
+	/**
+	 * <p>
+	 * Return users worth of extended information, specified by either ID, 
+	 * screen name, or combination of the two. The author's most recent status 
+	 * (if the authenticating user has permission) will be returned inline.
+	 * </p>
+	 * <pre>
+	 * UserAccountManager uam = ...;
+	 * if (uam.verifyCredential()) {
+	 *   Query query =
+	 *       QueryComposer.screenNames(new String[] {"username1", "username2"});
+	 *   UserAccount[] users = uam.lookup(query);
+	 *   ...
+	 * }
+	 * </pre>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#userIDs(String[])} <b>(required)</b> or</li>
+	 * <li>{@link QueryComposer#screenNames(String[])} <b>(required)</b></li>
+	 * <li>{@link QueryComposer#skipStatus()}</li>
+	 * <li>{@link QueryComposer#includeEntities()}</li>
+	 * </ul>
+	 * </p>
+	 * @param query Search query.
+	 * @return Users associated to the given ids/usernames.
+	 * @throws SecurityException If it is not properly logged in.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If limit has been hit.
+	 * @throws IllegalArgumentException If query null or not properly informed.
+	 */
+	public UserAccount[] lookup(Query query) throws IOException,
+		LimitExceededException {
+		checkValid();
+		checkVerified();
+		//
+		if (query == null) {
+			throw new IllegalArgumentException("Query must not be null.");
+		}
+		//
+		final String qryStr = query.toString();
+		//
+		if (qryStr.indexOf("user_id=") == -1
+				&& qryStr.indexOf("screen_name=") == -1) {
+			throw new IllegalArgumentException(
+				"QueryComposer#userIDs(String[]) or " + 
+					"QueryComposer#screenNames(String[]) is required.");
+		}
+		//
+		HttpRequest req = 
+			createRequest(getURL(TWITTER_API_URL_SERVICE_USERS_LOOKUP));
+		req.setMethod(HttpConnection.POST);
+		//
+		Hashtable params = HttpRequest.getQueryStringParams(qryStr);
+		Enumeration keys = params.keys();
+		//
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement().toString();
+			//
+			req.setBodyParameter(key, params.get(key).toString());
+		}
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getDefaultParser();
+			AccountHandler handler = new AccountHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedUserAccounts();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}		
 	}
 	
 	/**

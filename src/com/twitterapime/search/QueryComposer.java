@@ -253,6 +253,13 @@ public final class QueryComposer {
 
 	/**
 	 * <p>
+	 * Constant that represents the "skip_status=true" parameter.
+	 * </p>
+	 */
+	static final String PM_SKIP_STATUS = "skip_status=true";
+
+	/**
+	 * <p>
 	 * Append a query to another one.
 	 * </p>
 	 * @param q1 Query 1.
@@ -704,6 +711,66 @@ public final class QueryComposer {
 	 */
 	public static Query includeRetweets() {
 		return new Query(PM_INCLUDE_RTS);
+	}
+
+	/**
+	 * <p>
+	 * Create a query to define whether the statuses must not be included.
+	 * </p>
+	 * @return A new query.
+	 */
+	public static Query skipStatus() {
+		return new Query(PM_SKIP_STATUS);
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to define the users' screen name (username).
+	 * </p>
+	 * @param names Users' screen name (username).
+	 * @return A new query.
+	 * @throws IllegalArgumentException If names is null.
+	 */
+	public static Query screenNames(String[] names) {
+		if (names == null) {
+			throw new IllegalArgumentException("Names must not be null.");
+		}
+		//
+		StringBuffer strNames = new StringBuffer();
+		//
+		for (int i = 0; i < names.length; i++) {
+			if (i > 0) {
+				strNames.append(',');	
+			}
+			strNames.append(names[i]);
+		}
+		//
+		return new Query(PM_SCREEN_NAME + strNames.toString());
+	}
+	
+	/**
+	 * <p>
+	 * Create a query to define the users' id.
+	 * </p>
+	 * @param ids User IDs.
+	 * @return A new query.
+	 * @throws IllegalArgumentException If ids is null.
+	 */
+	public static Query userIDs(String[] ids) {
+		if (ids == null) {
+			throw new IllegalArgumentException("Ids must not be null.");
+		}
+		//
+		StringBuffer strIds = new StringBuffer();
+		//
+		for (int i = 0; i < ids.length; i++) {
+			if (i > 0) {
+				strIds.append(',');	
+			}
+			strIds.append(ids[i]);
+		}
+		//
+		return new Query(PM_USER_ID + strIds.toString());
 	}
 
 	/**

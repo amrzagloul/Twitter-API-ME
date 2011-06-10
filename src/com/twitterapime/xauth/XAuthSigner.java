@@ -140,7 +140,8 @@ public final class XAuthSigner {
 		String method = StringUtil.encode(req.getMethod(), "UTF-8");
 		String url = StringUtil.encode(req.getSanitizedURL(), "UTF-8");
 		//
-		addParams(params, req.getQueryStringParams());
+		addParams(
+			params, HttpRequest.getQueryStringParams(req.getQueryString()));
 		addParams(params, req.getBodyParameters());
 		//
 		String sortedParams =

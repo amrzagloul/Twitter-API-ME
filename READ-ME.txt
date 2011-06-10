@@ -37,6 +37,7 @@ quicker for the developers to port their applications to other platforms.
 - Timeline of favorite tweets.
 - Favorite/unfavorite tweet.
 - User search.
+- User lookup.
 - Get friends and followers.
 - Get friendship details between two users.
 - New attributes in MetadataSet class.

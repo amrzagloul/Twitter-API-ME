@@ -22,7 +22,7 @@ import com.twitterapime.xauth.XAuthSigner;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.3
  */
 public final class HttpRequest {
@@ -77,6 +77,56 @@ public final class HttpRequest {
 
 	/**
 	 * <p>
+	 * Get query string parameters.
+	 * </p>
+	 * @param qryString Query string.
+	 * @return Parameters.
+	 */
+	public static Hashtable getQueryStringParams(String qryString) {
+		Hashtable params = new Hashtable();
+		//
+		if (qryString != null) {
+			String[] ps = StringUtil.split(qryString, '&');
+			String[] pv;
+			//
+			for (int i = 0; i < ps.length; i++) {
+				pv = StringUtil.split(ps[i], '=');
+				params.put(pv[0], pv[1]);
+			}
+		}
+		//
+		return params;
+	}
+
+	/**
+	 * <p>
+	 * Create query string from a set of parameters.
+	 * </p>
+	 * @param p Parameters.
+	 * @return Query string.
+	 */
+	public static String queryString(Hashtable p) {
+		String key;
+		StringBuffer queryStr = new StringBuffer();
+		Enumeration keys = p.keys();
+		//
+		while (keys.hasMoreElements()) {
+			key = (String)keys.nextElement();
+			//
+			queryStr.append(StringUtil.encode(key, "UTF-8"));
+			queryStr.append('=');
+			queryStr.append(StringUtil.encode((String)p.get(key), "UTF-8"));
+			
+			if (keys.hasMoreElements()) {
+				queryStr.append('&');
+			}
+		}
+		//
+		return queryStr.toString();
+	}
+
+	/**
+	 * <p>
 	 * Create an instance of HttpRequest class.
 	 * </p>
 	 * @param url URL.
@@ -105,7 +155,7 @@ public final class HttpRequest {
 		//
 		String nurl = getSanitizedURL();
 		if (getQueryString() != null) {
-			nurl += '?' + queryString(getQueryStringParams());
+			nurl += '?' + queryString(getQueryStringParams(getQueryString()));
 		}
 		//
 		conn = HttpConnector.open(nurl);
@@ -196,29 +246,6 @@ public final class HttpRequest {
 		return bodyParams;
 	}
 	
-	/**
-	 * <p>
-	 * Get URL's query string parameters.
-	 * </p>
-	 * @return Parameters.
-	 */
-	public Hashtable getQueryStringParams() {
-		Hashtable params = new Hashtable();
-		String query = getQueryString();
-		//
-		if (query != null) {
-			String[] ps = StringUtil.split(query, '&');
-			String[] pv;
-			//
-			for (int i = 0; i < ps.length; i++) {
-				pv = StringUtil.split(ps[i], '=');
-				params.put(pv[0], pv[1]);
-			}
-		}
-		//
-		return params;
-	}
-
 	/**
 	 * <p>
 	 * Get URL.
@@ -314,32 +341,5 @@ public final class HttpRequest {
 			out.flush();
 			out.close();
 		}
-	}
-
-	/**
-	 * <p>
-	 * Create query string from a set of parameters.
-	 * </p>
-	 * @param p Parameters.
-	 * @return Query string.
-	 */
-	private String queryString(Hashtable p) {
-		String key;
-		StringBuffer queryStr = new StringBuffer();
-		Enumeration keys = p.keys();
-		//
-		while (keys.hasMoreElements()) {
-			key = (String)keys.nextElement();
-			//
-			queryStr.append(StringUtil.encode(key, "UTF-8"));
-			queryStr.append('=');
-			queryStr.append(StringUtil.encode((String)p.get(key), "UTF-8"));
-			
-			if (keys.hasMoreElements()) {
-				queryStr.append('&');
-			}
-		}
-		//
-		return queryStr.toString();
 	}
 }
