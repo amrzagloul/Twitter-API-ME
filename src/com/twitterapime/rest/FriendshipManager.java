@@ -980,7 +980,13 @@ public final class FriendshipManager {
 		String url = getURL(TWITTER_API_URL_SERVICE_FRIENDSHIPS_SHOW);
 		url += "?" + pvSrc[0] + "=" + pvSrc[1] + "&" + pvTgt[0] + "=" +pvTgt[1];
 		//
-		HttpRequest req = new HttpRequest(url);
+		HttpRequest req;
+		//
+		if (userAccountMngr != null) {
+			req = userAccountMngr.createRequest(url);
+		} else {
+			req = new HttpRequest(url);
+		}
 		//
 		try {
 			HttpResponse resp = req.send();
