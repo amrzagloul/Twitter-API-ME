@@ -27,12 +27,27 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  * @see HttpConnection
  */
 public final class HttpConnector {
 	//#ifdef PP_RIM
+//@	/**
+//@	 * <p>
+//@	 * String of connection parameters to be appended to string connection 
+//@	 * (URL + default parameters).
+//@	 * </p>
+//@	 */
+//@	private static String appendConnectionParameters;
+//@	
+//@	/**
+//@	 * <p>
+//@	 * String of connection parameters to be appended to URL.
+//@	 * </p>
+//@	 */
+//@	private static String connectionParameters;
+//@
 //@	/**
 //@	 * <p>
 //@	 * Get some specific connection parameters that must be appended to a URL
@@ -45,24 +60,32 @@ public final class HttpConnector {
 //@	private static final String getBlackBerryConnectionParams() {
 //@	    String connParams = "";
 //@	    //
-//@	    if (net.rim.device.api.system.WLANInfo.getWLANState() == net.rim.device.api.system.WLANInfo.WLAN_STATE_CONNECTED) {
-//@	        connParams = ";interface=wifi"; //Connected to a WiFi access point.
+//@	    if (connectionParameters != null) {
+//@	    	connParams = connectionParameters;
 //@	    } else {
-//@			int coverageStatus = net.rim.device.api.system.CoverageInfo.getCoverageStatus();
-//@			net.rim.device.api.servicebook.ServiceRecord record = getWAP2ServiceRecord();
-//@			//
-//@			if (record != null && (coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
-//@				// Have network coverage and a WAP 2.0 service book record
-//@				connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
-//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) == net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) {
-//@				// Have an MDS service book and network coverage
-//@				connParams = ";deviceside=false";
-//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
-//@				// Have network coverage but no WAP 2.0 service book record
-//@				connParams = ";deviceside=true";
-//@			} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) == net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) {
-//@				connParams = ";deviceside=false;ConnectionType=mds-public";
-//@			}
+//@		    if (net.rim.device.api.system.WLANInfo.getWLANState() == net.rim.device.api.system.WLANInfo.WLAN_STATE_CONNECTED) {
+//@		        connParams = ";interface=wifi"; //Connected to a WiFi access point.
+//@		    } else {
+//@				int coverageStatus = net.rim.device.api.system.CoverageInfo.getCoverageStatus();
+//@				net.rim.device.api.servicebook.ServiceRecord record = getWAP2ServiceRecord();
+//@				//
+//@				if (record != null && (coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
+//@					// Have network coverage and a WAP 2.0 service book record
+//@					connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
+//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) == net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) {
+//@					// Have an MDS service book and network coverage
+//@					connParams = ";deviceside=false";
+//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
+//@					// Have network coverage but no WAP 2.0 service book record
+//@					connParams = ";deviceside=true";
+//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) == net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) {
+//@					connParams = ";deviceside=false;ConnectionType=mds-public";
+//@				}
+//@		    }
+//@		    //
+//@		    if (appendConnectionParameters != null) {
+//@		    	connParams += appendConnectionParameters;
+//@		    }
 //@	    }
 //@	    //
 //@	    return connParams;
@@ -91,6 +114,38 @@ public final class HttpConnector {
 //@	    }
 //@	    //
 //@	    return null;
+//@	}
+//@	
+//@	/**
+//@	 * <p>
+//@	 * Set the connection parameters to be appended to string connection (URL +
+//@	 * default parameters) to be requestesd. Use this method to apeend 
+//@	 * additional parameters to the string connection.
+//@	 * </p>
+//@	 * @param params Parameters.
+//@	 */
+//@	public static void setAppendConnectionParameters(String params) {
+//@    	if (params != null && !params.startsWith(";")) {
+//@    		params = ";" + params;
+//@    	}
+//@    	//
+//@		appendConnectionParameters = params;
+//@	}
+//@
+//@	/**
+//@	 * <p>
+//@	 * Set the connection parameters to be appended to URL to be requestesd. 
+//@	 * This removes any additional parameters appended automatically to the
+//@	 * string connection. 
+//@	 * </p>
+//@	 * @param params Parameters.
+//@	 */
+//@	public static void setConnectionParameters(String params) {
+//@    	if (params != null && !params.startsWith(";")) {
+//@    		params = ";" + params;
+//@    	}
+//@    	//
+//@		connectionParameters = params;
 //@	}
 	//#endif
 
