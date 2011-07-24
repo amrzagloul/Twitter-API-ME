@@ -35,6 +35,7 @@
 			<include name="impl/android/**" if="tapime.building.android"/>
 			<include name="impl/javame/com/twitterapime/parser/JSON**" if="tapime.building.android"/>
 			<include name="impl/javame/**" if="tapime.building.rim"/>
+			<include name="impl/rim/**" if="tapime.building.rim"/>
 		</copydir>
 		
 		<wtkpreprocess srcdir="${tapime.path.src.preprocessed}"
@@ -118,7 +119,23 @@
 		</path>
 	</target>
 	
-	<target name="-run" depends="-classpath_javame, -classpath_android, -classpath_rim, -compile, -lib_javame, -lib_android, -lib_rim, -findbugs, +javadoc, -package"/>
+	<target name="-preverify_javame" if="tapime.building.javame">
+		<wtkpreverify classpathref="tapime.classpath" jarfile="${tapime.version.path.dist}/${tapime.version.jar}"/>
+	</target>
+
+	<target name="-preverify_rim" if="tapime.building.rim">
+		<exec executable="${tapime.path.rim.preverify}" failonerror="true">
+		    <arg line='-classpath "${tapime.path.lib.rim}" -d "${tapime.version.path.dist}" "${tapime.path.lib.jsonorg}"' />
+		</exec>
+		<exec executable="${tapime.path.rim.preverify}" failonerror="true">
+		    <arg line='-classpath "${tapime.path.lib.rim}" -d "${tapime.version.path.dist}" "${tapime.path.lib.kxml2}"' />
+		</exec>
+		<exec executable="${tapime.path.rim.preverify}" failonerror="true">
+		    <arg line='-classpath "${tapime.path.lib.rim};${tapime.path.lib.jsonorg};${tapime.path.lib.kxml2}" -d "${tapime.version.path.dist}" "${tapime.version.path.dist}/${tapime.version.jar}"' />
+		</exec>
+	</target>
+	
+	<target name="-run" depends="-classpath_javame, -classpath_android, -classpath_rim, -compile, -lib_javame, -lib_android, -lib_rim, -preverify_javame, -preverify_rim, -findbugs, +javadoc, -package"/>
 	
 	<target name="+build_javame">
 		<antcall target="-run">
