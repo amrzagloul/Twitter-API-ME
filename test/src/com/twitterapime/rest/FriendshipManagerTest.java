@@ -19,7 +19,7 @@ public class FriendshipManagerTest extends TwitterAPIMETestCase {
 	 * 
 	 */
 	public void testGetInstanceUserAccountManager() {
-		UserAccountManager uam = UserAccountManager.getInstance(new Credential("a", "b", "c", new Token("a", "b")));
+		UserAccountManager uam = UserAccountManager.getInstance(new Credential("b", "c", new Token("a", "b")));
 		//
 		try {
 			FriendshipManager.getInstance(uam);

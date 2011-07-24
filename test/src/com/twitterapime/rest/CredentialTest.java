@@ -56,7 +56,7 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		}
 		//
 		try {
-			new Credential("username", null, null, (Token)null);
+			new Credential(null, null, (Token)null);
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -64,7 +64,7 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		}
 		//
 		try {
-			new Credential(null, null, null, new Token("1", "2"));
+			new Credential(null, null, new Token("1", "2"));
 			fail();
 		} catch (IllegalArgumentException e) {
 		} catch (Exception e) {
@@ -93,9 +93,7 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		//
 		try {
 			Token token = new Token("654321", "654789");
-			Credential c = new Credential("twapime", "1234567890", "0987654321", token);
-			assertEquals("twapime", c.getUsernameOrEmail());
-			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			Credential c = new Credential("1234567890", "0987654321", token);
 			assertEquals("1234567890", c.getString(MetadataSet.CREDENTIAL_CONSUMER_KEY));
 			assertEquals("0987654321", c.getString(MetadataSet.CREDENTIAL_CONSUMER_SECRET));
 			assertSame(token, c.getAccessToken());
@@ -133,9 +131,7 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		}
 		//
 		try {
-			Credential c = new Credential("twitterapime@twapime.com", "1234567890", "1234567890", new Token("654321", "654789"));
-			assertEquals("twitterapime@twapime.com", c.getString(MetadataSet.CREDENTIAL_EMAIL));
-			assertEquals("twitterapime@twapime.com", c.getUsernameOrEmail());
+			Credential c = new Credential("1234567890", "1234567890", new Token("654321", "654789"));
 			assertNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
 			assertFalse(c.hasUsername());
 			//
