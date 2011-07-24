@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.7 - READ ME                         *
+*                         TWITTER API ME 1.8 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -33,15 +33,7 @@ quicker for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- Reply tweet.
-- Timeline of favorite tweets.
-- Favorite/unfavorite tweet.
-- User search.
-- User lookup.
-- Get friends and followers.
-- Get friendship details between two users.
-- New attributes in MetadataSet class.
-- Bug fixes related to authentication using e-mail address instead of username.
+- OAuth support (callback url and out-of-band mode).
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
@@ -49,17 +41,10 @@ quicker for the developers to port their applications to other platforms.
 
  REMARKS:
 ********************************************************************************
-- From this version on the release's jar file is no longer preverified for Java 
-  ME and RIM platforms. It is not necessary, because you will do that when you 
-  build your application.
+- From this version on the release's jar file is being preverified again for 
+  Java ME and RIM platforms. In case of RIM, the libraries as well.
   
-- You can now obfuscate your app with Twitter API ME's jar file without adding 
-  any rule to your obfuscator. No class is instantiated using reflection any 
-  more.
-  
-- Http Basic Authentication support was completely removed from source code.
-
- COMING NEXT VERSION: 1.8
+ COMING NEXT VERSION: 1.9
 ********************************************************************************
 - Let us know what you need.
 
