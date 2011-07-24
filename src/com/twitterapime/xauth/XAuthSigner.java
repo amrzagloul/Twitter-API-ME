@@ -22,7 +22,7 @@ import com.twitterapime.xauth.encoders.HMAC;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.3
  */
 public final class XAuthSigner {
@@ -79,7 +79,55 @@ public final class XAuthSigner {
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 	}
+	
+	/**
+	 * <p>
+	 * Sign the given request to obtain the request token.
+	 * </p>
+	 * @param req Http request.
+	 * @param urlCallback URL callback.
+	 */
+	public void signForRequestToken(HttpRequest req, String urlCallback) {
+		req.setMethod(HttpConnection.POST);
+		//
+		OAuthParameters params = new OAuthParameters(consumerKey);
+		params.put(OAuthConstants.CALLBACK, urlCallback);
+		//
+		String str = getSignatureBaseString(req, params);
+		//
+		str = getSignature(
+			str, consumerSecret, OAuthConstants.EMPTY_TOKEN_SECRET);
+		params.put(OAuthConstants.SIGNATURE, str);
+		//
+		str = params.getAuthorizationHeaderValue();
+		req.setHeaderField(OAuthConstants.HEADER, str);
+	}
 
+	/**
+	 * <p>
+	 * Sign the given request to obtain the access token.
+	 * </p>
+	 * @param req Http request.
+	 * @param access Access token.
+	 * @param verifier Verifier code.
+	 */
+	public void signForAccessToken(HttpRequest req, Token access, 
+		String verifier) {
+		req.setMethod(HttpConnection.POST);
+		//
+		OAuthParameters params = new OAuthParameters(consumerKey);
+		params.put(OAuthConstants.TOKEN, access.getToken());
+		params.put(OAuthConstants.VERIFIER, verifier);
+		//
+		String str = getSignatureBaseString(req, params);
+		//
+		str = getSignature(str, consumerSecret, access.getSecret());
+		params.put(OAuthConstants.SIGNATURE, str);
+		//
+		str = params.getAuthorizationHeaderValue();
+		req.setHeaderField(OAuthConstants.HEADER, str);
+	}
+	
 	/**
 	 * <p>
 	 * Sign the given request to obtain the access token.
@@ -91,20 +139,20 @@ public final class XAuthSigner {
 	public void signForAccessToken(HttpRequest req, String username,
 		String password) {
 		req.setMethod(HttpConnection.POST);
-		req.setBodyParameter(XAuthConstants.MODE, "client_auth");
-		req.setBodyParameter(XAuthConstants.USERNAME, username);
-		req.setBodyParameter(XAuthConstants.PASSWORD, password);
+		req.setBodyParameter(OAuthConstants.MODE, "client_auth");
+		req.setBodyParameter(OAuthConstants.USERNAME, username);
+		req.setBodyParameter(OAuthConstants.PASSWORD, password);
 		//
 		OAuthParameters params = new OAuthParameters(consumerKey);
 		//
 		String str = getSignatureBaseString(req, params);
 		//
 		str = getSignature(
-			str, consumerSecret, XAuthConstants.EMPTY_TOKEN_SECRET);
-		params.put(XAuthConstants.SIGNATURE, str);
+			str, consumerSecret, OAuthConstants.EMPTY_TOKEN_SECRET);
+		params.put(OAuthConstants.SIGNATURE, str);
 		//
 		str = params.getAuthorizationHeaderValue();
-		req.setHeaderField(XAuthConstants.HEADER, str);
+		req.setHeaderField(OAuthConstants.HEADER, str);
 	}
 
 	/**
@@ -116,15 +164,15 @@ public final class XAuthSigner {
 	 */
 	public void sign(HttpRequest req, Token access) {
 		OAuthParameters params = new OAuthParameters(consumerKey);
-		params.put(XAuthConstants.TOKEN, access.getToken());
+		params.put(OAuthConstants.TOKEN, access.getToken());
 		//
 		String str = getSignatureBaseString(req, params);
 		//
 		str = getSignature(str, consumerSecret, access.getSecret());
-		params.put(XAuthConstants.SIGNATURE, str);
+		params.put(OAuthConstants.SIGNATURE, str);
 		//
 		str = params.getAuthorizationHeaderValue();
-		req.setHeaderField(XAuthConstants.HEADER, str);
+		req.setHeaderField(OAuthConstants.HEADER, str);
 	}
 
 	/**

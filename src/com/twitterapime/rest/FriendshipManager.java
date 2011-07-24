@@ -920,7 +920,6 @@ public final class FriendshipManager {
 	 * Get the friendship's details between the authenticating user and a given
 	 * user.
 	 * </p>
-	 * @param source Source user.
 	 * @param target Target user.
 	 * @return Friendship details.
 	 * @throws IOException If an I/O error occurs.

@@ -664,7 +664,7 @@ public final class QueryComposer {
 	 * <p>
 	 * Create a query to define the page's index in the cursor.
 	 * </p>
-	 * @param cursor Cursor index.
+	 * @param index Cursor index.
 	 * @return A new query.
 	 */
 	public static Query cursor(long index) {

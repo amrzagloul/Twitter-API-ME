@@ -18,7 +18,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.1
  */
 public final class StringUtil {
@@ -344,6 +344,32 @@ public final class StringUtil {
 		sb.append(text.substring(startPos, text.length()));
 		//
 		return sb.toString();
+	}
+	
+	/**
+	 * <p>
+	 * Get the value of a given param in the Url.
+	 * </p>
+	 * @param url Url.
+	 * @param param Parameter.
+	 * @return Value.
+	 */
+	public static String getUrlParamValue(String url, String param) {
+		int ix = url.indexOf('?');
+		//
+		if (ix != -1) {
+			url = url.substring(ix +1);
+		}
+		//
+		String[] params = StringUtil.split(url, '&');
+		//
+		for (int i = 0; i < params.length; i++) {
+			if (params[i].startsWith(param + '=')) {
+				return StringUtil.split(params[i], '=')[1];
+			}
+		}
+		//
+		return null;
 	}
 	
 	/**

@@ -57,8 +57,8 @@ public final class SAXParser extends Parser {
 		} catch (ParserConfigurationException e) {
 			throw new ParserException(e.getMessage());
 		} catch (SAXException e) {
-			if (e.getCause() instanceof ParserException) {
-				throw (ParserException)e.getCause();
+			if (e.getException() instanceof ParserException) {
+				throw (ParserException)e.getException();
 			} else {
 				throw new ParserException(e.getMessage());
 			}

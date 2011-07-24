@@ -1,5 +1,5 @@
 /*
- * XAuthConstants.java
+ * OAuthConstants.java
  * 05/06/2010
  * Twitter API Micro Edition
  * Copyright(c) Ernandes Mourao Junior (ernandes@gmail.com)
@@ -13,10 +13,10 @@ package com.twitterapime.xauth;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.3
  */
-final class XAuthConstants {
+final class OAuthConstants {
 	/**
 	 * <p>
 	 * TIMESTAMP.
@@ -110,9 +110,23 @@ final class XAuthConstants {
 	
 	/**
 	 * <p>
+	 * CALLBACK.
+	 * </p>
+	 */
+	public static final String CALLBACK = "oauth_callback";
+	
+	/**
+	 * <p>
+	 * VERIFIER.
+	 * </p>
+	 */
+	public static final String VERIFIER = "oauth_verifier";
+
+	/**
+	 * <p>
 	 * Private constructor to avoid object instantiation.
 	 * </p>
 	 */
-	private XAuthConstants() {
+	private OAuthConstants() {
 	}
 }

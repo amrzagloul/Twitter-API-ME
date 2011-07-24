@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.3
  */
 public final class HttpResponse {
@@ -126,6 +126,10 @@ public final class HttpResponse {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	private String parseBody(InputStream in) throws IOException {
+		if (in == null) {
+			return null;
+		}
+		//
 		ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
 		//

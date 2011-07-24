@@ -45,11 +45,11 @@ final class OAuthParameters {
 		}
 		//
 		params = new Hashtable();
-		params.put(XAuthConstants.TIMESTAMP, getTimestampInSeconds());
-		params.put(XAuthConstants.SIGN_METHOD, "HMAC-SHA1");
-		params.put(XAuthConstants.VERSION, "1.0");
-		params.put(XAuthConstants.NONCE, getTimestampInSeconds());
-		params.put(XAuthConstants.CONSUMER_KEY, consumerKey);
+		params.put(OAuthConstants.TIMESTAMP, getTimestampInSeconds());
+		params.put(OAuthConstants.SIGN_METHOD, "HMAC-SHA1");
+		params.put(OAuthConstants.VERSION, "1.0");
+		params.put(OAuthConstants.NONCE, getTimestampInSeconds());
+		params.put(OAuthConstants.CONSUMER_KEY, consumerKey);
 	}
 
 	/**
@@ -88,7 +88,7 @@ final class OAuthParameters {
 		//
 		String[] sKeys = sortedKeys();
 		for (int i = 0; i < sKeys.length; i++) {
-			if (sKeys[i].startsWith(XAuthConstants.PARAM_PREFIX)) {
+			if (sKeys[i].startsWith(OAuthConstants.PARAM_PREFIX)) {
 				buffer.append(sKeys[i]);
 				buffer.append('=');
 				buffer.append('"');

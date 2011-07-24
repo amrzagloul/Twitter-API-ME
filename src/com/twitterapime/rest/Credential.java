@@ -20,7 +20,7 @@ import com.twitterapime.xauth.Token;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.1
  * @see UserAccountManager
  */
@@ -95,10 +95,26 @@ public final class Credential extends DefaultEntity {
 	 * @param consumerSecret Consumer secret.
 	 * @param accessToken OAuth access token.
 	 * @throws IllegalArgumentException If any parameter is empty/null.
+	 * @deprecated Use {@link Credential#Credential(String, String, Token)} 
+	 *             instead.
 	 */
 	public Credential(String usernameOrEmail, String consumerKey,
 		String consumerSecret, Token accessToken) {
-		this(usernameOrEmail, "ignored", consumerKey, consumerSecret);
+		throw new IllegalArgumentException("This constructor is deprecated!");
+	}
+	
+	/**
+	 * <p>
+	 * Create an instance of Credential class.
+	 * </p>
+	 * @param consumerKey Consumer key.
+	 * @param consumerSecret Consumer secret.
+	 * @param accessToken OAuth access token.
+	 * @throws IllegalArgumentException If any parameter is empty/null.
+	 */
+	public Credential(String consumerKey, String consumerSecret, 
+		Token accessToken) {
+		this("ignored", "ignored", consumerKey, consumerSecret);
 		//
 		if (accessToken == null) {
 			throw new IllegalArgumentException("accessToken must not be null.");
