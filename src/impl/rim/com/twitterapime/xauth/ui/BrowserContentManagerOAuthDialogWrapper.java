@@ -8,6 +8,7 @@
 package impl.rim.com.twitterapime.xauth.ui;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -15,8 +16,11 @@ import javax.microedition.io.HttpConnection;
 import net.rim.device.api.browser.field.BrowserContent;
 import net.rim.device.api.browser.field.BrowserContentManager;
 import net.rim.device.api.browser.field.Event;
+import net.rim.device.api.browser.field.RedirectEvent;
 import net.rim.device.api.browser.field.RenderingApplication;
 import net.rim.device.api.browser.field.RequestedResource;
+import net.rim.device.api.browser.field.UrlRequestedEvent;
+import net.rim.device.api.system.Display;
 
 import com.twitterapime.xauth.ui.OAuthDialogListener;
 import com.twitterapime.xauth.ui.OAuthDialogWrapper;
@@ -56,14 +60,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	 * RenderingApplicationListenerOAuth object.
 	 * </p>
 	 */
-	private RenderingApplicationListenerOAuth renderingListenerOAuth;
-	
-	/**
-	 * <p>
-	 * RenderingApplication object.
-	 * </p>
-	 */
-	private RenderingApplication renderingApplication;
+	private RenderingApplicationOAuthDialog renderingListenerOAuth;
 	
 	/**
 	 * <p>
@@ -71,15 +68,13 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	 * </p>
 	 * @param browserManager BrowserContentManager to display Twitter's login 
 	 *                       page.
-	 * @param renderingApplication Rendering Application.
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.
 	 * @param callbackUrl Callback Url. (null for "Out-of-band" mode)
 	 * @param oauthListener OAuth listener.
 	 */
 	public BrowserContentManagerOAuthDialogWrapper(
-		BrowserContentManager browserManager,
-		RenderingApplication renderingApplication, String consumerKey, 
+		BrowserContentManager browserManager, String consumerKey, 
 		String consumerSecret, String callbackUrl, 
 		OAuthDialogListener oauthListener) {
 		super(consumerKey, consumerSecret, callbackUrl, oauthListener);
@@ -88,14 +83,9 @@ public final class BrowserContentManagerOAuthDialogWrapper
 			throw new IllegalArgumentException(
 				"BrowserContentManager must not be null.");
 		}
-		if (renderingApplication == null) {
-			throw new IllegalArgumentException(
-				"RenderingApplication must not be null.");
-		}
 		//
 		this.browserManager = browserManager;
-		this.renderingApplication = renderingApplication;
-		renderingListenerOAuth = new RenderingApplicationListenerOAuth();
+		renderingListenerOAuth = new RenderingApplicationOAuthDialog();
 	}
 	
 	/**
@@ -104,26 +94,54 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	 * </p>
 	 * @param browserManager BrowserContentManager to display Twitter's login 
 	 *                       page.
-	 * @param renderingApplication Rendering Application.
 	 */
 	public BrowserContentManagerOAuthDialogWrapper(
-		BrowserContentManager browserManager,
-		RenderingApplication renderingApplication) {
-		this(browserManager, renderingApplication, null, null, null, null);
+		BrowserContentManager browserManager) {
+		this(browserManager, null, null, null, null);
 	}
 
 	/**
 	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#loadUrl(java.lang.String)
 	 */
 	protected void loadUrl(String url) {
-		try {
-			browserManager.setContent(
-				(HttpConnection)Connector.open(url),
-				renderingListenerOAuth,
-				null);
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e.getMessage());
-		}
+		loadUrl(url, null, null);
+	}
+	
+	/**
+	 * <p>
+	 * Load the given Url in the browser component. 
+	 * </p>
+	 * @param url Url to load.
+	 * @param postData Data to post.
+	 * @param event Event.
+	 */
+	protected void loadUrl(final String url, final byte[] postData, 
+		final Event event) {
+		new Thread() {
+			public void run() {
+				try {
+					HttpConnection conn = (HttpConnection)Connector.open(url);
+					//
+					if (postData != null) {
+						conn.setRequestMethod(HttpConnection.POST);
+						conn.setRequestProperty(
+							"Content-Type",
+							"application/x-www-form-urlencoded");
+		                conn.setRequestProperty(
+		                	"Content-Length", String.valueOf(postData.length));
+		                //
+		                OutputStream out = conn.openOutputStream();
+		                out.write(postData);
+		                out.close();
+					}
+					//
+					browserManager.setContent(
+						conn,	renderingListenerOAuth,	event);
+				} catch (IOException e) {
+					throw new IllegalArgumentException(e.getMessage());
+				}
+			}
+		}.start();
 	}
 	
 	/**
@@ -153,50 +171,54 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	/**
 	 * @author ernandes@gmail.com
 	 */
-	private class RenderingApplicationListenerOAuth
+	private class RenderingApplicationOAuthDialog
 		implements RenderingApplication {
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#eventOccurred(net.rim.device.api.browser.field.Event)
 		 */
 		public Object eventOccurred(Event event) {
-	        if (event.getUID() == Event.EVENT_BROWSER_CONTENT_CHANGED) {
-                if (event.getSource() instanceof BrowserContent) {
-                    BrowserContent browserField =
-                    	(BrowserContent)event.getSource();
-                    //
-                    trackUrl(browserField.getURL());
-                }
+			final int euid = event.getUID();
+			//
+	        if (euid == Event.EVENT_URL_REQUESTED) {
+	        	UrlRequestedEvent reqEvent = (UrlRequestedEvent)event;
+	        	//
+	        	loadUrl(reqEvent.getURL(), reqEvent.getPostData(), event);
+	        } else if (euid == Event.EVENT_REDIRECT) {
+	        	RedirectEvent redEvent = (RedirectEvent)event;
+	        	//
+	        	loadUrl(redEvent.getLocation(), null, event);
+	        	trackUrl(redEvent.getLocation());
 	        }
 	        //
-			return renderingApplication.eventOccurred(event);
+			return null;
 		}
 
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#getAvailableHeight(net.rim.device.api.browser.field.BrowserContent)
 		 */
 		public int getAvailableHeight(BrowserContent browserField) {
-			return renderingApplication.getAvailableHeight(browserField);
+			return Display.getHeight();
 		}
 
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#getAvailableWidth(net.rim.device.api.browser.field.BrowserContent)
 		 */
 		public int getAvailableWidth(BrowserContent browserField) {
-			return renderingApplication.getAvailableWidth(browserField);
+			return Display.getWidth();
 		}
 
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#getHTTPCookie(java.lang.String)
 		 */
 		public String getHTTPCookie(String url) {
-			return renderingApplication.getHTTPCookie(url);
+			return null;
 		}
 
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#getHistoryPosition(net.rim.device.api.browser.field.BrowserContent)
 		 */
 		public int getHistoryPosition(BrowserContent browserField) {
-			return renderingApplication.getHistoryPosition(browserField);
+			return 0;
 		}
 
 		/**
@@ -204,14 +226,22 @@ public final class BrowserContentManagerOAuthDialogWrapper
 		 */
 		public HttpConnection getResource(RequestedResource resource,
 			BrowserContent referrer) {
-			return renderingApplication.getResource(resource, referrer);
+			if (resource == null || resource.getUrl() == null) {
+				return null;
+	        }
+			//
+			try {
+				return (HttpConnection)Connector.open(resource.getUrl());
+			} catch (IOException e) {
+				return null;
+			}
 		}
 
 		/**
 		 * @see net.rim.device.api.browser.field.RenderingApplication#invokeRunnable(java.lang.Runnable)
 		 */
 		public void invokeRunnable(Runnable runnable) {
-			renderingApplication.invokeRunnable(runnable);
+			(new Thread(runnable)).start();
 		}
 	}
 }
