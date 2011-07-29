@@ -136,7 +136,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 					}
 					//
 					browserManager.setContent(
-						conn,	renderingListenerOAuth,	event);
+						conn, renderingListenerOAuth, event);
 				} catch (IOException e) {
 					throw new IllegalArgumentException(e.getMessage());
 				}
@@ -241,7 +241,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 		 * @see net.rim.device.api.browser.field.RenderingApplication#invokeRunnable(java.lang.Runnable)
 		 */
 		public void invokeRunnable(Runnable runnable) {
-			(new Thread(runnable)).start();
+			new Thread(runnable).start();
 		}
 	}
 }
