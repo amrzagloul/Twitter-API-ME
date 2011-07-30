@@ -173,14 +173,14 @@ public final class HttpConnector {
 		if (PPID == PlatformProvider.PPID_JAVA_ME) {
 			conn = new impl.javame.com.twitterapime.io.HttpConnectionImpl();
 			userAgent =
-				"Twitter API ME/1.7 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
+				"Twitter API ME/1.8 (compatible; Java ME; MIDP-2.0; CLDC-1.0)";
 		}
 		//#else
 //@		//
 		//#ifdef PP_ANDROID
 //@		if (PPID == PlatformProvider.PPID_ANDROID) {
 //@			conn = new impl.android.com.twitterapime.io.HttpConnectionImpl();
-//@			userAgent = "Twitter API ME/1.7 (compatible; Android 1.5)";
+//@			userAgent = "Twitter API ME/1.8 (compatible; Android 1.5)";
 //@		}
 		//#endif
 		//#endif

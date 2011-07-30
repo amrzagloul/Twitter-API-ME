@@ -58,7 +58,7 @@ public class OAuthSigner {
 
 	/**
 	 * <p>
-	 * Create an instance of XAuthSigner class.
+	 * Create an instance of OAuthSigner class.
 	 * </p>
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.

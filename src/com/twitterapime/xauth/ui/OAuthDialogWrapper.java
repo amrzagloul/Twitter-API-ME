@@ -16,8 +16,8 @@ import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.util.StringUtil;
+import com.twitterapime.xauth.OAuthSigner;
 import com.twitterapime.xauth.Token;
-import com.twitterapime.xauth.XAuthSigner;
 
 /**
  * <p>
@@ -102,10 +102,10 @@ public abstract class OAuthDialogWrapper {
 	
 	/**
 	 * <p>
-	 * XAuth signer.
+	 * OAuth signer.
 	 * </p>
 	 */
-	protected XAuthSigner signer;
+	protected OAuthSigner signer;
 	
 	/**
 	 * <p>
@@ -113,6 +113,37 @@ public abstract class OAuthDialogWrapper {
 	 * </p>
 	 */
 	protected Token token;
+	
+	/**
+	 * <p>
+	 * Request Token Url.
+	 * </p>
+	 */
+	protected String requestTokenUrl =
+		"https://api.twitter.com/oauth/request_token";
+
+	/**
+	 * <p>
+	 * Login Page Url.
+	 * </p>
+	 */
+	protected String loginPageUrl =
+		"http://api.twitter.com/oauth/authorize";;
+	
+	/**
+	 * <p>
+	 * Access Token Url.
+	 * </p>
+	 */
+	protected String accessTokenUrl =
+		"https://api.twitter.com/oauth/access_token";
+	
+	/**
+	 * <p>
+	 * Flag to display custom result pages.
+	 * </p>
+	 */
+	protected boolean enableCustomResultPages;
 	
 	/**
 	 * <p>
@@ -129,6 +160,7 @@ public abstract class OAuthDialogWrapper {
 		setConsumerKey(consumerKey);
 		setConsumerSecret(consumerSecret);
 		setCallbackUrl(callbackUrl);
+		setEnableCustomResultPages(true);
 		//
 		oauthListeners = new Vector();
 		if (authListener != null) {
@@ -165,6 +197,47 @@ public abstract class OAuthDialogWrapper {
 	public void setCallbackUrl(String callbackUrl) {
 		this.callbackUrl =
 			StringUtil.isEmpty(callbackUrl) ? "oob" : callbackUrl;
+	}
+
+	/**
+	 * <p>
+	 * Set the Request Token url.
+	 * </p>
+	 * @param requestTokenUrl Url.
+	 */
+	public void setRequestTokenUrl(String requestTokenUrl) {
+		this.requestTokenUrl = requestTokenUrl;
+	}
+
+	/**
+	 * <p>
+	 * Set the Request Token url.
+	 * </p>
+	 * @param loginPageUrl Url.
+	 */
+	public void setLoginPageUrl(String loginPageUrl) {
+		this.loginPageUrl = loginPageUrl;
+	}
+
+	/**
+	 * <p>
+	 * Set the Request Token url.
+	 * </p>
+	 * @param accessTokenUrl Url.
+	 */
+	public void setAccessTokenUrl(String accessTokenUrl) {
+		this.accessTokenUrl = accessTokenUrl;
+	}
+	
+	/**
+	 * <p>
+	 * Enable custom result (grant, deny or error) pages. A result page is 
+	 * displayed in place of the page pointed by Callback url.
+	 * </p>
+	 * @param enabled Enabled (true).
+	 */
+	public void setEnableCustomResultPages(boolean enabled) {
+		enableCustomResultPages = enabled;
 	}
 
 	/**
@@ -212,7 +285,7 @@ public abstract class OAuthDialogWrapper {
 		}
 		//
 		token = null;
-		signer = new XAuthSigner(consumerKey, consumerSecret);
+		signer = new OAuthSigner(consumerKey, consumerSecret);
 		//
 		new Thread() {
 			public void run() {
@@ -246,8 +319,7 @@ public abstract class OAuthDialogWrapper {
 				"Invalid state: call login() method first.");
 		}
 		//
-		HttpRequest req =
-			new HttpRequest("https://api.twitter.com/oauth/access_token");
+		HttpRequest req = new HttpRequest(accessTokenUrl);
 		//
 		signer.signForAccessToken(req, token, pinCode);
 		//
@@ -289,8 +361,7 @@ public abstract class OAuthDialogWrapper {
 	 * </p>
 	 */
 	protected void requestToken() {
-		HttpRequest req =
-			new HttpRequest("https://api.twitter.com/oauth/request_token");
+		HttpRequest req = new HttpRequest(requestTokenUrl);
 		//
 		signer.signForRequestToken(req, callbackUrl);
 		//
@@ -312,8 +383,8 @@ public abstract class OAuthDialogWrapper {
 				token = Token.parse(body);
 				//
 				String oauthUrl =
-					"http://api.twitter.com/oauth/authorize?oauth_token=" + 
-					token.getToken() + "&force_login=true";
+					loginPageUrl + "?oauth_token=" + token.getToken() + 
+					"&force_login=true";
 				//
 				loadUrl(oauthUrl);
 			} else {
@@ -343,9 +414,7 @@ public abstract class OAuthDialogWrapper {
 			if (url.indexOf("oauth_verifier=") != -1) {
 				String verifier =
 					StringUtil.getUrlParamValue(url, "oauth_verifier");
-				HttpRequest req =
-					new HttpRequest(
-						"https://api.twitter.com/oauth/access_token");
+				HttpRequest req = new HttpRequest(accessTokenUrl);
 				//
 				signer.signForAccessToken(req, token, verifier);
 				//
@@ -384,6 +453,10 @@ public abstract class OAuthDialogWrapper {
 	 * </p>
 	 */
 	protected void displayOAuthSuccessPage() {
+		if (!enableCustomResultPages) {
+			return;
+		}
+		//
 		String html =
 			"<html><body>" +
 			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+
@@ -401,6 +474,10 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void displayOAuthDeniedPage(String message) {
+		if (!enableCustomResultPages) {
+			return;
+		}
+		//
 		String html =
 			"<html><body>" +
 			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+
@@ -419,6 +496,10 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void displayOAuthErrorPage(String error, String message) {
+		if (!enableCustomResultPages) {
+			return;
+		}
+		//
 		String html =
 			"<html><body>" +
 			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+

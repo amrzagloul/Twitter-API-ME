@@ -100,7 +100,13 @@ public final class Credential extends DefaultEntity {
 	 */
 	public Credential(String usernameOrEmail, String consumerKey,
 		String consumerSecret, Token accessToken) {
-		throw new IllegalArgumentException("This constructor is deprecated!");
+		this(usernameOrEmail, "ignored", consumerKey, consumerSecret);
+		//
+		if (accessToken == null) {
+			throw new IllegalArgumentException("accessToken must not be null.");
+		}
+		//
+		data.put(MetadataSet.CREDENTIAL_ACCESS_TOKEN, accessToken);
 	}
 	
 	/**
@@ -114,13 +120,7 @@ public final class Credential extends DefaultEntity {
 	 */
 	public Credential(String consumerKey, String consumerSecret, 
 		Token accessToken) {
-		this("ignored", "ignored", consumerKey, consumerSecret);
-		//
-		if (accessToken == null) {
-			throw new IllegalArgumentException("accessToken must not be null.");
-		}
-		//
-		data.put(MetadataSet.CREDENTIAL_ACCESS_TOKEN, accessToken);
+		this("ignored", consumerKey, consumerSecret, accessToken);
 	}
 	
 	/**
