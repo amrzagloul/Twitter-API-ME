@@ -33,7 +33,8 @@ quicker for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- OAuth support (callback url and out-of-band mode).
+- OAuth support all platforms (callback url and out-of-band mode).
+- Possibility to configure additional connection parameters for RIM platform.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
