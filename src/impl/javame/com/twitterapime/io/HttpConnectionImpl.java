@@ -21,10 +21,10 @@ import com.twitterapime.io.HttpConnection;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
-public final class HttpConnectionImpl implements HttpConnection {
+public class HttpConnectionImpl implements HttpConnection {
 	/**
 	 * <p>
 	 * Http connection object.

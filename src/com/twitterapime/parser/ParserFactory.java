@@ -21,7 +21,7 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  */
 public final class ParserFactory {
@@ -62,7 +62,7 @@ public final class ParserFactory {
 		final long PPID = PlatformProviderSelector.getCurrentProvider().getID();
 		//
 		//#ifdef PP_JAVA_ME
-		if (PPID == PlatformProvider.PPID_JAVA_ME) { //if JAVA ME PLATFORM
+		if (PPID == PlatformProvider.PPID_JAVA_ME) {
 			if (type == JSON) {
 				return new impl.javame.com.twitterapime.parser.JSONOrgParser();
 			} else {
@@ -70,15 +70,25 @@ public final class ParserFactory {
 			}
 		}
 		//#else
+		//#ifdef PP_RIM
+//@		if (PPID == PlatformProvider.PPID_RIM) {
+//@			if (type == JSON) {
+//@				return new impl.javame.com.twitterapime.parser.JSONOrgParser();
+//@			} else {
+//@				return new impl.javame.com.twitterapime.parser.KXML2Parser();
+//@			}
+//@		}
+		//#else
 //@		//
 		//#ifdef PP_ANDROID
-//@		if (PPID == PlatformProvider.PPID_ANDROID) { //if ANDROID PLATFORM
+//@		if (PPID == PlatformProvider.PPID_ANDROID) {
 //@			if (type == JSON) {
 //@				return new impl.javame.com.twitterapime.parser.JSONOrgParser();				
 //@			} else {
 //@				return new impl.android.com.twitterapime.parser.SAXParser();				
 //@			}
 //@		}
+		//#endif
 		//#endif
 		//#endif
 		//

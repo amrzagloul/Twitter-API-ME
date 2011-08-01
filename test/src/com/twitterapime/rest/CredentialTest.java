@@ -132,8 +132,8 @@ public class CredentialTest extends TwitterAPIMETestCase {
 		//
 		try {
 			Credential c = new Credential("1234567890", "1234567890", new Token("654321", "654789"));
-			assertNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
-			assertFalse(c.hasUsername());
+			assertNotNull(c.getString(MetadataSet.CREDENTIAL_USERNAME));
+			assertTrue(c.hasUsername());
 			//
 			c.setUsername("twapime");
 			assertEquals("twapime", c.getString(MetadataSet.CREDENTIAL_USERNAME));

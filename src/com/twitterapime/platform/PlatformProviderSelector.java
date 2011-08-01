@@ -22,7 +22,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see PlatformProvider
  */
@@ -38,13 +38,21 @@ public final class PlatformProviderSelector {
 			PlatformProvider.PPID_JAVA_ME, PlatformProvider.PPNM_JAVA_ME);
 	//#endif
 
+	//#ifdef PP_RIM
+//@	/**
+//@	 * <p>
+//@	 * Platform provider that represents RIM platform.
+//@	 * </p>
+//@	 */
+//@	private static final PlatformProvider rimProvider =
+//@		new PlatformProvider(
+//@			PlatformProvider.PPID_RIM, PlatformProvider.PPNM_RIM);
+	//#endif
+	
 	//#ifdef PP_ANDROID
 //@	/**
 //@	 * <p>
 //@	 * Platform provider that represents Android platform.
-//@	 * </p>
-//@	 * <p>
-//@	 * Coming soon!
 //@	 * </p>
 //@	 */
 //@	private static final PlatformProvider androidProvider =
@@ -61,8 +69,12 @@ public final class PlatformProviderSelector {
 	//#ifdef PP_JAVA_ME
 	private static final PlatformProvider defaultPlatform = javameProvider;
 	//#else
+	//#ifdef PP_RIM
+//@	private static final PlatformProvider defaultPlatform = rimProvider;
+	//#else
 	//#ifdef PP_ANDROID
 //@	private static final PlatformProvider defaultPlatform = androidProvider;
+	//#endif
 	//#endif
 	//#endif
 
@@ -88,9 +100,14 @@ public final class PlatformProviderSelector {
 		Vector v = new Vector(2);
 		//#ifdef PP_JAVA_ME
 		v.addElement(javameProvider);
-		//#endif
+		//#else
+		//#ifdef PP_RIM
+//@		v.addElement(rimProvider);
+		//#else
 		//#ifdef PP_ANDROID
 //@		v.addElement(androidProvider);
+		//#endif
+		//#endif
 		//#endif
 		//
 		PlatformProvider[] plats = new PlatformProvider[v.size()];

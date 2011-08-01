@@ -27,128 +27,11 @@ import com.twitterapime.platform.PlatformProviderSelector;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.0
  * @see HttpConnection
  */
 public final class HttpConnector {
-	//#ifdef PP_RIM
-//@	/**
-//@	 * <p>
-//@	 * String of connection parameters to be appended to string connection 
-//@	 * (URL + default parameters).
-//@	 * </p>
-//@	 */
-//@	private static String appendConnectionParameters;
-//@	
-//@	/**
-//@	 * <p>
-//@	 * String of connection parameters to be appended to URL.
-//@	 * </p>
-//@	 */
-//@	private static String connectionParameters;
-//@
-//@	/**
-//@	 * <p>
-//@	 * Get some specific connection parameters that must be appended to a URL
-//@	 * connection on BlackBerry devices. Those parameters work to indicate which
-//@	 * type of connection the device is using at that moment.
-//@	 * </p>
-//@	 * 
-//@	 * @return Connection parameters.
-//@	 */
-//@	private static final String getBlackBerryConnectionParams() {
-//@	    String connParams = "";
-//@	    //
-//@	    if (connectionParameters != null) {
-//@	    	connParams = connectionParameters;
-//@	    } else {
-//@		    if (net.rim.device.api.system.WLANInfo.getWLANState() == net.rim.device.api.system.WLANInfo.WLAN_STATE_CONNECTED) {
-//@		        connParams = ";interface=wifi"; //Connected to a WiFi access point.
-//@		    } else {
-//@				int coverageStatus = net.rim.device.api.system.CoverageInfo.getCoverageStatus();
-//@				net.rim.device.api.servicebook.ServiceRecord record = getWAP2ServiceRecord();
-//@				//
-//@				if (record != null && (coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
-//@					// Have network coverage and a WAP 2.0 service book record
-//@					connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
-//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) == net.rim.device.api.system.CoverageInfo.COVERAGE_MDS) {
-//@					// Have an MDS service book and network coverage
-//@					connParams = ";deviceside=false";
-//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) == net.rim.device.api.system.CoverageInfo.COVERAGE_DIRECT) {
-//@					// Have network coverage but no WAP 2.0 service book record
-//@					connParams = ";deviceside=true";
-//@				} else if ((coverageStatus & net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) == net.rim.device.api.system.CoverageInfo.COVERAGE_BIS_B) {
-//@					connParams = ";deviceside=false;ConnectionType=mds-public";
-//@				}
-//@		    }
-//@		    //
-//@		    if (appendConnectionParameters != null) {
-//@		    	connParams += appendConnectionParameters;
-//@		    }
-//@	    }
-//@	    //
-//@	    return connParams;
-//@	}
-//@
-//@	/**
-//@	 * <p>
-//@	 * Reading the service record for available connection.
-//@	 * </p>
-//@	 * 
-//@	 * @return ServiceRecord Currently in use.
-//@	 */
-//@	private static final net.rim.device.api.servicebook.ServiceRecord getWAP2ServiceRecord() {
-//@	    String cid;
-//@	    String uid;
-//@		net.rim.device.api.servicebook.ServiceBook sb = net.rim.device.api.servicebook.ServiceBook.getSB();
-//@	    net.rim.device.api.servicebook.ServiceRecord[] records = sb.getRecords();
-//@	    //
-//@	    for (int i = records.length -1; i >= 0; i--) {
-//@	        cid = records[i].getCid().toLowerCase();
-//@	        uid = records[i].getUid().toLowerCase();
-//@	        //
-//@	        if (cid.indexOf("wptcp") != -1 && uid.indexOf("wifi") == -1 && uid.indexOf("mms") == -1) {
-//@	            return records[i];
-//@	        }
-//@	    }
-//@	    //
-//@	    return null;
-//@	}
-//@	
-//@	/**
-//@	 * <p>
-//@	 * Set the connection parameters to be appended to string connection (URL +
-//@	 * default parameters) to be requestesd. Use this method to apeend 
-//@	 * additional parameters to the string connection.
-//@	 * </p>
-//@	 * @param params Parameters.
-//@	 */
-//@	public static void setAppendConnectionParameters(String params) {
-//@    	if (params != null && !params.startsWith(";")) {
-//@    		params = ";" + params;
-//@    	}
-//@    	//
-//@		appendConnectionParameters = params;
-//@	}
-//@
-//@	/**
-//@	 * <p>
-//@	 * Set the connection parameters to be appended to URL to be requestesd. 
-//@	 * This removes any additional parameters appended automatically to the
-//@	 * string connection. 
-//@	 * </p>
-//@	 * @param params Parameters.
-//@	 */
-//@	public static void setConnectionParameters(String params) {
-//@    	if (params != null && !params.startsWith(";")) {
-//@    		params = ";" + params;
-//@    	}
-//@    	//
-//@		connectionParameters = params;
-//@	}
-	//#endif
-
 	/**
 	 * <p>
 	 * Create and open a HttpConnection.
@@ -177,21 +60,27 @@ public final class HttpConnector {
 		}
 		//#else
 //@		//
+		//#ifdef PP_RIM
+//@		if (PPID == PlatformProvider.PPID_RIM) {
+//@			conn = new impl.rim.com.twitterapime.io.HttpConnectionImpl();
+//@			userAgent =
+//@				"Twitter API ME/1.8 " +
+//@				"(compatible; Java ME; MIDP-2.0; CLDC-1.0; RIM OS 4.6)";
+//@		}
+		//#else
+//@		//
 		//#ifdef PP_ANDROID
 //@		if (PPID == PlatformProvider.PPID_ANDROID) {
 //@			conn = new impl.android.com.twitterapime.io.HttpConnectionImpl();
 //@			userAgent = "Twitter API ME/1.8 (compatible; Android 1.5)";
 //@		}
 		//#endif
+		//#endif		
 		//#endif
 		//
 		if (conn == null) {
 			throw new IllegalArgumentException("Unknown platform ID: " + PPID);
 		}
-		//
-		//#ifdef PP_RIM
-//@		url += getBlackBerryConnectionParams();
-		//#endif
 		//
 		conn.open(url);
 		conn.setRequestProperty("User-Agent", userAgent);

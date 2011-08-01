@@ -14,7 +14,7 @@ package com.twitterapime.platform;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see PlatformProviderSelector
  */
@@ -32,11 +32,16 @@ public final class PlatformProvider {
 	 * Constant that identifies the platform provider ID that represents the
 	 * Android platform.
 	 * </p>
-	 * <p>
-	 * Coming soon!
-	 * </p>
 	 */
 	public static final int PPID_ANDROID = 2;
+
+	/**
+	 * <p>
+	 * Constant that identifies the platform provider ID that represents the
+	 * RIM platform.
+	 * </p>
+	 */
+	public static final int PPID_RIM = 3;
 
 	/**
 	 * <p>
@@ -51,11 +56,16 @@ public final class PlatformProvider {
 	 * Constant that identifies the platform provider name that represents the
 	 * Android platform.
 	 * </p>
-	 * <p>
-	 * Coming soon!
-	 * </p>
 	 */
 	static final String PPNM_ANDROID = "Android platform";
+
+	/**
+	 * <p>
+	 * Constant that identifies the platform provider name that represents the
+	 * RIM platform.
+	 * </p>
+	 */
+	static final String PPNM_RIM = "RIM platform";
 
 	/**
 	 * <p>
