@@ -7,6 +7,8 @@
  */
 package impl.rim.com.twitterapime.xauth.ui;
 
+import impl.rim.com.twitterapime.io.HttpConnectionImpl;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -120,7 +122,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 		new Thread() {
 			public void run() {
 				try {
-					HttpConnection conn = (HttpConnection)Connector.open(url);
+					HttpConnection conn = getConnection(url);
 					//
 					if (postData != null) {
 						conn.setRequestMethod(HttpConnection.POST);
@@ -142,6 +144,20 @@ public final class BrowserContentManagerOAuthDialogWrapper
 				}
 			}
 		}.start();
+	}
+	
+	/**
+	 * <p>
+	 * Get a connection to a given Url.
+	 * </p>
+	 * @param url Url.
+	 * @return Connection.
+	 * @throws IOException If any I/O occurs. 
+	 */
+	protected HttpConnection getConnection(String url) throws IOException {
+		url += HttpConnectionImpl.getConnectionParams();
+		//
+		return (HttpConnection)Connector.open(url);
 	}
 	
 	/**
@@ -231,7 +247,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	        }
 			//
 			try {
-				return (HttpConnection)Connector.open(resource.getUrl());
+				return getConnection(resource.getUrl());
 			} catch (IOException e) {
 				return null;
 			}
