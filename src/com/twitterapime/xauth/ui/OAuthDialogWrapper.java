@@ -29,7 +29,7 @@ import com.twitterapime.xauth.Token;
  * <p>
  * In addition, this class also tracks the process in order to identify when the 
  * authorization is granted or denied, so it can notify the application. This 
- * notification is done throught a listener object that implements 
+ * notification is done through a listener object that implements 
  * {@link OAuthDialogListener}. 
  * </p>
  * <p>
@@ -147,6 +147,27 @@ public abstract class OAuthDialogWrapper {
 	
 	/**
 	 * <p>
+	 * Custom success page Html.
+	 * </p>
+	 */
+	protected String successPageHtml;
+	
+	/**
+	 * <p>
+	 * Custom denied page Html.
+	 * </p>
+	 */
+	protected String deniedPageHtml;
+
+	/**
+	 * <p>
+	 * Custom error page Html.
+	 * </p>
+	 */
+	protected String errorPageHtml;
+	
+	/**
+	 * <p>
 	 * Create an instance of OAuthDialogWrapper class.
 	 * </p>
 	 * @param consumerKey Consumer key.
@@ -242,6 +263,36 @@ public abstract class OAuthDialogWrapper {
 
 	/**
 	 * <p>
+	 * Set a Html script for the custom success page.
+	 * </p>
+	 * @param html Html script.
+	 */
+	public void setCustomSuccessPageHtml(String html) {
+		successPageHtml = html;
+	}
+
+	/**
+	 * <p>
+	 * Set a Html script for the custom denied page.
+	 * </p>
+	 * @param html Html script.
+	 */
+	public void setCustomDeniedPageHtml(String html) {
+		deniedPageHtml = html;
+	}
+
+	/**
+	 * <p>
+	 * Set a Html script for the custom error page.
+	 * </p>
+	 * @param html Html script.
+	 */
+	public void setCustomErrorPageHtml(String html) {
+		errorPageHtml = html;
+	}
+
+	/**
+	 * <p>
 	 * Add an oauth listener.
 	 * </p>
 	 * @param listener Listener.
@@ -300,15 +351,16 @@ public abstract class OAuthDialogWrapper {
 	 * authentication page.
 	 * </p>
 	 * <p>
-	 * User this method only if you are using "Out-of-band" mode.
+	 * Use this method only if you are using "Out-of-band" mode.
 	 * </p>
 	 * @param pinCode PIN-code.
-	 * @return Access token.
 	 * @throws IOException If any I/O error occurs.
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws IllegalArgumentException If PIN-code is empty/null.
+	 * @throws IllegalStateException If {@link OAuthDialogWrapper#login()} was 
+	 *                               not previously called.
 	 */
-	public Token login(String pinCode) throws IOException, 
+	public void login(final String pinCode) throws IOException, 
 		LimitExceededException {
 		if (StringUtil.isEmpty(pinCode)) {
 			throw new IllegalArgumentException("PIN-code must not be null.");
@@ -319,24 +371,11 @@ public abstract class OAuthDialogWrapper {
 				"Invalid state: call login() method first.");
 		}
 		//
-		HttpRequest req = new HttpRequest(accessTokenUrl);
-		//
-		signer.signForAccessToken(req, token, pinCode);
-		//
-		try {
-			HttpResponse resp = req.send();
-			//
-			if (resp.getCode() == HttpConnection.HTTP_OK) {
-				return Token.parse(resp.getBodyContent());
-			} else {
-				return null;
-			}
-		} finally {
-			try {
-				req.close();
-			} catch (IOException e) {
-			}
-		}
+		new Thread() {
+			public void run() {
+				trackUrl(callbackUrl + "?oauth_verifier=" + pinCode);
+			};
+		}.start();
 	}
 	
 	/**
@@ -453,17 +492,21 @@ public abstract class OAuthDialogWrapper {
 	 * </p>
 	 */
 	protected void displayOAuthSuccessPage() {
-		if (!enableCustomResultPages) {
-			return;
+		if (enableCustomResultPages) {
+			String html =
+				"<html><body>" +
+				"<center><font color=\"blue\">" +
+				"<br/><b>Twitter</b></font></center><br/>" +
+				"<center>Authorization granted!<br/>" + 
+				"<br/>Close this page.</center>" + 
+				"</body></html>";
+			//
+			if (successPageHtml != null) {
+				html = successPageHtml;
+			}
+			//
+			loadHTML(html);
 		}
-		//
-		String html =
-			"<html><body>" +
-			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+
-			"<center>Authorization granted!<br/><br/>Close this page.</center>"+ 
-			"</body></html>";
-		//
-		loadHTML(html);
 	}
 	
 	/**
@@ -474,18 +517,21 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void displayOAuthDeniedPage(String message) {
-		if (!enableCustomResultPages) {
-			return;
+		if (enableCustomResultPages) {
+			String html =
+				"<html><body>" +
+				"<center><font color=\"blue\">" +
+				"<br/><b>Twitter</b></font></center><br/>"+
+				"<center>Authorization denied: " + message + 
+				"<br/><br/>Close this page.</center>" + 
+				"</body></html>";
+			//
+			if (deniedPageHtml != null) {
+				html = deniedPageHtml;
+			}
+			//
+			loadHTML(html);
 		}
-		//
-		String html =
-			"<html><body>" +
-			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+
-			"<center>Authorization denied: " + message + 
-			"<br/><br/>Close this page.</center>" + 
-			"</body></html>";
-		//
-		loadHTML(html);
 	}
 
 	/**
@@ -496,18 +542,21 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void displayOAuthErrorPage(String error, String message) {
-		if (!enableCustomResultPages) {
-			return;
+		if (enableCustomResultPages) {
+			String html =
+				"<html><body>" +
+				"<center><font color=\"blue\">" + 
+				"<br/><b>Twitter</b></font></center><br/>" +
+				"<center>Authorization failed: " + message + " (" + error + ")"+ 
+				"<br/><br/>Close this page.</center>" + 
+				"</body></html>";
+			//
+			if (errorPageHtml != null) {
+				html = errorPageHtml;
+			}
+			//
+			loadHTML(html);
 		}
-		//
-		String html =
-			"<html><body>" +
-			"<center><font color=\"blue\"><b>Twitter</b></font></center><br/>"+
-			"<center>Authorization failed: " + message + " (" + error + ")" + 
-			"<br/><br/>Close this page.</center>" + 
-			"</body></html>";
-		//
-		loadHTML(html);
 	}
 
 	/**

@@ -55,6 +55,7 @@ public class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
 	 * @param consumerKey Consumer key.
 	 * @param consumerSecret Consumer secret.
 	 * @param oauthListener OAuth listener.
+	 * @throws IllegalArgumentException If midlet is null.
 	 */
 	public MIDletOAuthDialogWrapper(MIDlet midlet, String consumerKey, 
 		String consumerSecret, OAuthDialogListener oauthListener) {
@@ -64,6 +65,7 @@ public class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
 			throw new IllegalArgumentException("MIDlet must not be null.");
 		}
 		//
+		setEnableCustomResultPages(false);
 		this.midlet = midlet;
 	}
 	
@@ -96,23 +98,5 @@ public class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
 	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#loadHTML(java.lang.String)
 	 */
 	protected void loadHTML(String htmlContent) {
-	}
-	
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#displayOAuthDeniedPage(java.lang.String)
-	 */
-	protected void displayOAuthDeniedPage(String message) {
-	}
-	
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#displayOAuthErrorPage(java.lang.String, java.lang.String)
-	 */
-	protected void displayOAuthErrorPage(String error, String message) {
-	}
-	
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#displayOAuthSuccessPage()
-	 */
-	protected void displayOAuthSuccessPage() {
 	}
 }

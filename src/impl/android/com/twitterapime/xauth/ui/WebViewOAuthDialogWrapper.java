@@ -52,6 +52,7 @@ public final class WebViewOAuthDialogWrapper extends OAuthDialogWrapper {
 	 * @param consumerSecret Consumer secret.
 	 * @param callbackUrl Callback Url. (null for "Out-of-band" mode)
 	 * @param oauthListener OAuth listener.
+	 * @throws IllegalArgumentException If web view is null.
 	 */
 	public WebViewOAuthDialogWrapper(WebView webView, String consumerKey,
 		String consumerSecret, String callbackUrl, 

@@ -74,6 +74,7 @@ public final class BrowserContentManagerOAuthDialogWrapper
 	 * @param consumerSecret Consumer secret.
 	 * @param callbackUrl Callback Url. (null for "Out-of-band" mode)
 	 * @param oauthListener OAuth listener.
+	 * @throws IllegalArgumentException If browser manager is null.
 	 */
 	public BrowserContentManagerOAuthDialogWrapper(
 		BrowserContentManager browserManager, String consumerKey, 
