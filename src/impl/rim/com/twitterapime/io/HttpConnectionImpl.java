@@ -84,19 +84,21 @@ public class HttpConnectionImpl
 		        connParams = ";interface=wifi"; //Connected to a WiFi access point.
 		    } else {
 				int coverageStatus = CoverageInfo.getCoverageStatus();
-				ServiceRecord record = getWAP2ServiceRecord();
 				//
-				if (record != null && (coverageStatus & CoverageInfo.COVERAGE_DIRECT) == CoverageInfo.COVERAGE_DIRECT) {
+				if ((coverageStatus & CoverageInfo.COVERAGE_BIS_B) == CoverageInfo.COVERAGE_BIS_B) {
+					connParams = ";deviceside=false;ConnectionType=mds-public";
+				} else if ((coverageStatus & CoverageInfo.COVERAGE_DIRECT) == CoverageInfo.COVERAGE_DIRECT) {
 					// Have network coverage and a WAP 2.0 service book record
-					connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
+					ServiceRecord record = getWAP2ServiceRecord();
+					//
+					if (record != null) {
+						connParams = ";deviceside=true;ConnectionUID=" + record.getUid();
+					} else {
+						connParams = ";deviceside=true";
+					}
 				} else if ((coverageStatus & CoverageInfo.COVERAGE_MDS) == CoverageInfo.COVERAGE_MDS) {
 					// Have an MDS service book and network coverage
 					connParams = ";deviceside=false";
-				} else if ((coverageStatus & CoverageInfo.COVERAGE_DIRECT) == CoverageInfo.COVERAGE_DIRECT) {
-					// Have network coverage but no WAP 2.0 service book record
-					connParams = ";deviceside=true";
-				} else if ((coverageStatus & CoverageInfo.COVERAGE_BIS_B) == CoverageInfo.COVERAGE_BIS_B) {
-					connParams = ";deviceside=false;ConnectionType=mds-public";
 				}
 		    }
 		    //
