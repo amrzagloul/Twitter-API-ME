@@ -85,6 +85,11 @@ public final class SearchDevice {
 	 * <p>
 	 * Key for Twitter API URL service search.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/search" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/search
+	 * </a>
+	 * </p>
 	 * @see SearchDevice#setServiceURL(String, String)
 	 * @see SearchDevice#searchTweets(Query)
 	 * @see SearchDevice#searchTweets(String)
@@ -97,6 +102,11 @@ public final class SearchDevice {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service account rate limit status.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/account/rate_limit_status" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/account/rate_limit_status
+	 * </a>
 	 * </p>
 	 * @see SearchDevice#setServiceURL(String, String)
 	 * @see SearchDevice#getRateLimitStatus()

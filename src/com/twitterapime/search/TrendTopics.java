@@ -56,6 +56,11 @@ public final class TrendTopics {
 	 * <p>
 	 * Key for Twitter API URL service trends current.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/trends/current" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/trends/current
+	 * </a>
+	 * </p>
 	 * @see TrendTopics#setServiceURL(String, String)
 	 * @see TrendTopics#searchNowTopics(Query)
 	 */
@@ -66,6 +71,11 @@ public final class TrendTopics {
 	 * <p>
 	 * Key for Twitter API URL service trends daily.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/trends/daily" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/trends/daily
+	 * </a>
+	 * </p>
 	 * @see TrendTopics#setServiceURL(String, String)
 	 * @see TrendTopics#searchDailyTopics(Query)
 	 */
@@ -75,6 +85,11 @@ public final class TrendTopics {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service trends weekly.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/trends/weekly" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/trends/weekly
+	 * </a>
 	 * </p>
 	 * @see TrendTopics#setServiceURL(String, String)
 	 * @see TrendTopics#searchWeeklyTopics(Query)
