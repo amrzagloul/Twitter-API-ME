@@ -674,7 +674,10 @@ public final class ListManager {
 			user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
 		}
 		//
+		String[] usrp = user.getUserNameOrIDParamValue();
 		String url = getURL(TWITTER_API_URL_SERVICE_LISTS_MEMBERSHIPS);
+		//
+		url += "?" + usrp[0] + "=" + usrp[1];
 		//
 		HttpRequest req;
 		if (userAccountMngr != null) {
@@ -682,10 +685,6 @@ public final class ListManager {
 		} else {
 			req = new HttpRequest(url);
 		}
-		//
-		String[] usrp = user.getUserNameOrIDParamValue();
-		//
-		req.setBodyParameter(usrp[0], usrp[1]);
 		//
 		return processRequest(req);
 	}
@@ -728,7 +727,10 @@ public final class ListManager {
 			user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
 		}
 		//
+		String[] usrp = user.getUserNameOrIDParamValue();
 		String url = getURL(TWITTER_API_URL_SERVICE_LISTS_ALL);
+		//
+		url += "?" + usrp[0] + "=" + usrp[1];
 		//
 		HttpRequest req;
 		if (userAccountMngr != null) {
@@ -736,10 +738,6 @@ public final class ListManager {
 		} else {
 			req = new HttpRequest(url);
 		}
-		//
-		String[] usrp = user.getUserNameOrIDParamValue();
-		//
-		req.setBodyParameter(usrp[0], usrp[1]);
 		//
 		return processRequest(req);
 	}
@@ -966,7 +964,10 @@ public final class ListManager {
 			user.checkEmpty(MetadataSet.USERACCOUNT_USER_NAME);
 		}
 		//
+		String[] usrp = user.getUserNameOrIDParamValue();
 		String url = getURL(TWITTER_API_URL_SERVICE_LISTS);
+		//
+		url += "?" + usrp[0] + "=" + usrp[1];
 		//
 		HttpRequest req;
 		if (userAccountMngr != null) {
@@ -974,10 +975,6 @@ public final class ListManager {
 		} else {
 			req = new HttpRequest(url);
 		}
-		//
-		String[] usrp = user.getUserNameOrIDParamValue();
-		//
-		req.setBodyParameter(usrp[0], usrp[1]);
 		//
 		return processRequest(req);
 	}

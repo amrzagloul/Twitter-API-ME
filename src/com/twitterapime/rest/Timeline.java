@@ -754,7 +754,13 @@ public final class Timeline {
 		h.setSearchDeviceListener(l);
 		//
 		String url = getURL(TWITTER_API_URL_SERVICE_LISTS_STATUSES);
-		url += "?list_id=" + list.getString(MetadataSet.LIST_ID);
+		Query qry =	new Query("list_id=" + list.getString(MetadataSet.LIST_ID));
+		//
+		if (q != null) {
+			q = QueryComposer.append(qry, q);
+		} else {
+			q = qry;
+		}
 		//
 		startGet(url, q, l, h, userAccountMngr != null);
 	}
