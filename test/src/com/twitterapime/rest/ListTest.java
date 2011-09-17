@@ -50,6 +50,21 @@ public class ListTest extends TwitterAPIMETestCase {
 		} catch (Exception e) {
 			fail();
 		}
+		//
+		try {
+			l = new List((String)null);
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			l = new List("1234567890");
+			assertEquals("1234567890", l.getString(MetadataSet.LIST_ID));
+		} catch (Exception e) {
+			fail();
+		}
 	}
 
 	/**
