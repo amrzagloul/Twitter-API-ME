@@ -68,6 +68,11 @@ public final class UserAccountManager {
 	 * <p>
 	 * Key for Twitter API URL service account verify credentials.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/account/verify_credentials" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/account/verify_credentials
+	 * </a>
+	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#verifyCredential()
 	 */
@@ -77,6 +82,11 @@ public final class UserAccountManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service OAuth access token.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/oauth/access_token" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/oauth/access_token
+	 * </a>
 	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#verifyCredential()
@@ -88,6 +98,11 @@ public final class UserAccountManager {
 	 * <p>
 	 * Key for Twitter API URL service account rate limit status.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/account/rate_limit_status" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/account/rate_limit_status
+	 * </a>
+	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#getRateLimitStatus()
 	 */
@@ -97,6 +112,11 @@ public final class UserAccountManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service users show.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/users/show" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/users/show
+	 * </a>
 	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#getUserAccount()
@@ -108,6 +128,11 @@ public final class UserAccountManager {
 	 * <p>
 	 * Key for Twitter API URL service account update profile.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/account/update_profile" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/account/update_profile
+	 * </a>
+	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#getUserAccount()
 	 */
@@ -117,6 +142,11 @@ public final class UserAccountManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service report spam.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/report_spam" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/report_spam
+	 * </a>
 	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#reportSpam(UserAccount)
@@ -128,6 +158,11 @@ public final class UserAccountManager {
 	 * <p>
 	 * Key for Twitter API URL service users search.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/users/search" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/users/search
+	 * </a>
+	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#search(Query)
 	 */
@@ -137,6 +172,11 @@ public final class UserAccountManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service users lookup.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/users/lookup" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/users/lookup
+	 * </a>
 	 * </p>
 	 * @see UserAccountManager#setServiceURL(String, String)
 	 * @see UserAccountManager#lookup(Query)

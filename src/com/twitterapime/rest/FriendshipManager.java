@@ -83,6 +83,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service friends id.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friends/ids" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friends/ids
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFriendsID(Query)
 	 * @see FriendshipManager#getFriendsID(UserAccount, Query)
@@ -94,6 +99,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service followers id.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/followers/ids" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/followers/ids
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFollowersID(Query)
@@ -107,6 +117,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service friendships create.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/friendships/create" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/friendships/create
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#follow(UserAccount)
 	 */
@@ -116,6 +131,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service friendships destroy.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/friendships/destroy" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/friendships/destroy
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#unfollow(UserAccount)
@@ -127,6 +147,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service friendships exists.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friendships/exists" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friendships/exists
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#isFollowing(UserAccount)
 	 */
@@ -136,6 +161,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service friendships incoming.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friendships/incoming" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friendships/incoming
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getIncomingFollowersID(Query)
@@ -147,6 +177,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service friendships outgoing.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friendships/outgoing" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friendships/outgoing
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getOutgoingFriendsID(Query)
 	 */
@@ -156,6 +191,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service blocks create.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/blocks/create" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/blocks/create
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#block(UserAccount)
@@ -167,6 +207,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service blocks destroy.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/blocks/destroy" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/blocks/destroy
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#unblock(UserAccount)
 	 */
@@ -177,6 +222,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service friendships exists.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friendships/exists" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friendships/exists
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#isBlocking(UserAccount)
 	 */
@@ -186,6 +236,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service statuses friends.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/friends" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/friends
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFriends(Query)
@@ -198,6 +253,11 @@ public final class FriendshipManager {
 	 * <p>
 	 * Key for Twitter API URL service statuses followers.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/followers" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/followers
+	 * </a>
+	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFollowers(Query)
 	 * @deprecated
@@ -208,6 +268,11 @@ public final class FriendshipManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service friendships show.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/friendships/show" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/friendships/show
+	 * </a>
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFriendship(UserAccount, UserAccount)

@@ -77,6 +77,11 @@ public final class ListManager {
 	 * <p>
 	 * Key for Twitter API URL service user lists.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/%3Auser/lists" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/%3Auser/lists
+	 * </a>
+	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated
 	 */
@@ -86,6 +91,11 @@ public final class ListManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service user lists update.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/%3Auser/lists/%3Aid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/%3Auser/lists/%3Aid
+	 * </a>
 	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated
@@ -97,6 +107,11 @@ public final class ListManager {
 	 * <p>
 	 * Key for Twitter API URL service user lists memberships.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/%3Auser/lists/memberships" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/%3Auser/lists/memberships
+	 * </a>
+	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated
 	 */
@@ -106,6 +121,17 @@ public final class ListManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service list membership management.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/%3Auser/%3Alist_id/members" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/%3Auser/%3Alist_id/members
+	 * </a>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/%3Auser/%3Alist_id/members" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/%3Auser/%3Alist_id/members
+	 * </a>
+	 * <a href="http://dev.twitter.com/docs/api/1/delete/%3Auser/%3Alist_id/members" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/delete/%3Auser/%3Alist_id/members
+	 * </a>
 	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated
@@ -117,6 +143,11 @@ public final class ListManager {
 	 * <p>
 	 * Key for Twitter API URL service user lists subscriptions.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/%3Auser/lists/subscriptions" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/%3Auser/lists/subscriptions
+	 * </a>
+	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated
 	 */
@@ -126,6 +157,17 @@ public final class ListManager {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service list subscription management.
+	 * </p>
+	 * <p>
+	 * <a href="https://dev.twitter.com/docs/api/1/post/:user/:list_id/subscribers" target="_blank">
+	 *   https://dev.twitter.com/docs/api/1/post/:user/:list_id/subscribers
+	 * </a>
+	 * <a href="https://dev.twitter.com/docs/api/1/get/:user/:list_id/subscribers" target="_blank">
+	 *   https://dev.twitter.com/docs/api/1/get/:user/:list_id/subscribers
+	 * </a>
+	 * <a href="https://dev.twitter.com/docs/api/1/delete/:user/:list_id/subscribers" target="_blank">
+	 *   https://dev.twitter.com/docs/api/1/delete/:user/:list_id/subscribers
+	 * </a>
 	 * </p>
 	 * @see ListManager#setServiceURL(String, String)
 	 * @deprecated

@@ -52,7 +52,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.2
  * @see UserAccountManager
  * @see SearchDeviceListener
@@ -84,6 +84,11 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service statuses public timeline.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/public_timeline" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/public_timeline
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetPublicTweets(SearchDeviceListener)
 	 */
@@ -93,6 +98,11 @@ public final class Timeline {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service statuses home timeline.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/home_timeline" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/home_timeline
+	 * </a>
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetHomeTweets(Query, SearchDeviceListener)
@@ -104,6 +114,11 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service statuses user timeline.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/user_timeline" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/user_timeline
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetUserTweets(Query, SearchDeviceListener)
 	 */
@@ -113,6 +128,11 @@ public final class Timeline {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service statuses mentions.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/mentions" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/mentions
+	 * </a>
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetMentions(Query, SearchDeviceListener)
@@ -124,6 +144,11 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service statuses retweets of me.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetRetweetsOfMe(Query, SearchDeviceListener)
 	 */
@@ -133,6 +158,11 @@ public final class Timeline {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service statuses retweeted by me.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
+	 * </a>
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetRetweetsByMe(Query, SearchDeviceListener)
@@ -144,6 +174,11 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service statuses retweeted to me.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetRetweetsToMe(Query, SearchDeviceListener)
 	 */
@@ -153,6 +188,11 @@ public final class Timeline {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service direct messages.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/direct_messages" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/direct_messages
+	 * </a>
 	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetDirectMessages(Query, boolean, SearchDeviceListener)
@@ -164,6 +204,11 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service direct messages sent.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/direct_messages/sent" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/direct_messages/sent
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
 	 * @see Timeline#startGetDirectMessages(Query, boolean, SearchDeviceListener)
 	 */
@@ -174,8 +219,13 @@ public final class Timeline {
 	 * <p>
 	 * Key for Twitter API URL service user lists statuses.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/%3Auser/lists/%3Aid/statuses" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/%3Auser/lists/%3Aid/statuses
+	 * </a>
+	 * </p>
 	 * @see Timeline#setServiceURL(String, String)
-	 * @see Timeline#startGetListTweets(List, Query, SearchDeviceListener)
+	 * @deprecated
 	 */
 	public static final String TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES =
 		"TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES";
@@ -190,6 +240,21 @@ public final class Timeline {
 	 */
 	public static final String TWITTER_API_URL_SERVICE_FAVORITES =
 		"TWITTER_API_URL_SERVICE_FAVORITES";
+	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service user lists statuses.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/lists/statuses" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/lists/statuses
+	 * </a>
+	 * </p>
+	 * @see Timeline#setServiceURL(String, String)
+	 * @see Timeline#startGetListTweets(List, Query, SearchDeviceListener)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_LISTS_STATUSES =
+		"TWITTER_API_URL_SERVICE_LISTS_STATUSES";
 
 	static {
 		SERVICES_URL = new Hashtable(11);
@@ -222,11 +287,11 @@ public final class Timeline {
 			TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME,
 			"http://api.twitter.com/1/statuses/retweeted_to_me.xml");
 		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES,
-			"http://api.twitter.com/1/:user/lists/:id/statuses.xml");
-		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_FAVORITES,
 			"http://api.twitter.com/1/favorites/:id.xml");
+		SERVICES_URL.put(
+			TWITTER_API_URL_SERVICE_LISTS_STATUSES,
+			"http://api.twitter.com/1/lists/statuses.xml");
 	}
 	
 	/**
@@ -283,8 +348,8 @@ public final class Timeline {
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETS_OF_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_BY_ME
 	 * @see Timeline#TWITTER_API_URL_SERVICE_STATUSES_RETWEETED_TO_ME
-	 * @see Timeline#TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES
 	 * @see Timeline#TWITTER_API_URL_SERVICE_FAVORITES
+	 * @see Timeline#TWITTER_API_URL_SERVICE_LISTS_STATUSES
 	 */
 	public void setServiceURL(String serviceKey, String url) {
 		SERVICES_URL.put(serviceKey, url);
@@ -669,7 +734,7 @@ public final class Timeline {
 	 * <li>{@link QueryComposer#perPage(int)}</li>
 	 * <li>{@link QueryComposer#page(int)}</li>
 	 * <li>{@link QueryComposer#includeEntities()}</li>
-	 * </ul>
+	 * <li>{@link QueryComposer#includeRetweets()}</li></ul>
 	 * </p>
 	 * @param list List object.
 	 * @param q The filter query. If null all tweets are returned.
@@ -683,33 +748,13 @@ public final class Timeline {
 			throw new IllegalArgumentException("List must not be null.");
 		}
 		//
-		String id = list.getString(MetadataSet.LIST_ID);
-		//
-		if (StringUtil.isEmpty(id)) {
-			throw new IllegalArgumentException("List ID must not be null.");
-		}
-		//
-		UserAccount ua = list.getUserAccount();
-		//
-		if (ua == null) {
-			throw new IllegalArgumentException(
-				"List's user account must not be null.");
-		}
-		//
-		String username = ua.getString(MetadataSet.USERACCOUNT_USER_NAME);
-		//
-		if (StringUtil.isEmpty(username)) {
-			throw new IllegalArgumentException(
-				"List's user account name must not be null.");
-		}
+		list.checkEmpty(MetadataSet.LIST_ID);
 		//
 		TimelineHandler h = new TimelineHandler();
 		h.setSearchDeviceListener(l);
 		//
-		String url = getURL(TWITTER_API_URL_SERVICE_USER_LISTS_STATUSES);
-		//
-		url = StringUtil.replace(url, ":user", username);
-		url = StringUtil.replace(url, ":id", id);
+		String url = getURL(TWITTER_API_URL_SERVICE_LISTS_STATUSES);
+		url += "?list_id=" + list.getString(MetadataSet.LIST_ID);
 		//
 		startGet(url, q, l, h, userAccountMngr != null);
 	}

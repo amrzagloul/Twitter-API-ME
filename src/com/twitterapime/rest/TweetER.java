@@ -78,6 +78,11 @@ public final class TweetER {
 	 * <p>
 	 * Key for Twitter API URL service statuses update.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/statuses/update" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/statuses/update
+	 * </a>
+	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#post(Tweet)
 	 */
@@ -87,6 +92,11 @@ public final class TweetER {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service statuses show.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/statuses/show/%3Aid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/statuses/show/%3Aid
+	 * </a>
 	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#findByID(String)
@@ -98,6 +108,11 @@ public final class TweetER {
 	 * <p>
 	 * Key for Twitter API URL service statuses retweet.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/statuses/retweet/%3Aid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/statuses/retweet/%3Aid
+	 * </a>
+	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#repost(Tweet)
 	 */
@@ -107,6 +122,11 @@ public final class TweetER {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service direct messages new.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/direct_messages/new" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/direct_messages/new
+	 * </a>
 	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#send(Tweet)
@@ -118,6 +138,11 @@ public final class TweetER {
 	 * <p>
 	 * Key for Twitter API URL service to favorite tweet.
 	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/favorites/create/%3Aid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/favorites/create/%3Aid
+	 * </a>
+	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#favorite(Tweet)
 	 */
@@ -127,6 +152,11 @@ public final class TweetER {
 	/**
 	 * <p>
 	 * Key for Twitter API URL service to unfavorite tweet.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/post/favorites/destroy/%3Aid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/post/favorites/destroy/%3Aid
+	 * </a>
 	 * </p>
 	 * @see TweetER#setServiceURL(String, String)
 	 * @see TweetER#favorite(Tweet)

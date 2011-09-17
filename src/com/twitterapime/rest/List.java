@@ -19,7 +19,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.6
  */
 public final class List extends DefaultEntity {
@@ -41,6 +41,25 @@ public final class List extends DefaultEntity {
 		super(data);
 	}
 	
+	/**
+	 * <p>
+	 * Create an instance of List class. Use this constructor when you intend
+	 * to search for a given list's data.
+	 * </p>
+	 * @param id Id.
+	 * @throws IllegalArgumentException If id is null/empty.
+	 */
+	public List(String id) {
+		if (StringUtil.isEmpty(id)) {
+			throw new IllegalArgumentException("ID must not be null/empty.");
+		}
+		//
+		Hashtable t = new Hashtable(4);
+		t.put(MetadataSet.LIST_ID, id);
+		//
+		setData(t);
+	}
+
 	/**
 	 * <p>
 	 * Create an instance of List class. Use this constructor when you intend
