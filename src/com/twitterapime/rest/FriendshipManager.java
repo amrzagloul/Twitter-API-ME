@@ -189,6 +189,7 @@ public final class FriendshipManager {
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFriends(Query)
+	 * @deprecated
 	 */
 	public static final String TWITTER_API_URL_SERVICE_STATUSES_FRIENDS =
 		"TWITTER_API_URL_SERVICE_STATUSES_FRIENDS";
@@ -199,6 +200,7 @@ public final class FriendshipManager {
 	 * </p>
 	 * @see FriendshipManager#setServiceURL(String, String)
 	 * @see FriendshipManager#getFollowers(Query)
+	 * @deprecated
 	 */
 	public static final String TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS =
 		"TWITTER_API_URL_SERVICE_STATUSES_FOLLOWERS";
@@ -649,7 +651,7 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
-	 * @see MetadataSet#USERACCOUNT_FRIENDS_COUNT
+	 * @deprecated
 	 */
 	public Cursor getFriends(Query query) throws IOException,
 		LimitExceededException {
@@ -700,7 +702,7 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
-	 * @see MetadataSet#USERACCOUNT_FOLLOWERS_COUNT
+	 * @deprecated
 	 */
 	public Cursor getFollowers(Query query) throws IOException,
 		LimitExceededException {
