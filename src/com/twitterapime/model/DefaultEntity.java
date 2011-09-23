@@ -27,7 +27,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  * @see Tweet
  * @see Credential
@@ -38,7 +38,17 @@ import com.twitterapime.util.StringUtil;
  * @see TweetEntity
  * @see List
  */
-public class DefaultEntity implements Entity {
+//#ifdef PP_ANDROID
+//@public class DefaultEntity implements Entity, java.io.Serializable {
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 5303650046011041495L;
+//#else
+	public class DefaultEntity implements Entity {
+//#endif
 	/**
 	 * <p>
 	 * Hashtable object that stores the attributes/values.
@@ -184,7 +194,7 @@ public class DefaultEntity implements Entity {
 	
 	/**
 	 * <p>
-	 * Checks if the value associated to the is null or empty.
+	 * Checks if the value associated to the key is null or empty string.
 	 * </p>
 	 * @param key Key.
 	 * @return Empty (true).
@@ -193,6 +203,17 @@ public class DefaultEntity implements Entity {
 		Object v = data.get(key);
 		//
 		return v == null || StringUtil.isEmpty(v.toString());
+	}
+
+	/**
+	 * <p>
+	 * Checks if the value associated to the key is null.
+	 * </p>
+	 * @param key Key.
+	 * @return Null (true).
+	 */
+	public boolean isNull(String key) {
+		return data.get(key) == null;
 	}
 	
 	/**

@@ -78,7 +78,7 @@ public final class List extends DefaultEntity {
 		//
 		t.put(MetadataSet.LIST_NAME, name);
 		t.put(MetadataSet.LIST_MODE, isPublic ? "public" : "private");
-		if (!StringUtil.isEmpty(description)) {
+		if (description != null) {
 			t.put(MetadataSet.LIST_DESCRIPTION, description.trim());
 		}
 		//

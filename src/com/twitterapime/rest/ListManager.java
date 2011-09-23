@@ -599,7 +599,7 @@ public final class ListManager {
 		if (!list.isEmpty(MetadataSet.LIST_MODE)) {
 			req.setBodyParameter("mode", list.getString(MetadataSet.LIST_MODE));
 		}
-		if (!list.isEmpty(MetadataSet.LIST_DESCRIPTION)) {
+		if (!list.isNull(MetadataSet.LIST_DESCRIPTION)) {
 			req.setBodyParameter(
 				"description", list.getString(MetadataSet.LIST_DESCRIPTION));
 		}
