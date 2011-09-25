@@ -716,7 +716,8 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
-	 * @deprecated
+	 * @deprecated Use {@link FriendshipManager#getFriendsIDs(Query)} and 
+	 *                 {@link UserAccountManager#lookup(Query)}..
 	 */
 	public Cursor getFriends(Query query) throws IOException,
 		LimitExceededException {
@@ -767,7 +768,8 @@ public final class FriendshipManager {
 	 * @throws IOException If an I/O error occurs.
 	 * @throws LimitExceededException If the limit of access is exceeded.
 	 * @throws SecurityException Given user is protected.
-	 * @deprecated
+	 * @deprecated Use {@link FriendshipManager#getFollowersIDs(Query)} and 
+	 *                 {@link UserAccountManager#lookup(Query)}..
 	 */
 	public Cursor getFollowers(Query query) throws IOException,
 		LimitExceededException {
