@@ -35,6 +35,9 @@ quicker for the developers to port their applications to other platforms.
 ********************************************************************************
 - OAuth support all platforms (callback url and out-of-band mode).
 - Possibility to configure additional connection parameters for RIM platform.
+- Improved RIM connection string solving the issue of when the devices is 
+  subscribed to BIS, but no APN was enabled and specified. In this case, an 
+  IOException was thrown.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************
