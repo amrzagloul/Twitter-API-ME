@@ -19,10 +19,19 @@ import com.twitterapime.model.MetadataSet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.7
  */
 public final class Friendship extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 585342660722380914L;
+//#endif
+
 	/**
 	 * <p>
 	 * Create an instance of Friendship class.

@@ -23,12 +23,21 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.5
+ * @version 1.6
  * @since 1.0
  * @see SearchDevice
  * @see TweetER
  */
 public final class Tweet extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 4010778333664920725L;
+//#endif
+
 	/**
 	 * <p>
 	 * Content max number of characters.

@@ -23,6 +23,15 @@ import com.twitterapime.util.StringUtil;
  * @since 1.6
  */
 public final class List extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 8728392880263797603L;
+//#endif
+
 	/**
 	 * <p>
 	 * Create an instance of List class.

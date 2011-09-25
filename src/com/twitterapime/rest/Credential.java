@@ -25,6 +25,15 @@ import com.twitterapime.xauth.Token;
  * @see UserAccountManager
  */
 public final class Credential extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = -3520364801859808022L;
+//#endif
+
 	/**
 	 * <p>
 	 * Create an instance of Credential class.

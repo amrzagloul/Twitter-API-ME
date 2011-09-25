@@ -109,15 +109,53 @@ import com.twitterapime.util.StringUtil;
 	 * @see com.twitterapime.model.Entity#getDate(java.lang.String)
 	 */
 	public final Date getDate(String attr) {
-		return (Date)getValue(attr, new Date().getClass());
+		Object v = getObject(attr);
+		//
+		if (v == null) {
+			return null;
+		}
+		//
+		if (v instanceof Date) {
+			return (Date)v;
+		} else if (v instanceof Long) {
+			return new Date(((Long)v).longValue());
+		} else if (v instanceof String) {
+			return new Date(Long.parseLong(v.toString()));
+		} else {
+			throw new ClassCastException(
+				"Invalid type value: " + v.getClass().getName());
+		}
 	}
 
 	/**
 	 * @see com.twitterapime.model.Entity#getInt(java.lang.String)
 	 */
 	public final int getInt(String attr) {
-		Object v = (Integer)getValue(attr, new Integer(0).getClass());
-		return v != null ? ((Integer)v).intValue() : Integer.MIN_VALUE;
+		Object v = getObject(attr);
+		//
+		if (v == null) {
+			return Integer.MIN_VALUE;
+		}
+		//
+		if (v instanceof Integer) {
+			return ((Integer)v).intValue();
+		} else if (v instanceof String) {
+			return Integer.parseInt(v.toString());
+		} else if (v instanceof Long) {
+			long dv = ((Long)v).longValue();
+			//
+			if (dv >= Integer.MIN_VALUE && dv <= Integer.MAX_VALUE) {
+				return (int)dv;
+			} else {
+				throw new RuntimeException(
+					"Cannot convert to int due to loss of precision: " + dv);
+			}
+		} else if (v instanceof Boolean) {
+			return ((Boolean)v).booleanValue() ? 1 : 0;
+		} else {
+			throw new ClassCastException(
+				"Invalid type value: " + v.getClass().getName());
+		}
 	}
 
 	/**
@@ -125,11 +163,24 @@ import com.twitterapime.util.StringUtil;
 	 */
 	public final long getLong(String attr) {
 		Object v = getObject(attr);
-		if (v instanceof Date) {
+		//
+		if (v == null) {
+			return Long.MIN_VALUE;
+		}
+		//
+		if (v instanceof Long) {
+			return ((Long)v).longValue();
+		} else if (v instanceof Date) {
 			return ((Date)v).getTime();
+		} else if (v instanceof String) {
+			return Long.parseLong(v.toString());
+		} else if (v instanceof Integer) {
+			return ((Integer)v).longValue();
+		} else if (v instanceof Boolean) {
+			return ((Boolean)v).booleanValue() ? 1 : 0;
 		} else {
-			v = (Long)getValue(attr, new Long(0).getClass());
-			return v != null ? ((Long)v).longValue() : Long.MIN_VALUE;
+			throw new ClassCastException(
+				"Invalid type value: " + v.getClass().getName());
 		}
 	}
 
@@ -145,7 +196,32 @@ import com.twitterapime.util.StringUtil;
 	 */
 	public final String getString(String attr) {
 		Object v = data.get(attr);
+		//
 		return v != null ? v.toString() : null;
+	}
+	
+	/**
+	 * @see com.twitterapime.model.Entity#getBoolean(java.lang.String)
+	 */
+	public boolean getBoolean(String attr) {
+		Object v = getObject(attr);
+		//
+		if (v == null) {
+			return false;
+		}
+		//
+		if (v instanceof Boolean) {
+			return ((Boolean)v).booleanValue();
+		} else if (v instanceof String) {
+			return v.toString().trim().toLowerCase().equals("true");
+		} else if (v instanceof Integer) {
+			return ((Integer)v).intValue() != 0;
+		} else if (v instanceof Long) {
+			return ((Long)v).longValue() != 0;
+		} else {
+			throw new ClassCastException(
+				"Invalid type value: " + v.getClass().getName());
+		}
 	}
 	
 	/**

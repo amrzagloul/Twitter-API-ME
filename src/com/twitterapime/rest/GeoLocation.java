@@ -19,11 +19,20 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.4
  * @see Tweet
  */
 public final class GeoLocation extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 3685680953951228108L;
+//#endif
+
 	/**
 	 * <p>
 	 * Create an instance of GeoLocation class.

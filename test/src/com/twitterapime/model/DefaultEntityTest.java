@@ -47,6 +47,16 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 	/**
 	 * 
 	 */
+	private static final String KEY_STRING_NUMBER = "KEY_STRING_NUMBER";
+
+	/**
+	 * 
+	 */
+	private static final String KEY_BOOLEAN = "KEY_BOOLEAN";
+
+	/**
+	 * 
+	 */
 	private Hashtable dataSample;
 	
 	/**
@@ -67,6 +77,8 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		dataSample.put(KEY_LONG, new Long(14));
 		dataSample.put(KEY_OBJECT, this);
 		dataSample.put(KEY_STRING, "Twitter API ME");
+		dataSample.put(KEY_STRING_NUMBER, "1234567890");
+		dataSample.put(KEY_BOOLEAN, new Boolean(true));
 	}
 
 	/**
@@ -131,7 +143,6 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		} catch (Exception e) {
 			fail();
 		}
-		
 	}
 
 	/**
@@ -142,6 +153,23 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		assertEquals(new Date(now), d.getDate(KEY_DATE));
 		assertNull(d.getDate("WHATEVER_DATE"));
 		//
+		try {
+			d.getDate(KEY_LONG);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getDate(KEY_STRING_NUMBER);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getDate(KEY_ARRAY);
+			fail();
+		} catch (ClassCastException e) {
+		} catch (Exception e) {
+			fail();
+		}
 		try {
 			d.getDate(KEY_INT);
 			fail();
@@ -160,9 +188,33 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		assertEquals(Integer.MIN_VALUE, d.getInt("WHATEVER_INT"));
 		//
 		try {
+			d.getInt(KEY_LONG);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getInt(KEY_STRING_NUMBER);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getInt(KEY_BOOLEAN);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getInt(KEY_ARRAY);
+			fail();
+		} catch (ClassCastException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		try {
 			d.getInt(KEY_STRING);
 			fail();
 		} catch (ClassCastException e) {
+		} catch (NumberFormatException e) {
+		} catch (RuntimeException e) {
 		} catch (Exception e) {
 			fail();
 		}
@@ -178,14 +230,57 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		assertEquals(now, d.getLong(KEY_DATE));
 		//
 		try {
+			d.getLong(KEY_INT);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getLong(KEY_STRING_NUMBER);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getLong(KEY_BOOLEAN);
+		} catch (Exception e) {
+			fail();
+		}
+		try {
+			d.getLong(KEY_ARRAY);
+			fail();
+		} catch (ClassCastException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		try {
 			d.getLong(KEY_STRING);
+			fail();
+		} catch (ClassCastException e) {
+		} catch (NumberFormatException e) {
+		} catch (RuntimeException e) {
+		} catch (Exception e) {
+			fail();
+		}
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.model.DefaultEntity#getBoolean(java.lang.String)}.
+	 */
+	public void testGetBoolean() {
+		DefaultEntity d = new DefaultEntity(dataSample);
+		assertTrue(d.getBoolean(KEY_BOOLEAN));
+		assertTrue(d.getBoolean(KEY_LONG));
+		assertTrue(d.getBoolean(KEY_INT));
+		assertFalse(d.getBoolean(KEY_STRING));
+		//
+		try {
+			d.getBoolean(KEY_ARRAY);
 			fail();
 		} catch (ClassCastException e) {
 		} catch (Exception e) {
 			fail();
 		}
 	}
-
+	
 	/**
 	 * Test method for {@link com.twitterapime.model.DefaultEntity#getObject(java.lang.String)}.
 	 */
@@ -198,6 +293,7 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		assertTrue(d.getObject(KEY_INT) instanceof Integer);
 		assertTrue(d.getObject(KEY_LONG) instanceof Long);
 		assertTrue(d.getObject(KEY_STRING) instanceof String);
+		assertTrue(d.getObject(KEY_BOOLEAN) instanceof Boolean);
 	}
 
 	/**
@@ -304,5 +400,23 @@ public class DefaultEntityTest extends TwitterAPIMETestCase {
 		assertFalse(e.isEmpty("b"));
 		assertTrue(e.isEmpty("c"));
 		assertTrue(e.isEmpty("d"));
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.model.DefaultEntity#isNull(String)}.
+	 */
+	public void testIsNull() {
+		Hashtable t = new Hashtable();
+		//
+		t.put("a", "");
+		t.put("b", "b");
+		t.put("d", "    ");
+		//
+		DefaultEntity e = new DefaultEntity(t);
+		//
+		assertFalse(e.isNull("a"));
+		assertFalse(e.isNull("b"));
+		assertTrue(e.isNull("c"));
+		assertFalse(e.isNull("d"));
 	}
 }

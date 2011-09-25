@@ -20,11 +20,20 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.1
  * @see UserAccountManager
  */
 public final class UserAccount extends DefaultEntity {
+//#ifdef PP_ANDROID
+//@	/**
+//@	 * <p>
+//@	 * Serial UID.
+//@	 * </p>
+//@	 */
+//@	private static final long serialVersionUID = 6313289563858269077L;
+//#endif
+
 	/**
 	 * <p>
 	 * Create an instance of UserAccount class.

@@ -16,7 +16,7 @@ import java.util.Date;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see DefaultEntity
  */
@@ -74,4 +74,13 @@ public interface Entity {
 	 * @return The string value of the given attribute.
 	 */
 	public String getString(String attr);
+
+	/**
+	 * <p>
+	 * Get the value of a boolean attribute. 
+	 * </p>
+	 * @param attr String attribute to query the data for. 
+	 * @return The boolean value of the given attribute.
+	 */
+	public boolean getBoolean(String attr);
 }
