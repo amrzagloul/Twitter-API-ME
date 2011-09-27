@@ -38,6 +38,7 @@ quicker for the developers to port their applications to other platforms.
 - Improved RIM connection string solving the issue of when the devices is 
   subscribed to BIS, but no APN was enabled and specified. In this case, an 
   IOException was thrown.
+- Geo-located Trend search based on Yahoo! Where On Earth ID.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************

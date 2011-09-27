@@ -68,11 +68,12 @@ public final class Tweet extends DefaultEntity {
 	 * Create an instance of Tweet class.
 	 * </p>
 	 * @param content Content (status).
-	 * @throws IllegalArgumentException If content is invalid.
+	 * @throws IllegalArgumentException If content is empty/null.
 	 */
 	public Tweet(String content) {
-		if (content == null) {
-			throw new IllegalArgumentException("Content must not be null");
+		if (StringUtil.isEmpty(content)) {
+			throw new IllegalArgumentException(
+				"Content must not be empty/null.");
 		}
 		//
 		Hashtable data = new Hashtable();
@@ -114,12 +115,13 @@ public final class Tweet extends DefaultEntity {
 	 *         invalid.
 	 */
 	public Tweet(String toUserNameOrID, String content) {
-		if (toUserNameOrID == null) {
+		if (StringUtil.isEmpty(toUserNameOrID)) {
 			throw new IllegalArgumentException(
 				"To username/ID must not be empty/null.");
 		}
-		if (content == null) {
-			throw new IllegalArgumentException("Content must not be null");
+		if (StringUtil.isEmpty(content)) {
+			throw new IllegalArgumentException(
+				"Content must not be empty/null");
 		}
 		//
 		Hashtable tweetData = new Hashtable();

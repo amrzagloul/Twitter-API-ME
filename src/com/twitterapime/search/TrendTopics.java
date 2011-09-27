@@ -17,6 +17,7 @@ import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.search.handler.TrendTopicsHandler;
+import com.twitterapime.util.StringUtil;
 
 /**
  * <p>
@@ -34,7 +35,7 @@ import com.twitterapime.search.handler.TrendTopicsHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.5
  */
 public final class TrendTopics {
@@ -62,7 +63,7 @@ public final class TrendTopics {
 	 * </a>
 	 * </p>
 	 * @see TrendTopics#setServiceURL(String, String)
-	 * @see TrendTopics#searchNowTopics(Query)
+	 * @deprecated
 	 */
 	public static final String TWITTER_API_URL_SERVICE_TRENDS_CURRENT =
 		"TWITTER_API_URL_SERVICE_TRENDS_CURRENT";
@@ -97,12 +98,28 @@ public final class TrendTopics {
 	public static final String TWITTER_API_URL_SERVICE_TRENDS_WEEKLY =
 		"TWITTER_API_URL_SERVICE_TRENDS_WEEKLY";
 	
+	/**
+	 * <p>
+	 * Key for Twitter API URL service trends woeid.
+	 * </p>
+	 * <p>
+	 * <a href="http://dev.twitter.com/docs/api/1/get/trends/%3Awoeid" target="_blank">
+	 *   http://dev.twitter.com/docs/api/1/get/trends/%3Awoeid
+	 * </a>
+	 * </p>
+	 * @see TrendTopics#setServiceURL(String, String)
+	 * @see TrendTopics#searchNowTopics(Query)
+	 * @see TrendTopics#searchNowTopics(String, Query)
+	 */
+	public static final String TWITTER_API_URL_SERVICE_TRENDS_WOEID =
+		"TWITTER_API_URL_SERVICE_TRENDS_WOEID";
+	
 	static {
 		SERVICES_URL = new Hashtable(3);
 		//
 		SERVICES_URL.put(
-			TWITTER_API_URL_SERVICE_TRENDS_CURRENT,
-			"http://api.twitter.com/1/trends/current.json");
+			TWITTER_API_URL_SERVICE_TRENDS_WOEID,
+			"http://api.twitter.com/1/trends/:woeid.json");
 		SERVICES_URL.put(
 			TWITTER_API_URL_SERVICE_TRENDS_DAILY,
 			"http://api.twitter.com/1/trends/daily.json");
@@ -145,7 +162,7 @@ public final class TrendTopics {
 	 * </p>
 	 * @param serviceKey Service key.
 	 * @param url New URL.
-	 * @see TrendTopics#TWITTER_API_URL_SERVICE_TRENDS_CURRENT
+	 * @see TrendTopics#TWITTER_API_URL_SERVICE_TRENDS_WOEID
 	 * @see TrendTopics#TWITTER_API_URL_SERVICE_TRENDS_DAILY
 	 * @see TrendTopics#TWITTER_API_URL_SERVICE_TRENDS_WEEKLY
 	 */
@@ -155,7 +172,7 @@ public final class TrendTopics {
 
 	/**
 	 * <p>
-	 * Get most recent topics.
+	 * Get most recent topics in the world.
 	 * </p>
 	 * <p>
 	 * In order to create the query, only the following methods can be used as
@@ -171,7 +188,37 @@ public final class TrendTopics {
 	 */
 	public Topic[] searchNowTopics(Query query) throws IOException,
 		LimitExceededException {
-		return search(getURL(TWITTER_API_URL_SERVICE_TRENDS_CURRENT), query);
+		return searchNowTopics("1", query);
+	}
+
+	/**
+	 * <p>
+	 * Get most recent topics from a given location on earth.
+	 * </p>
+	 * <p>
+	 * In order to create the query, only the following methods can be used as
+	 * filters:
+	 * <ul>
+	 * <li>{@link QueryComposer#excludeHashtags()}</li>
+	 * </ul>
+	 * </p>
+	 * @param woeid <a href="http://developer.yahoo.com/geo/geoplanet/" target="_blank">Yahoo! Where On Earth ID</a>.
+	 * @param query The filter query. If null all topics are returned.
+	 * @return Most recent topics.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws LimitExceededException If the limit of access is exceeded.
+	 * @throws IllegalArgumentException If woeid is null/empty.
+	 */
+	public Topic[] searchNowTopics(String woeid, Query query)
+		throws IOException, LimitExceededException {
+		if (StringUtil.isEmpty(woeid)) {
+			throw new IllegalArgumentException("Woeid must not be empty/null.");
+		}
+		//
+		String url = getURL(TWITTER_API_URL_SERVICE_TRENDS_WOEID);
+		url = StringUtil.replace(url, ":woeid", woeid);
+		//
+		return search(url, query);
 	}
 
 	/**

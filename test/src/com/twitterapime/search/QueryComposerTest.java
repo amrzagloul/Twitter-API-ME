@@ -298,4 +298,83 @@ public class QueryComposerTest extends TwitterAPIMETestCase {
 		assertEquals(new Query(QueryComposer.PM_PER_PAGE + "6"), QueryComposer.perPage(6));
 		assertEquals(new Query(QueryComposer.PM_PER_PAGE + "7"), QueryComposer.perPage(7));
 	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#query(String)}.
+	 */
+	public void testQuery() {
+		assertEquals(new Query(QueryComposer.PM_QUERY + "value"), QueryComposer.query("value"));
+		assertEquals(new Query(QueryComposer.PM_QUERY + ""), QueryComposer.query(""));
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#cursor(long)}.
+	 */
+	public void testCursor() {
+		assertEquals(new Query(QueryComposer.PM_CURSOR + "12345"), QueryComposer.cursor(12345));
+		assertEquals(new Query(QueryComposer.PM_CURSOR + "-12345"), QueryComposer.cursor(-12345));
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#userID(String)}.
+	 */
+	public void testUserID() {
+		assertEquals(new Query(QueryComposer.PM_USER_ID + "1234567890"), QueryComposer.userID("1234567890"));
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#screenName(String)}.
+	 */
+	public void testScreenName() {
+		assertEquals(new Query(QueryComposer.PM_SCREEN_NAME + "twapime"), QueryComposer.screenName("twapime"));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#trimUser()}.
+	 */
+	public void testTrimUser() {
+		assertEquals(new Query(QueryComposer.PM_TRIM_USER), QueryComposer.trimUser());
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#includeRetweets()}.
+	 */
+	public void testIncludeRetweets() {
+		assertEquals(new Query(QueryComposer.PM_INCLUDE_RTS), QueryComposer.includeRetweets());
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#skipStatus()}.
+	 */
+	public void testSkipStatus() {
+		assertEquals(new Query(QueryComposer.PM_SKIP_STATUS), QueryComposer.skipStatus());
+	}
+
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#screenNames(String[])}.
+	 */
+	public void testScreenNames() {
+		try {
+			QueryComposer.screenNames(null);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+		//
+		assertEquals(new Query(QueryComposer.PM_SCREEN_NAME + ""), QueryComposer.screenNames(new String[0]));
+		assertEquals(new Query(QueryComposer.PM_SCREEN_NAME + "twapime,twitter,java"), QueryComposer.screenNames(new String[] {"twapime", "twitter", "java"}));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.QueryComposer#userIDs(String[]))}.
+	 */
+	public void testUserIDs() {
+		try {
+			QueryComposer.userIDs(null);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+		//
+		assertEquals(new Query(QueryComposer.PM_USER_ID + ""), QueryComposer.userIDs(new String[0]));
+		assertEquals(new Query(QueryComposer.PM_USER_ID + "123,456,789"), QueryComposer.userIDs(new String[] {"123", "456", "789"}));
+	}
 }

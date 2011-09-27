@@ -6,6 +6,7 @@ package com.twitterapime.search;
 import java.util.Hashtable;
 
 import com.twitterapime.model.MetadataSet;
+import com.twitterapime.rest.GeoLocation;
 import com.twitterapime.rest.UserAccount;
 import com.twitterapime.test.TwitterAPIMETestCase;
 
@@ -131,5 +132,73 @@ public class TweetTest extends TwitterAPIMETestCase {
 		sample.put(MetadataSet.TWEET_REPOSTED_TWEET, ua);
 		Tweet t = new Tweet(sample);
 		assertSame(ua, t.getRepostedTweet());
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.Tweet#Tweet(String, com.twitterapime.rest.GeoLocation)}.
+	 */
+	public void testTweetStringLocation() {
+		GeoLocation loc = new GeoLocation();
+		//
+		assertSame(new Tweet("content", loc).getObject(MetadataSet.TWEET_LOCATION), loc);
+		assertSame(new Tweet("content", loc).getLocation(), loc);
+		assertNull(new Tweet("content", (GeoLocation)null).getObject(MetadataSet.TWEET_LOCATION));
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.Tweet#validateContent()}.
+	 */
+	public void testValidateContent() {
+		try {
+			new Tweet().validateContent();
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	/**
+	 * Test method for {@link com.twitterapime.search.Tweet#validateRecipient()}.
+	 */
+	public void testValidateRecipient() {
+		try {
+			new Tweet().validateRecipient();
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Hashtable t = new Hashtable();
+			t.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount());
+			//
+			new Tweet(t).validateRecipient();
+			fail();
+		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Hashtable t = new Hashtable();
+			t.put(MetadataSet.USERACCOUNT_ID, "123456790");
+			t.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(t));
+			//
+			new Tweet(t).validateRecipient();
+		} catch (Exception e) {
+			fail();
+		}
+		//
+		try {
+			Hashtable t = new Hashtable();
+			t.put(MetadataSet.USERACCOUNT_USER_NAME, "twapime");
+			t.put(MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(t));
+			//
+			new Tweet(t).validateRecipient();
+		} catch (Exception e) {
+			fail();
+		}
 	}
 }
