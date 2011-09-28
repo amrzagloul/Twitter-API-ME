@@ -128,7 +128,7 @@ public abstract class OAuthDialogWrapper {
 	 * </p>
 	 */
 	protected String loginPageUrl =
-		"http://api.twitter.com/oauth/authorize";;
+		"https://api.twitter.com/oauth/authorize";;
 	
 	/**
 	 * <p>
