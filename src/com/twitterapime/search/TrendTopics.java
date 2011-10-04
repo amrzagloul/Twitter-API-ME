@@ -17,6 +17,7 @@ import com.twitterapime.parser.Parser;
 import com.twitterapime.parser.ParserException;
 import com.twitterapime.parser.ParserFactory;
 import com.twitterapime.search.handler.TrendTopicsHandler;
+import com.twitterapime.search.handler.TrendTopicsWoeidHandler;
 import com.twitterapime.util.StringUtil;
 
 /**
@@ -218,7 +219,27 @@ public final class TrendTopics {
 		String url = getURL(TWITTER_API_URL_SERVICE_TRENDS_WOEID);
 		url = StringUtil.replace(url, ":woeid", woeid);
 		//
-		return search(url, query);
+		if (query != null) {
+			url += '?' + query.toString();
+		}
+		//
+		HttpRequest req = new HttpRequest(url);
+		//
+		try {
+			HttpResponse resp = req.send();
+			//
+			HttpResponseCodeInterpreter.perform(resp);
+			//
+			Parser parser = ParserFactory.getParser(ParserFactory.JSON);
+			TrendTopicsWoeidHandler handler = new TrendTopicsWoeidHandler();
+			parser.parse(resp.getStream(), handler);
+			//
+			return handler.getParsedTopics();
+		} catch (ParserException e) {
+			throw new IOException(e.getMessage());
+		} finally {
+			req.close();
+		}
 	}
 
 	/**

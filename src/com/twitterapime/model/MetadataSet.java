@@ -590,6 +590,20 @@ public final class MetadataSet {
 	
 	/**
 	 * <p>
+	 * Reports a topic's URL, e.g., "http://search.twitter.com/search?q=java".
+	 * </p>
+	 */
+	public static final String TOPIC_URL = "TOPIC_URL";
+
+	/**
+	 * <p>
+	 * Reports whther a topic is promoted, e.g., "true" or "false".
+	 * </p>
+	 */
+	public static final String TOPIC_PROMOTED = "TOPIC_PROMOTED";
+
+	/**
+	 * <p>
 	 * Report the user account object of a list, e.g., UserAccount
 	 * class.
 	 * </p>

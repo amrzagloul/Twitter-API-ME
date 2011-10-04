@@ -44,6 +44,7 @@ public class TrendTopicsTest extends TwitterAPIMETestCase  {
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_DATE));
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_TEXT));
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_QUERY));
+				assertNotNull(topics[i].getString(MetadataSet.TOPIC_URL));
 			}
 			//
 			topics = tt.searchNowTopics(QueryComposer.excludeHashtags());
@@ -56,6 +57,7 @@ public class TrendTopicsTest extends TwitterAPIMETestCase  {
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_DATE));
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_TEXT));
 				assertNotNull(topics[i].getString(MetadataSet.TOPIC_QUERY));
+				assertNotNull(topics[i].getString(MetadataSet.TOPIC_URL));
 				assertEquals(-1, topics[i].getString(MetadataSet.TOPIC_TEXT).indexOf("#"));
 			}
 		} catch (Exception e) {

@@ -7,7 +7,9 @@
  */
 package com.twitterapime.search.handler;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.parser.DefaultJSONHandler;
@@ -20,7 +22,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.5
  */
 public final class TrendTopicsHandler extends DefaultJSONHandler {
@@ -41,37 +43,54 @@ public final class TrendTopicsHandler extends DefaultJSONHandler {
 	 */
 	public Topic[] getParsedTopics() {
 		if (content != null && content.size() > 0) {
-			String key = content.keys().nextElement().toString();
-			Object[] tss = (Object[])content.get(key);
+			Enumeration keys = content.keys();
+			Vector topics = new Vector(50);
 			//
-			if (key.length() == 10) { //only date.
-				key += " 00:00:00";
-			} else if (key.length() == 16) { //date and time but secs.
-				key += ":00";
-			}
-			String time = StringUtil.convertTweetDateToLong(key) + "";
-			//
-			Topic[] topics = new Topic[tss.length];
-			//
-			for (int i = 0; i < topics.length; i++) {
-				Hashtable data = (Hashtable)tss[i];
-				String name = (String)data.get("name");
-				String query = (String)data.get("query");
+			while (keys.hasMoreElements()) {
+				String key = keys.nextElement().toString();
+				System.out.println(key);
 				//
-				data.clear();
+				Object[] tss = (Object[])content.get(key);
 				//
-				data.put(MetadataSet.TOPIC_DATE, time);
-				if (name != null) {
-					data.put(MetadataSet.TOPIC_TEXT, name);
+				if (key.length() == 10) { //only date.
+					key += " 00:00:00";
+				} else if (key.length() == 16) { //date and time but secs.
+					key += ":00";
 				}
-				if (query != null) {
-					data.put(MetadataSet.TOPIC_QUERY, query);
-				}
+				String time = StringUtil.convertTweetDateToLong(key) + "";
 				//
-				topics[i] = new Topic(data);
+				for (int i = 0; i < tss.length; i++) {
+					Hashtable data = (Hashtable)tss[i];
+					//
+					String name = (String)data.get("name");
+					String query = (String)data.get("query");
+					String url = (String)data.get("url");
+					String promoted = (String)data.get("promoted_content");
+					//
+					data.clear();
+					//
+					data.put(MetadataSet.TOPIC_DATE, time);
+					if (!isEmpty(name)) {
+						data.put(MetadataSet.TOPIC_TEXT, name);
+					}
+					if (!isEmpty(query)) {
+						data.put(MetadataSet.TOPIC_QUERY, query);
+					}
+					if (!isEmpty(url)) {
+						data.put(MetadataSet.TOPIC_URL, url);
+					}
+					if (!isEmpty(promoted)) {
+						data.put(MetadataSet.TOPIC_PROMOTED, promoted);
+					}
+					//
+					topics.add(new Topic(data));
+				}
 			}
 			//
-			return topics;
+			Topic[] topicsArray = new Topic[topics.size()];
+			topics.copyInto(topicsArray);
+			//
+			return topicsArray;
 		} else {
 			return new Topic[0];
 		}

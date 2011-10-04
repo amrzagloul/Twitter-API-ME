@@ -18,7 +18,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.5
  */
 public class DefaultJSONHandler implements JSONHandler {
@@ -141,5 +141,16 @@ public class DefaultJSONHandler implements JSONHandler {
 			//
 			hashtable.put(replacementKey, value);
 		}
+	}
+	
+	/**
+	 * <p>
+	 * Verify whether the given string is null, empty or "null".
+	 * </p>
+	 * @param str The string.
+	 * @return true null/empty/"null".
+	 */
+	protected boolean isEmpty(String str) {
+		return StringUtil.isEmpty(str) || "null".equals(str.trim());
 	}
 }

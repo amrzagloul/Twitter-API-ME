@@ -25,7 +25,7 @@ import com.twitterapime.parser.ParserException;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.5
  */
 public final class JSONOrgParser extends Parser {
@@ -69,6 +69,13 @@ public final class JSONOrgParser extends Parser {
         	out.write(c);
         }
         //
-        return new String(out.toByteArray(), "UTF-8");
+        String json = new String(out.toByteArray(), "UTF-8");
+        //
+        if (json.startsWith("[")) {
+        	json = json.substring(1, json.length() -1); //remove leading and trailing brackets.
+        	json = "{\"root\": " + json + "}";
+        }
+        //
+        return json;
 	}
 }
