@@ -79,7 +79,7 @@ public final class TrendTopicsWoeidHandler extends DefaultJSONHandler {
 					data.put(MetadataSet.TOPIC_PROMOTED, promoted);
 				}
 				//
-				topics.add(new Topic(data));
+				topics.addElement(new Topic(data));
 			}
 			//
 			Topic[] topicsArray = new Topic[topics.size()];

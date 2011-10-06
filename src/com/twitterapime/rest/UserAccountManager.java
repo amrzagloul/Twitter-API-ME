@@ -25,7 +25,6 @@ import com.twitterapime.rest.handler.RateLimitStatusHandler;
 import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Query;
 import com.twitterapime.search.QueryComposer;
-import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.XAuthSigner;
 
@@ -720,7 +719,7 @@ public final class UserAccountManager {
 	 * @throws LimitExceededException If limit has been hit.
 	 * @throws SecurityException If it is not authenticated.
 	 * @throws IllegalArgumentException If user info is null/empty.
-	 * @see MetadataSet#USERACCOUNT_USER_NAME
+	 * @see MetadataSet#USERACCOUNT_NAME
 	 * @see MetadataSet#USERACCOUNT_DESCRIPTION
 	 * @see MetadataSet#USERACCOUNT_URL
 	 * @see MetadataSet#USERACCOUNT_LOCATION
@@ -741,35 +740,46 @@ public final class UserAccountManager {
 		req.setMethod(HttpConnection.POST);
 		//
 		String info = newUserInfo.getString(MetadataSet.USERACCOUNT_NAME);
-		if (!StringUtil.isEmpty(info)) {
-			final int MAX_LEN = 20;
-			//
-			if (info.trim().length() > MAX_LEN) {
+		if (info != null) {
+			if (info.length() > UserAccount.MAX_LEN_NAME) {
 				throw new IllegalArgumentException(
-					"Name must not be longer than " + MAX_LEN +	" characters.");
+					"Name must not be longer than " + 
+						UserAccount.MAX_LEN_NAME + " characters.");
 			}
 			//
 			req.setBodyParameter("name", info);
 		}
+		//
 		info = newUserInfo.getString(MetadataSet.USERACCOUNT_DESCRIPTION);
-		if (!StringUtil.isEmpty(info)) {
-			final int MAX_LEN = 156;
-			//
-			if (info.trim().length() > MAX_LEN) {
+		if (info != null) {
+			if (info.length() > UserAccount.MAX_LEN_DESCRIPTION) {
 				throw new IllegalArgumentException(
 					"Description must not be longer than " +
-					MAX_LEN +
-					" characters.");
+						UserAccount.MAX_LEN_DESCRIPTION + " characters.");
 			}
 			//
 			req.setBodyParameter("description", info);
 		}
+		//
 		info = newUserInfo.getString(MetadataSet.USERACCOUNT_URL);
-		if (!StringUtil.isEmpty(info)) {
+		if (info != null) {
+			if (info.length() > UserAccount.MAX_LEN_URL) {
+				throw new IllegalArgumentException(
+					"Url must not be longer than " + 
+						UserAccount.MAX_LEN_URL + " characters.");
+			}
+			//
 			req.setBodyParameter("url", info);
 		}
+		//
 		info = newUserInfo.getString(MetadataSet.USERACCOUNT_LOCATION);
-		if (!StringUtil.isEmpty(info)) {
+		if (info != null) {
+			if (info.length() > UserAccount.MAX_LEN_LOCATION) {
+				throw new IllegalArgumentException(
+					"Location must not be longer than " + 
+						UserAccount.MAX_LEN_LOCATION + " characters.");
+			}
+			//
 			req.setBodyParameter("location", info);
 		}
 		//

@@ -36,6 +36,34 @@ public final class UserAccount extends DefaultEntity {
 
 	/**
 	 * <p>
+	 * Max length for name.
+	 * </p>
+	 */
+	public static final int MAX_LEN_NAME = 20;
+	
+	/**
+	 * <p>
+	 * Max length for description.
+	 * </p>
+	 */
+	public static final int MAX_LEN_DESCRIPTION = 160;
+
+	/**
+	 * <p>
+	 * Max length for URL.
+	 * </p>
+	 */
+	public static final int MAX_LEN_URL = 100;
+
+	/**
+	 * <p>
+	 * Max length for location.
+	 * </p>
+	 */
+	public static final int MAX_LEN_LOCATION = 30;
+	
+	/**
+	 * <p>
 	 * Create an instance of UserAccount class.
 	 * </p>
 	 */
@@ -75,6 +103,37 @@ public final class UserAccount extends DefaultEntity {
 			//it is not supposed to be an ID, since it is not a number.
 		}
 		data.put(MetadataSet.USERACCOUNT_USER_NAME, userNameOrID);
+		setData(data);
+	}
+	
+	/**
+	 * <p>
+	 * Create an instance of UserAccount class.<br/>
+	 * Use this constructor when you intend to update the user profile's data 
+	 * {@link UserAccountManager#updateProfile(UserAccount)}.
+	 * </p>
+	 * @param name Name.
+	 * @param description Description.
+	 * @param url URL.
+	 * @param location Location.
+	 */
+	public UserAccount(String name, String description, String url,
+		String location) {
+		Hashtable data = new Hashtable(4);
+		//
+		if (name != null) {
+			data.put(MetadataSet.USERACCOUNT_NAME, name);
+		}
+		if (description != null) {
+			data.put(MetadataSet.USERACCOUNT_DESCRIPTION, description);
+		}
+		if (url != null) {
+			data.put(MetadataSet.USERACCOUNT_URL, url);
+		}
+		if (location != null) {
+			data.put(MetadataSet.USERACCOUNT_LOCATION, location);
+		}
+		//
 		setData(data);
 	}
 	
