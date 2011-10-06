@@ -8,8 +8,6 @@
 package com.twitterapime.xauth.ui;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Vector;
 
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpRequest;
@@ -95,10 +93,10 @@ public abstract class OAuthDialogWrapper {
 	
 	/**
 	 * <p>
-	 * OAuth listeners.
+	 * OAuth listener.
 	 * </p>
 	 */
-	protected Vector oauthListeners;
+	protected OAuthDialogListener oauthListener;
 	
 	/**
 	 * <p>
@@ -182,11 +180,7 @@ public abstract class OAuthDialogWrapper {
 		setConsumerSecret(consumerSecret);
 		setCallbackUrl(callbackUrl);
 		setEnableCustomResultPages(true);
-		//
-		oauthListeners = new Vector();
-		if (authListener != null) {
-			oauthListeners.addElement(authListener);
-		}
+		setOAuthListener(authListener);
 	}
 
 	/**
@@ -293,26 +287,12 @@ public abstract class OAuthDialogWrapper {
 
 	/**
 	 * <p>
-	 * Add an oauth listener.
+	 * Set the OAuth listener.
 	 * </p>
 	 * @param listener Listener.
 	 */
-	public void addOAuthListener(OAuthDialogListener listener) {
-		if (!oauthListeners.contains(listener)) {
-			oauthListeners.addElement(listener);
-		}
-	}
-	
-	/**
-	 * <p>
-	 * Remove the given oauth listener.
-	 * </p>
-	 * @param listener Listener.
-	 */
-	public void removeOAuthListener(OAuthDialogListener listener) {
-		if (oauthListeners.contains(listener)) {
-			oauthListeners.removeElement(listener);
-		}
+	public void setOAuthListener(OAuthDialogListener listener) {
+		oauthListener = listener;
 	}
 
 	/**
@@ -449,7 +429,7 @@ public abstract class OAuthDialogWrapper {
 	 * @param url Url.
 	 */
 	protected void trackUrl(String url) {
-		if (url.startsWith(callbackUrl)	&& !oauthListeners.isEmpty()) {
+		if (url.startsWith(callbackUrl)	&& oauthListener != null) {
 			if (url.indexOf("oauth_verifier=") != -1) {
 				String verifier =
 					StringUtil.getUrlParamValue(url, "oauth_verifier");
@@ -566,13 +546,8 @@ public abstract class OAuthDialogWrapper {
 	 * @param accessToken Access token.
 	 */
 	protected void triggerOnAuthorize(Token accessToken) {
-		Enumeration listeners = oauthListeners.elements();
-		//
-		while (listeners.hasMoreElements()) {
-			OAuthDialogListener listener =
-				(OAuthDialogListener)listeners.nextElement();
-			//
-			listener.onAuthorize(accessToken);
+		if (oauthListener != null) {
+			oauthListener.onAuthorize(accessToken);
 		}
 	}
 
@@ -584,13 +559,8 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void triggerOnFail(String error, String message) {
-		Enumeration listeners = oauthListeners.elements();
-		//
-		while (listeners.hasMoreElements()) {
-			OAuthDialogListener listener =
-				(OAuthDialogListener)listeners.nextElement();
-			//
-			listener.onFail(error, message);
+		if (oauthListener != null) {
+			oauthListener.onFail(error, message);
 		}
 	}
 	
@@ -601,13 +571,8 @@ public abstract class OAuthDialogWrapper {
 	 * @param message Message.
 	 */
 	protected void triggerOnAccessDenied(String message) {
-		Enumeration listeners = oauthListeners.elements();
-		//
-		while (listeners.hasMoreElements()) {
-			OAuthDialogListener listener =
-				(OAuthDialogListener)listeners.nextElement();
-			//
-			listener.onAccessDenied(message);
+		if (oauthListener != null) {
+			oauthListener.onAccessDenied(message);
 		}
 	}
 }
