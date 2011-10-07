@@ -93,10 +93,17 @@ public class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
+	
+	/**
+	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#setCallbackUrl(java.lang.String)
+	 */
+	public void setCallbackUrl(String callbackUrl) {
+		super.setCallbackUrl(null);
+	}
 
 	/**
 	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#loadHTML(java.lang.String)
 	 */
 	protected void loadHTML(String htmlContent) {
-	}
+	}	
 }

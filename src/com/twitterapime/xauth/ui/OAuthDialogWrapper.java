@@ -12,7 +12,6 @@ import java.io.IOException;
 import com.twitterapime.io.HttpConnection;
 import com.twitterapime.io.HttpRequest;
 import com.twitterapime.io.HttpResponse;
-import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.util.StringUtil;
 import com.twitterapime.xauth.OAuthSigner;
 import com.twitterapime.xauth.Token;
@@ -334,14 +333,11 @@ public abstract class OAuthDialogWrapper {
 	 * Use this method only if you are using "Out-of-band" mode.
 	 * </p>
 	 * @param pinCode PIN-code.
-	 * @throws IOException If any I/O error occurs.
-	 * @throws LimitExceededException If limit has been hit.
 	 * @throws IllegalArgumentException If PIN-code is empty/null.
 	 * @throws IllegalStateException If {@link OAuthDialogWrapper#login()} was 
 	 *                               not previously called.
 	 */
-	public void login(final String pinCode) throws IOException, 
-		LimitExceededException {
+	public void login(final String pinCode) {
 		if (StringUtil.isEmpty(pinCode)) {
 			throw new IllegalArgumentException("PIN-code must not be null.");
 		}
