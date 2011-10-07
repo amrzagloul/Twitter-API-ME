@@ -39,7 +39,7 @@ import com.twitterapime.xauth.ui.OAuthDialogWrapper;
  * @version 1.0
  * @since 1.8
  */
-public class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
+public final class MIDletOAuthDialogWrapper extends OAuthDialogWrapper {
 	/**
 	 * <p>
 	 * MIDlet instance.
