@@ -24,7 +24,7 @@ import com.twitterapime.search.Tweet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.2
  */
 public final class DirectMessageHandler extends DefaultXMLHandler {
@@ -76,7 +76,7 @@ public final class DirectMessageHandler extends DefaultXMLHandler {
 	 * </p> 
 	 */
 	private SearchDeviceListener listener;
-	
+		
 	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#startElement(java.lang.String, java.lang.String, java.lang.String, com.twitterapime.parser.Attributes)
 	 */
@@ -109,7 +109,7 @@ public final class DirectMessageHandler extends DefaultXMLHandler {
 			uaHandler.populate(senderValues, xmlPath, text);
 		} else if (xmlPath.indexOf("/direct_message/recipient/") != -1) {
 			uaHandler.populate(recipientValues, xmlPath, text);
-		} else {
+		} else if (xmlPath.indexOf("/direct_message/") != -1) {
 			tHandler.populate(dmValues, xmlPath, text);
 		}
 	}

@@ -24,7 +24,7 @@ import com.twitterapime.search.handler.TweetEntityHandler;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.2
+ * @version 1.3
  * @since 1.2
  */
 public final class StatusHandler extends DefaultXMLHandler {
@@ -33,42 +33,42 @@ public final class StatusHandler extends DefaultXMLHandler {
 	 * User Account XML handler object.
 	 * </p>
 	 */
-	private UserAccountHandler uaHandler = new UserAccountHandler();
+	private UserAccountHandler userHandler = new UserAccountHandler();
 	
 	/**
 	 * <p>
 	 * Tweet XML handler object.
 	 * </p>
 	 */
-	private TweetHandler tHandler = new TweetHandler();
+	private TweetHandler tweetHandler = new TweetHandler();
 	
 	/**
 	 * <p>
 	 * GeoLocation XML handler object.
 	 * </p>
 	 */
-	private GeoLocationHandler lHandler = new GeoLocationHandler();
+	private GeoLocationHandler locationHandler = new GeoLocationHandler();
 	
 	/**
 	 * <p>
 	 * TweetEntity XML handler object.
 	 * </p>
 	 */
-	private TweetEntityHandler teHandler = new TweetEntityHandler();
+	private TweetEntityHandler entityHandler = new TweetEntityHandler();
 
 	/**
 	 * <p>
 	 * Hash with user account values.
 	 * </p>
 	 */
-	private Hashtable userAccountValues = new Hashtable(25);
+	private Hashtable tweeetUserValues = new Hashtable(25);
 	
 	/**
 	 * <p>
 	 * Hash with user account values from reposted tweet.
 	 * </p>
 	 */
-	private Hashtable reuserAccountValues = new Hashtable(25);
+	private Hashtable retweetUserValues = new Hashtable(25);
 
 	/**
 	 * <p>
@@ -89,14 +89,28 @@ public final class StatusHandler extends DefaultXMLHandler {
 	 * Hash with tweet's location values.
 	 * </p>
 	 */
-	private Hashtable locationValues = new Hashtable(10);
+	private Hashtable tweetLocationValues = new Hashtable(10);
+
+	/**
+	 * <p>
+	 * Hash with reposted tweet location values.
+	 * </p>
+	 */
+	private Hashtable retweetLocationValues = new Hashtable(10);
 
 	/**
 	 * <p>
 	 * Hash with tweet's entity values.
 	 * </p>
 	 */
-	private Hashtable tweetEntityValues = new Hashtable();
+	private Hashtable tweetEntityValues = new Hashtable(3);
+
+	/**
+	 * <p>
+	 * Hash with reposted tweet's entity values.
+	 * </p>
+	 */
+	private Hashtable retweetEntityValues = new Hashtable(3);
 
 	/**
 	 * @see com.twitterapime.parser.DefaultXMLHandler#text(java.lang.String)
@@ -105,19 +119,25 @@ public final class StatusHandler extends DefaultXMLHandler {
 		text = text.trim();
 		//
 		if (xmlPath.startsWith("/status/retweeted_status/user/")) {
-			uaHandler.populate(reuserAccountValues, xmlPath, text);
+			userHandler.populate(retweetUserValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/status/retweeted_status/geo/")) {
+			locationHandler.populate(retweetLocationValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/status/retweeted_status/place/")) {
+			locationHandler.populate(retweetLocationValues, xmlPath, text);
+		} else if (xmlPath.startsWith("/status/retweeted_status/entities/")) {
+			entityHandler.populate(retweetEntityValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/retweeted_status/")) {
-			tHandler.populate(retweetValues, xmlPath, text);
+			tweetHandler.populate(retweetValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/user/")) {
-			uaHandler.populate(userAccountValues, xmlPath, text);
+			userHandler.populate(tweeetUserValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/geo/")) {
-			lHandler.populate(locationValues, xmlPath, text);
+			locationHandler.populate(tweetLocationValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/place/")) {
-			lHandler.populate(locationValues, xmlPath, text);
+			locationHandler.populate(tweetLocationValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/entities/")) {
-			teHandler.populate(tweetEntityValues, xmlPath, text);
+			entityHandler.populate(tweetEntityValues, xmlPath, text);
 		} else if (xmlPath.startsWith("/status/")) {
-			tHandler.populate(tweetValues, xmlPath, text);
+			tweetHandler.populate(tweetValues, xmlPath, text);
 		}
 	}
 	
@@ -126,20 +146,33 @@ public final class StatusHandler extends DefaultXMLHandler {
 	 */
 	public void endDocument() throws ParserException {
 		tweetValues.put(
-			MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(userAccountValues));
+			MetadataSet.TWEET_USER_ACCOUNT, new UserAccount(tweeetUserValues));
 		//
 		if (retweetValues.size() > 0) { // is it a retweet?
-			retweetValues.put(
-				MetadataSet.TWEET_USER_ACCOUNT,
-				new UserAccount(reuserAccountValues));
+			if (retweetUserValues.size() > 0) {
+				retweetValues.put(
+					MetadataSet.TWEET_USER_ACCOUNT,
+					new UserAccount(retweetUserValues));
+			}
+			if (retweetLocationValues.size() > 0) {
+				retweetValues.put(
+					MetadataSet.TWEET_LOCATION,
+					new GeoLocation(retweetLocationValues));
+			}
+			if (retweetEntityValues.size() > 0) {
+				retweetValues.put(
+					MetadataSet.TWEET_ENTITY,
+					new TweetEntity(retweetEntityValues));
+			}
+			//
 			tweetValues.put(
 				MetadataSet.TWEET_REPOSTED_TWEET, new Tweet(retweetValues));
 		}
 		//
-		if (locationValues.size() > 0) {
+		if (tweetLocationValues.size() > 0) {
 			tweetValues.put(
 				MetadataSet.TWEET_LOCATION,
-				new GeoLocation(locationValues));
+				new GeoLocation(tweetLocationValues));
 		}
 		//
 		if (tweetEntityValues.size() > 0) {

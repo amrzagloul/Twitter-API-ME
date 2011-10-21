@@ -25,7 +25,7 @@ import com.twitterapime.util.StringUtil;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.1
  */
 public final class SearchResultHandler extends DefaultXMLHandler {
@@ -124,10 +124,12 @@ public final class SearchResultHandler extends DefaultXMLHandler {
 				"" + StringUtil.convertTweetDateToLong(text));
 		} else if (xmlPath.equals("/feed/entry/title")) {
 			tweetValues.put(MetadataSet.TWEET_CONTENT, text);
-		} else if (xmlPath.equals("/feed/entry/twitter:source")) {
+		} else if (xmlPath.equals("/feed/entry/twitter:source")
+				|| xmlPath.equals("/feed/entry/source")) {
 			tweetValues.put(
 				MetadataSet.TWEET_SOURCE, StringUtil.removeTags(text));
-		} else if (xmlPath.equals("/feed/entry/twitter:lang")) {
+		} else if (xmlPath.equals("/feed/entry/twitter:lang")
+				|| xmlPath.equals("/feed/entry/lang")) {
 			tweetValues.put(MetadataSet.TWEET_LANG, text);
 		} else if (xmlPath.equals("/feed/entry/author/name")) {
 			String[] names = StringUtil.splitTweetAuthorNames(text);
