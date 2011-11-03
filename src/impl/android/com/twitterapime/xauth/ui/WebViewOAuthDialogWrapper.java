@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.ui.OAuthDialogListener;
 import com.twitterapime.xauth.ui.OAuthDialogWrapper;
 
@@ -32,7 +33,7 @@ import com.twitterapime.xauth.ui.OAuthDialogWrapper;
  * Developer website.
  * </p>
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.8
  */
 public final class WebViewOAuthDialogWrapper extends OAuthDialogWrapper {
@@ -76,6 +77,15 @@ public final class WebViewOAuthDialogWrapper extends OAuthDialogWrapper {
 	public WebViewOAuthDialogWrapper(WebView webView) {
 		this(webView, null, null, null, null);
 	}
+	
+	/**
+	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#requestToken()
+	 */
+	protected void requestToken() {
+		System.setProperty("http.keepAlive", "false"); //workaround for bug on Android prior 2.3 http://goo.gl/9SV1H
+		//
+		super.requestToken();
+	}
 
 	/**
 	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#loadUrl(java.lang.String)
@@ -89,6 +99,33 @@ public final class WebViewOAuthDialogWrapper extends OAuthDialogWrapper {
 	 */
 	protected void loadHTML(String htmlContent) {
 		webView.loadData(htmlContent, "text/html", "utf-8");
+	}
+	
+	/**
+	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#triggerOnAuthorize(com.twitterapime.xauth.Token)
+	 */
+	protected void triggerOnAuthorize(Token accessToken) {
+		System.setProperty("http.keepAlive", "true"); //workaround for bug on Android prior 2.3 http://goo.gl/9SV1H
+		//
+		super.triggerOnAuthorize(accessToken);
+	}
+	
+	/**
+	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#triggerOnAccessDenied(java.lang.String)
+	 */
+	protected void triggerOnAccessDenied(String message) {
+		System.setProperty("http.keepAlive", "true"); //workaround for bug on Android prior 2.3 http://goo.gl/9SV1H
+		//
+		super.triggerOnAccessDenied(message);
+	}
+
+	/**
+	 * @see com.twitterapime.xauth.ui.OAuthDialogWrapper#triggerOnFail(java.lang.String, java.lang.String)
+	 */
+	protected void triggerOnFail(String error, String message) {
+		System.setProperty("http.keepAlive", "true"); //workaround for bug on Android prior 2.3 http://goo.gl/9SV1H
+		//
+		super.triggerOnFail(error, message);
 	}
 	
 	/**
