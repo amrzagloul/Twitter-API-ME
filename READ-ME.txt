@@ -1,5 +1,5 @@
 ********************************************************************************
-*                         TWITTER API ME 1.8 - READ ME                         *
+*                       TWITTER API ME 1.8.2 - READ ME                         *
 ********************************************************************************
 *                         http://www.twitterapime.com                          *
 ********************************************************************************
@@ -33,13 +33,8 @@ quicker for the developers to port their applications to other platforms.
 
  AVAILABLE IN THIS VERSION:
 ********************************************************************************
-- OAuth support all platforms (callback url and out-of-band mode).
-- Possibility to configure additional connection parameters for RIM platform.
-- Improved RIM connection string solving the issue of when the devices is 
-  subscribed to BIS, but no APN was enabled and specified. In this case, an 
-  IOException was thrown.
-- Geo-located Trend search based on Yahoo! Where On Earth ID.
-- Bug fixes and replacement of some deprecated Twitter API's resources.
+- Support to medias, display and expanded urls in tweet entities.
+- Fix for Android connection no longer to use cache.
 
  KNOWN BUGS IN THIS VERSION:
 ********************************************************************************

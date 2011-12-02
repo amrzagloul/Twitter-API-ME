@@ -19,7 +19,7 @@ import com.twitterapime.model.MetadataSet;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.5
  */
 public final class TweetEntity extends DefaultEntity {
@@ -68,6 +68,16 @@ public final class TweetEntity extends DefaultEntity {
 	 */
 	public TweetEntity[] getURLs() {
 		return toArray((Vector)data.get(MetadataSet.TWEETENTITY_URLS));
+	}
+	
+	/**
+	 * <p>
+	 * Get an array of URLs from tweet's media tags.
+	 * </p>
+	 * @return URLs.
+	 */
+	public TweetEntity[] getMedias() {
+		return toArray((Vector)data.get(MetadataSet.TWEETENTITY_MEDIAS));
 	}
 	
 	/**

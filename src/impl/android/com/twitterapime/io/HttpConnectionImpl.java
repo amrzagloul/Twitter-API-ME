@@ -21,7 +21,7 @@ import com.twitterapime.io.HttpConnection;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 public final class HttpConnectionImpl implements HttpConnection {
@@ -58,6 +58,7 @@ public final class HttpConnectionImpl implements HttpConnection {
 	 */
 	public void open(String url) throws IOException {
 		conn = (HttpURLConnection)new URL(url).openConnection();
+		conn.setUseCaches(false);
 	}
 
 	/**

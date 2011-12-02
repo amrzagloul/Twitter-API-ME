@@ -20,7 +20,7 @@ import com.twitterapime.search.TweetEntity;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.0
+ * @version 1.1
  * @since 1.5
  */
 public final class TweetEntityHandler extends DefaultXMLHandler {
@@ -30,6 +30,20 @@ public final class TweetEntityHandler extends DefaultXMLHandler {
 	 * </p>
 	 */
 	private Hashtable userAccountData;
+	
+	/**
+	 * <p>
+	 * Hold url data from urls tag
+	 * </p>
+	 */
+	private Hashtable urlData;
+	
+	/**
+	 * </p>
+	 * Hold media data from the media tag
+	 * </p>
+	 */
+	private Hashtable mediaData;
 
 	/**
 	 * <p>
@@ -61,11 +75,33 @@ public final class TweetEntityHandler extends DefaultXMLHandler {
 		} else if (path.endsWith("/urls/url/url")) {
 			Vector v =
 				getOrCreateIfNecessary(data, MetadataSet.TWEETENTITY_URLS);
-			//
-			Hashtable t = new Hashtable();
-			t.put(MetadataSet.TWEETENTITY_URL, text);
-			//
-			v.addElement(new TweetEntity(t));
+			urlData = new Hashtable();
+			urlData.put(MetadataSet.TWEETENTITY_URL, text);
+			//			
+			v.addElement(new TweetEntity(urlData));
+		} else if (path.endsWith("/urls/url/display_url")) {
+			if (urlData != null) {
+				urlData.put(MetadataSet.TWEETENTITY_DISPLAY_URL, text);
+			}
+		} else if (path.endsWith("/urls/url/expanded_url")) {
+			if (urlData != null) {
+				urlData.put(MetadataSet.TWEETENTITY_EXPANDED_URL, text);
+			}
+		} else if (path.endsWith("/media/creative/media_url")) {
+			Vector v =
+				getOrCreateIfNecessary(data, MetadataSet.TWEETENTITY_MEDIAS);
+			mediaData = new Hashtable();
+			mediaData.put(MetadataSet.TWEETENTITY_MEDIA, text);
+			
+			v.addElement(new TweetEntity(mediaData));
+		} else if (path.endsWith("/media/creative/display_url")) {
+			if (mediaData != null) {
+				mediaData.put(MetadataSet.TWEETENTITY_DISPLAY_URL, text);
+			}
+		} else if (path.endsWith("/media/creative/url")) {
+			if (mediaData != null) {
+				mediaData.put(MetadataSet.TWEETENTITY_URL, text);
+			}
 		} else if (path.endsWith("/hashtags/hashtag/text")) {
 			Vector v =
 				getOrCreateIfNecessary(data, MetadataSet.TWEETENTITY_HASHTAGS);

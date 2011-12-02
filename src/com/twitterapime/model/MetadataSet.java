@@ -16,7 +16,7 @@ package com.twitterapime.model;
  * </p>
  * 
  * @author Ernandes Mourao Junior (ernandes@gmail.com)
- * @version 1.6
+ * @version 1.7
  * @since 1.0
  */
 public final class MetadataSet {
@@ -538,6 +538,22 @@ public final class MetadataSet {
 	
 	/**
 	 * <p>
+	 * Reports a tweet's entity display url, e.g., "www.twapime.com".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_DISPLAY_URL =
+		"TWEETENTITY_DISPLAY_URL";
+
+	/**
+	 * <p>
+	 * Reports a tweet's entity expanded url, e.g., "http://www.twapime.com".
+	 * </p>
+	 */
+	public static final String TWEETENTITY_EXPANDED_URL =
+		"TWEETENTITY_EXPANDED_URL";
+
+	/**
+	 * <p>
 	 * Reports a tweet's entity hashtag, e.g., "#twapime".
 	 * </p>
 	 */
@@ -566,6 +582,20 @@ public final class MetadataSet {
 	 */
 	public static final String TWEETENTITY_USERACCOUNT_USER_NAME =
 		"TWEETENTITY_USERACCOUNT_USER_NAME";
+	
+	/**
+	 * <p>
+	 * Reports the tweet's entity medias, e.g., Array of TweetEntity.
+	 * </p>
+	 */
+	public static final String TWEETENTITY_MEDIAS = "TWEETENTITY_MEDIAS";
+
+	/**
+	 * <p>
+	 * Reports the tweet's entity media, e.g., media url.
+	 * </p>
+	 */
+	public static final String TWEETENTITY_MEDIA = "TWEETENTITY_MEDIA";
 
 	/**
 	 * <p>
